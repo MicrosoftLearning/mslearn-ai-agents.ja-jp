@@ -22,47 +22,30 @@ lab:
 
     ![Azure AI Foundry ポータルのスクリーンショット。](./Media/ai-foundry-home.png)
 
-1. ホーム ページで、**[+ 作成]** を選択します。
-1. **[プロジェクトの作成]** ウィザードで、プロジェクトの有効な名前を入力し、既存のハブが推奨される場合は、新しいハブを作成するオプションを選択します。 次に、ハブとプロジェクトをサポートするために自動的に作成される Azure リソースを確認します。
-1. **[カスタマイズ]** を選択し、ハブに次の設定を指定します。
-    - **ハブ名**: *ハブの有効な名前*
+1. ホーム ページで、**[エージェントを作成する]** を選択します。
+1. プロジェクトの作成を求められたら、プロジェクトの有効な名前を入力し、**[詳細]** オプションを展開します。
+1. プロジェクトについて次の設定を確認します。
+    - **Azure AI Foundry リソース**: *Azure AI Foundry リソースの有効な名前*
     - **[サブスクリプション]**:"*ご自身の Azure サブスクリプション*"
     - **リソース グループ**: *リソース グループを作成または選択します*
-    - **場所**: 次のいずれかのリージョンを選択します:\*
-        - eastus
-        - eastus2
-        - swedencentral
-        - westus
-        - westus3
-    - **Azure AI サービスまたは Azure OpenAI への接続**: *新しい AI サービス リソースを作成します*
-    - **Azure AI 検索への接続**:接続をスキップする
+    - **リージョン**: ***AI サービスでサポートされている場所を選択します***\*
 
-    > \* この記事の執筆時点において、これらのリージョンでは、エージェント内で使用する gpt-4o モデルがサポートされています。 モデルの可用性は、リージョンのクォータによって制限されます。 演習の後半でクォータ制限に達した場合は、別のリージョンに別のプロジェクトを作成する必要が生じる可能性があります。
+    > \* 一部の Azure AI リソースは、リージョンのモデル クォータによって制限されます。 演習の後半でクォータ制限を超えた場合は、別のリージョンに別のリソースを作成する必要が生じる可能性があります。
 
-1. **[次へ]** を選択し、構成を確認します。 **[作成]** を選択し、プロセスが完了するまで待ちます。
-1. プロジェクトが作成されたら、表示されているヒントをすべて閉じて、Azure AI Foundry ポータルのプロジェクト ページを確認します。これは次の画像のようになっているはずです。
+1. **[作成]** を選択して、プロジェクトが作成されるまで待ちます。
+1. プロジェクトが作成されると、エージェント プレイグラウンドが自動的に開かれ、モデルを選択あるいはデプロイできます。
 
-    ![Azure AI Foundry ポータルの Azure AI プロジェクトの詳細のスクリーンショット。](./Media/ai-foundry-project.png)
+    ![Azure AI Foundry プロジェクトのエージェント プレイグラウンドのスクリーンショット。](./Media/ai-foundry-agents-playground.png)
 
-## 生成 AI モデルを展開する
+    >**注**: GPT-4o 基本モデルは、エージェントとプロジェクトの作成時に自動的にデプロイされます。
 
-これで、エージェントをサポートする生成 AI 言語モデルをデプロイする準備ができました。
+1. 左側のナビゲーション ウィンドウで **[概要]** を選択すると、プロジェクトのメイン ページが表示されます。次のようになります。
 
-1. プロジェクトの左側のウィンドウの **[マイ アセット]** セクションで、**[モデル + エンドポイント]** ページを選択します。
-1. **[モデル + エンドポイント]** ページの **[モデル デプロイ]** タブの **[+ モデルのデプロイ]** メニューで、**[基本モデルのデプロイ]** を選択します。
-1. 一覧で **GPT-4o** モデルを検索してから、それを選択して確認します。
-1. デプロイの詳細で **[カスタマイズ]** を選択して、以下の設定でモデルをデプロイします。
-    - **デプロイ名**: モデル デプロイの有効な名前**
-    - **デプロイの種類**: グローバル標準
-    - **バージョンの自動更新**: 有効
-    - **モデルのバージョン**: *利用可能な最新バージョンを選択します*
-    - **接続されている AI リソース**: *使用している Azure OpenAI リソース接続を選択します*
-    - **1 分あたりのトークンのレート制限 (1,000)**: 50,000 *(または 50,000 未満の場合はサブスクリプションで使用可能な最大値)*
-    - **コンテンツ フィルター**: DefaultV2
+    > **注**: *アクセス許可が不十分です** というエラーが表示された場合は、**[修正]** ボタンを使用してエラーを解決します。
 
-    > **注**:TPM を減らすと、ご利用のサブスクリプション内で使用可能なクォータが過剰に消費されることを回避するのに役立ちます。 この演習で使用するデータには、50,000 TPM で十分です。 使用可能なクォータがこれより低い場合は、演習を完了できますが、レート制限を超えた場合は、少し待ってからプロンプトを再送信する必要がある場合があります。
+    ![Azure AI Foundry プロジェクトの概要ページのスクリーンショット。](./Media/ai-foundry-project.png)
 
-1. デプロイが完了するまで待ちます。
+1. **Azure AI Foundry プロジェクト エンドポイント**の値をメモ帳にコピーします。後でこれを使用して、クライアント アプリケーション内でプロジェクトに接続します。
 
 ## 関数ツールを使用するエージェントを開発する
 
@@ -109,7 +92,7 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
     ```
    python -m venv labenv
    ./labenv/bin/Activate.ps1
-   pip install python-dotenv azure-identity azure-ai-projects
+   pip install -r requirements.txt azure-ai-projects
     ```
 
     >**注:** ライブラリのインストール中に表示される警告やエラー メッセージは無視しても構いません。
@@ -122,8 +105,8 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
 
     このファイルをコード エディターで開きます。
 
-1. コード ファイル内で、**[your_project_connection_string]** プレースホルダーをプロジェクトの接続文字列 (Azure AI Foundry ポータルでプロジェクトの **[概要]** ページからコピーしたもの) に置き換え、**[your_model_deployment]** プレースホルダーを gpt-4o モデル デプロイに割り当てた名前に置き換えます。
-1. プレースホルダーを置き換えたら、**Ctrl + S** キー コマンドを使用して変更を保存してから、**Ctrl + Q** キー コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
+1. コード ファイルで、**[your_project_endpoint]** プレースホルダーをプロジェクトのエンドポイント (Azure AI Foundry ポータルでプロジェクトの **[概要]** ページからコピーしたもの) に置き換えます。
+1. プレースホルダーを置き換えたら、**Ctrl + S** コマンドを使用して変更を保存してから、**Ctrl + Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
 
 ### カスタム関数を定義する
 
@@ -175,22 +158,22 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
     ```python
    # Add references
    from azure.identity import DefaultAzureCredential
-   from azure.ai.projects import AIProjectClient
-   from azure.ai.projects.models import FunctionTool, ToolSet
+   from azure.ai.agents import AgentsClient
+   from azure.ai.agents.models import FunctionTool, ToolSet, ListSortOrder, MessageRole
    from user_functions import user_functions
     ```
 
-1. 「**Connect to the Azure AI Foundry project (Azure AI Foundry プロジェクトに接続する)**」コメントを見つけて以下のコードを追加し、現在サインインに使用している Azure 資格情報で Azure AI Foundry プロジェクトに接続します。
+1. 「**Connect to the Agent client (エージェント クライアントに接続する)**」コメントを見つけて以下のコードを追加し、現在サインインに使用している Azure 資格情報で Azure AI プロジェクトに接続します。
 
     > **ヒント**: コードのインデント レベルを正しく維持するように注意してください。
 
     ```python
-   # Connect to the Azure AI Foundry project
-   project_client = AIProjectClient.from_connection_string(
-        credential=DefaultAzureCredential
-            (exclude_environment_credential=True,
-             exclude_managed_identity_credential=True),
-        conn_str=PROJECT_CONNECTION_STRING
+   # Connect to the Agent client
+   agent_client = AgentsClient(
+       endpoint=project_endpoint,
+       credential=DefaultAzureCredential
+           (exclude_environment_credential=True,
+            exclude_managed_identity_credential=True)
    )
     ```
     
@@ -198,15 +181,15 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
 
     ```python
    # Define an agent that can use the custom functions
-   with project_client:
+   with agent_client:
 
         functions = FunctionTool(user_functions)
         toolset = ToolSet()
         toolset.add(functions)
-        project_client.agents.enable_auto_function_calls(toolset=toolset)
+        agent_client.enable_auto_function_calls(toolset)
             
-        agent = project_client.agents.create_agent(
-            model=MODEL_DEPLOYMENT,
+        agent = agent_client.create_agent(
+            model=model_deployment,
             name="support-agent",
             instructions="""You are a technical support agent.
                             When a user has a technical issue, you get their email address and a description of the issue.
@@ -216,7 +199,7 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
             toolset=toolset
         )
 
-        thread = project_client.agents.create_thread()
+        thread = agent_client.threads.create()
         print(f"You're chatting with: {agent.name} ({agent.id})")
 
     ```
@@ -225,15 +208,15 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
 
     ```python
    # Send a prompt to the agent
-   message = project_client.agents.create_message(
+   message = agent_client.messages.create(
         thread_id=thread.id,
         role="user",
         content=user_prompt
    )
-   run = project_client.agents.create_and_process_run(thread_id=thread.id, agent_id=agent.id)
+   run = agent_client.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
     ```
 
-    > **注**: 「**create_and_process_run**」メソッドを使用してスレッドを実行すると、エージェントは必要な関数を自動的に検索し、名前とパラメーターに基づいて関数を選択的に使用します。 あるいは別の方法として、**create_run** メソッドを使用することもできます。このメソッドの場合、実行状態をポーリングするコードを記述して、関数呼び出しが必要かどうかを判断し、関数を呼び出して結果をエージェントに返します。
+    > **注**: 「**create_and_process**」メソッドを使用してスレッドを実行すると、エージェントは必要な関数を自動的に検索し、名前とパラメーターに基づいて関数を選択的に使用します。 あるいは別の方法として、**create_run** メソッドを使用することもできます。このメソッドの場合、実行状態をポーリングするコードを記述して、関数呼び出しが必要かどうかを判断し、関数を呼び出して結果をエージェントに返します。
 
 1. 「**Check the run status for failures （実行状態にエラーがないかチェックする)**」コメントを見つけて以下のコードを追加し、発生したエラーを表示します。
 
@@ -247,29 +230,32 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
 
     ```python
    # Show the latest response from the agent
-   messages = project_client.agents.list_messages(thread_id=thread.id)
-   last_msg = messages.get_last_text_message_by_role("assistant")
+   last_msg = agent_client.messages.get_last_message_text_by_role(
+       thread_id=thread.id,
+       role=MessageRole.AGENT,
+   )
    if last_msg:
         print(f"Last Message: {last_msg.text.value}")
     ```
 
-1. ループの終了後にある「**Get the conversation history (会話履歴を取得する)**」を見つけて以下のコードを追加すると、会話スレッドからメッセージが出力されます。メッセージは時系列順を逆にして古いものから順に表示されます。
+1. 「**Get the conversation history (会話履歴を取得する)**」コメントを見つけて以下のコードを追加すると、会話スレッドからメッセージが出力されます。メッセージは時系列順に並べ替えて出力されます。
 
     ```python
    # Get the conversation history
    print("\nConversation Log:\n")
-   messages = project_client.agents.list_messages(thread_id=thread.id)
-   for message_data in reversed(messages.data):
-        last_message_content = message_data.content[-1]
-        print(f"{message_data.role}: {last_message_content.text.value}\n")
+   messages = agent_client.messages.list(thread_id=thread.id, order=ListSortOrder.ASCENDING)
+   for message in messages:
+       if message.text_messages:
+           last_msg = message.text_messages[-1]
+           print(f"{message.role}: {last_msg.text.value}\n")
     ```
 
 1. 「**Cleain up （クリーンアップする)**」コメントを見つけて以下のコードを追加し、不要になったらエージェントとスレッドを削除します。
 
     ```python
    # Clean up
-   project_client.agents.delete_agent(agent.id)
-   project_client.agents.delete_thread(thread.id)
+   agent_client.delete_agent(agent.id)
+   print("Deleted agent")
     ```
 
 1. コメントを使用してコードを確認し、以下の機能がどのように実行されるかを理解します。
