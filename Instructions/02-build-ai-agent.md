@@ -187,7 +187,11 @@ lab:
     )
 
    run = agent_client.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
-     
+    ```
+
+1. "**Check the run status for failures**" （実行状態をチェックしてエラーがないか確認する) というコメントを見つけ、以下のコードを追加して、エラーがないか確認します。
+
+    ```python
    # Check the run status for failures
    if run.status == "failed":
         print(f"Run failed: {run.last_error}")

@@ -159,7 +159,7 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
    # Add references
    from azure.identity import DefaultAzureCredential
    from azure.ai.agents import AgentsClient
-   from azure.ai.agents.models import FunctionTool, ToolSet, ListSortOrder, MessageRole
+   from azure.ai.agents.models import FunctionTool, ToolSet, ListSortOrder
    from user_functions import user_functions
     ```
 
