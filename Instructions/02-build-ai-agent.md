@@ -20,47 +20,30 @@ lab:
 
     ![Azure AI Foundry ポータルのスクリーンショット。](./Media/ai-foundry-home.png)
 
-1. ホーム ページで、**[+ 作成]** を選択します。
-1. **[プロジェクトの作成]** ウィザードで、プロジェクトの有効な名前を入力し、既存のハブが推奨される場合は、新しいハブを作成するオプションを選択します。 次に、ハブとプロジェクトをサポートするために自動的に作成される Azure リソースを確認します。
-1. **[カスタマイズ]** を選択し、ハブに次の設定を指定します。
-    - **ハブ名**: *ハブの有効な名前*
+1. ホーム ページで、**[エージェントを作成する]** を選択します。
+1. プロジェクトの作成を求められたら、プロジェクトの有効な名前を入力し、**[詳細]** オプションを展開します。
+1. プロジェクトについて次の設定を確認します。
+    - **Azure AI Foundry リソース**: *Azure AI Foundry リソースの有効な名前*
     - **[サブスクリプション]**:"*ご自身の Azure サブスクリプション*"
     - **リソース グループ**: *リソース グループを作成または選択します*
-    - **場所**: 次のいずれかのリージョンを選択します\*:
-        - eastus
-        - eastus2
-        - swedencentral
-        - westus
-        - westus3
-    - **Azure AI サービスまたは Azure OpenAI への接続**: *新しい AI サービス リソースを作成します*
-    - **Azure AI 検索への接続**:接続をスキップする
+    - **リージョン**: ***AI サービスでサポートされている場所を選択します***\*
 
-    > \*この記事の執筆時点で、これらのリージョンでは、エージェントに使用できる gpt-4o モデルがサポートされています。 モデルの可用性は、リージョンのクォータによって制限されます。 演習の後半でクォータ制限に達した場合は、別のリージョンに別のプロジェクトを作成する必要が生じる可能性があります。
+    > \* 一部の Azure AI リソースは、リージョンのモデル クォータによって制限されます。 演習の後半でクォータ制限を超えた場合は、別のリージョンに別のリソースを作成する必要が生じる可能性があります。
 
-1. **[次へ]** を選択し、構成を確認します。 **[作成]** を選択し、プロセスが完了するまで待ちます。
-1. プロジェクトが作成されたら、表示されているヒントをすべて閉じて、Azure AI Foundry ポータルのプロジェクト ページを確認します。これは次の画像のようになっているはずです。
+1. **[作成]** を選択して、プロジェクトが作成されるまで待ちます。
+1. プロジェクトが作成されると、エージェント プレイグラウンドが自動的に開かれ、モデルを選択あるいはデプロイできます。
 
-    ![Azure AI Foundry ポータルの Azure AI プロジェクトの詳細のスクリーンショット。](./Media/ai-foundry-project.png)
+    ![Azure AI Foundry プロジェクトのエージェント プレイグラウンドのスクリーンショット。](./Media/ai-foundry-agents-playground.png)
 
-## 生成 AI モデルを展開する
+    >**注**: GPT-4o 基本モデルは、エージェントとプロジェクトの作成時に自動的にデプロイされます。
 
-これで、エージェントをサポートする生成 AI 言語モデルをデプロイする準備ができました。
+1. 左側のナビゲーション ウィンドウで **[概要]** を選択すると、プロジェクトのメイン ページが表示されます。次のようになります。
 
-1. プロジェクトの左側のウィンドウの **[マイ アセット]** セクションで、**[モデル + エンドポイント]** ページを選択します。
-1. **[モデル + エンドポイント]** ページの **[モデル デプロイ]** タブの **[+ モデルのデプロイ]** メニューで、**[基本モデルのデプロイ]** を選択します。
-1. 一覧で **GPT-4o** モデルを検索してから、それを選択して確認します。
-1. デプロイの詳細で **[カスタマイズ]** を選択して、以下の設定でモデルをデプロイします。
-    - **デプロイ名**: モデル デプロイの有効な名前**
-    - **デプロイの種類**: グローバル標準
-    - **バージョンの自動更新**: 有効
-    - **モデルのバージョン**: *利用可能な最新バージョンを選択します*
-    - **接続されている AI リソース**: *使用している Azure OpenAI リソース接続を選択します*
-    - **1 分あたりのトークンのレート制限 (1,000)**: 50,000 *(または 50,000 未満の場合はサブスクリプションで使用可能な最大値)*
-    - **コンテンツ フィルター**: DefaultV2
+    > **注**: *アクセス許可が不十分です** というエラーが表示された場合は、**[修正]** ボタンを使用してエラーを解決します。
 
-    > **注**:TPM を減らすと、ご利用のサブスクリプション内で使用可能なクォータが過剰に消費されることを回避するのに役立ちます。 この演習で使用するデータには、50,000 TPM で十分です。 使用可能なクォータがこれより低い場合は、演習を完了できますが、レート制限を超えた場合は、少し待ってからプロンプトを再送信する必要がある場合があります。
+    ![Azure AI Foundry プロジェクトの概要ページのスクリーンショット。](./Media/ai-foundry-project.png)
 
-1. デプロイが完了するまで待ちます。
+1. **Azure AI Foundry プロジェクト エンドポイント**の値をメモ帳にコピーします。後でこれを使用して、クライアント アプリケーション内でプロジェクトに接続します。
 
 ## エージェント クライアント アプリを作成する
 
@@ -89,7 +72,7 @@ lab:
    git clone https://github.com/MicrosoftLearning/mslearn-ai-agents ai-agents
     ```
 
-    > **ヒント**: Cloudshell にコマンドを入力すると、出力が大量のスクリーン バッファーを占有し、現在の行のカーソルが見づらくなる可能性があります。 `cls` コマンドを入力して、各タスクに集中しやすくすることで、スクリーンをクリアできます。
+    > **ヒント**: Cloudshell にコマンドを入力すると、出力が大量のスクリーン バッファーを占有し、現在のライン上のカーソルが隠れてしまう可能性があります。 `cls` コマンドを入力して、各タスクに集中しやすくすることで、スクリーンをクリアできます。
 
 1. 次のコマンドを入力して、作業ディレクトリをコード ファイルを含むフォルダーに変更し、すべてを一覧表示します。
 
@@ -107,7 +90,7 @@ lab:
     ```
    python -m venv labenv
    ./labenv/bin/Activate.ps1
-   pip install python-dotenv azure-identity azure-ai-projects
+   pip install -r requirements.txt azure-ai-projects
     ```
 
 1. 次のコマンドを入力して、提供されている構成ファイルを編集します。
@@ -118,8 +101,8 @@ lab:
 
     このファイルをコード エディターで開きます。
 
-1. コード ファイルで、**your_project_connection_string** プレースホルダーをプロジェクトの接続文字列 (Azure AI Foundry ポータルでプロジェクトの **[概要]** ページからコピーしたもの) に置き換え、**your_model_deployment** プレースホルダーを GPT-4o モデル デプロイに割り当てた名前に置き換えます。
-1. プレースホルダーを置き換えたら、**Ctrl + S** キー コマンドを使用して変更を保存してから、**Ctrl + Q** キー コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
+1. コード ファイルで、**[your_project_endpoint]** プレースホルダーをプロジェクトのエンドポイント (Azure AI Foundry ポータルでプロジェクトの **[概要]** ページからコピーしたもの) に置き換えます。
+1. プレースホルダーを置き換えたら、**Ctrl + S** コマンドを使用して変更を保存してから、**Ctrl + Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
 
 ### エージェント アプリのコードを作成する
 
@@ -137,32 +120,32 @@ lab:
     ```python
    # Add references
    from azure.identity import DefaultAzureCredential
-   from azure.ai.projects import AIProjectClient
-   from azure.ai.projects.models import FilePurpose, CodeInterpreterTool
+   from azure.ai.agents import AgentsClient
+   from azure.ai.agents.models import FilePurpose, CodeInterpreterTool, ListSortOrder, MessageRole
     ```
 
-1. 「**Connect to the Azure AI Foundry project （Azure AI Foundry プロジェクトに接続する)**」コメントを見つけ、以下のコードを追加して Azure AI プロジェクトに接続します。
+1. 「**Connect to the Agent client （エージェント クライアントに接続する)**」コメントを見つけて以下のコードを追加し、Azure AI プロジェクトに接続します。
 
     > **ヒント**: インデント レベルを正しく維持するように注意してください。
 
     ```python
-   # Connect to the Azure AI Foundry project
-   project_client = AIProjectClient.from_connection_string(
-        credential=DefaultAzureCredential
-            (exclude_environment_credential=True,
-             exclude_managed_identity_credential=True),
-        conn_str=PROJECT_CONNECTION_STRING
+   # Connect to the Agent client
+   agent_client = AgentsClient(
+       endpoint=project_endpoint,
+       credential=DefaultAzureCredential
+           (exclude_environment_credential=True,
+            exclude_managed_identity_credential=True)
    )
-   with project_client:
+   with agent_client:
     ```
 
     このコードは、現在使用中の Azure 資格情報で Azure AI Foundry プロジェクトに接続します。 最後の *with project_client* ステートメントを使用すると、クライアントのスコープを定義するコード ブロックが開始され、ブロック内のコードが完了したときにクリーンアップされます。
 
-1. *with project_client* ブロック内に「**Upload the data file and create a CodeInterpreterTool （データファイルをアップロードして CodeInterpreterTool を作成する)**」コメントを見つけ、以下のコードを追加してデータ ファイルをプロジェクトにアップロードするとともに、その中のデータにアクセスできる CodeInterpreterTool を作成します。
+1. *with project_client* ブロック内で「**Upload the data file and create a CodeInterpreterTool （データファイルをアップロードして CodeInterpreterTool を作成する)**」コメントを見つけ、以下のコードを追加してデータ ファイルをプロジェクトにアップロードするとともに、その中のデータにアクセスできる CodeInterpreterTool を作成します。
 
     ```python
    # Upload the data file and create a CodeInterpreterTool
-   file = project_client.agents.upload_file_and_poll(
+   file = agent_client.files.upload_and_poll(
         file_path=file_path, purpose=FilePurpose.AGENTS
    )
    print(f"Uploaded {file.filename}")
@@ -174,8 +157,8 @@ lab:
 
     ```python
    # Define an agent that uses the CodeInterpreterTool
-   agent = project_client.agents.create_agent(
-        model=MODEL_DEPLOYMENT,
+   agent = agent_client.create_agent(
+        model=model_deployment,
         name="data-agent",
         instructions="You are an AI agent that analyzes the data in the file that has been uploaded. If the user requests a chart, create it and save it as a .png file.",
         tools=code_interpreter.definitions,
@@ -188,7 +171,7 @@ lab:
 
     ```python
    # Create a thread for the conversation
-   thread = project_client.agents.create_thread()
+   thread = agent_client.threads.create()
     ```
     
 1. コードの次のセクションにはユーザーがプロンプトを入力するためのループが設定されており、ユーザーが「quit （終了）」と入力するとチャットが終了します。
@@ -197,16 +180,16 @@ lab:
 
     ```python
    # Send a prompt to the agent
-   message = project_client.agents.create_message(
+   message = agent_client.messages.create(
         thread_id=thread.id,
         role="user",
         content=user_prompt,
     )
 
-    run = project_client.agents.create_and_process_run(thread_id=thread.id, agent_id=agent.id)
-     ```
+   run = agent_client.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    ```
 
-1. 「**Check the run status for failures (実行状態を確認し、エラーが発生していないかチェックする)**」コメントを見つけ、以下のコードを追加して、発生したエラーがあれば表示します。
+1. "**Check the run status for failures**" （実行状態をチェックしてエラーがないか確認する) というコメントを見つけ、以下のコードを追加して、エラーがないか確認します。
 
     ```python
    # Check the run status for failures
@@ -214,14 +197,16 @@ lab:
         print(f"Run failed: {run.last_error}")
     ```
 
-1. 「**Show the latest response from the agent (エージェントからの最新の応答を表示する)**」コメントを見つけ、以下のコードを追加して、完了したスレッドからメッセージを取得するとともに、エージェントによって最後に送信されたメッセージを表示します。
+1. 「**Show the latest response from the agent エージェントからの最新の応答を表示する)**」コメントを見つけて以下のコードを追加し、完了済みのスレッドからメッセージを取得してエージェントによって最後に送信されたメッセージを表示します。
 
     ```python
    # Show the latest response from the agent
-   messages = project_client.agents.list_messages(thread_id=thread.id)
-   last_msg = messages.get_last_text_message_by_role("assistant")
+   last_msg = agent_client.messages.get_last_message_text_by_role(
+       thread_id=thread.id,
+       role=MessageRole.AGENT,
+   )
    if last_msg:
-        print(f"Last Message: {last_msg.text.value}")
+       print(f"Last Message: {last_msg.text.value}")
     ```
 
 1. 「**Get the conversation history (会話履歴を取得する)**」というコメントを見つけて、次のコードを追加して、会話スレッドからメッセージを出力します （順序を逆にして、時系列順に表示します)。
@@ -229,27 +214,31 @@ lab:
     ```python
    # Get the conversation history
    print("\nConversation Log:\n")
-   messages = project_client.agents.list_messages(thread_id=thread.id)
-   for message_data in reversed(messages.data):
-        last_message_content = message_data.content[-1]
-        print(f"{message_data.role}: {last_message_content.text.value}\n")
+   messages = agent_client.messages.list(thread_id=thread.id, order=ListSortOrder.ASCENDING)
+   for message in messages:
+       if message.text_messages:
+           last_msg = message.text_messages[-1]
+           print(f"{message.role}: {last_msg.text.value}\n")
     ```
 
-1. 「**Get any generated files (生成されたファイルがあれば取得する)**」というコメントを見つけて、次のコードを追加して、メッセージからファイル パスの注釈 (エージェントが内部ストレージにファイルを保存していることを示します) を取得し、ファイルをアプリ フォルダーにコピーします。
+1. 「**Get any generated files (生成されたファイルがあれば取得する)**」というコメントを見つけて、次のコードを追加して、メッセージからファイル パスの注釈 (エージェントが内部ストレージにファイルを保存していることを示します) を取得し、ファイルをアプリ フォルダーにコピーします。 _注_: 現在、イメージ コンテンツはシステムでは使用できません。
 
     ```python
    # Get any generated files
-   for file_path_annotation in messages.file_path_annotations:
-        project_client.agents.save_file(file_id=file_path_annotation.file_path.file_id, file_name=Path(file_path_annotation.text).name)
-        print(f"File saved as {Path(file_path_annotation.text).name}")
+   for msg in messages:
+       # Save every image file in the message
+       for img in msg.image_contents:
+           file_id = img.image_file.file_id
+           file_name = f"{file_id}_image_file.png"
+           agent_client.files.save(file_id=file_id, file_name=file_name)
+           print(f"Saved image file to: {Path.cwd() / file_name}")
     ```
 
-1. 「**Clean up （クリーンアップする)**」コメントを見つけ、以下のコードを追加して、不要になったエージェントとスレッドを削除します。
+1. 「**Cleain up （クリーンアップする)**」コメントを見つけて以下のコードを追加し、不要になったらエージェントとスレッドを削除します。
 
     ```python
    # Clean up
-   project_client.agents.delete_agent(agent.id)
-   project_client.agents.delete_thread(thread.id)
+   agent_client.delete_agent(agent.id)
     ```
 
 1. コードを確認します。コメントを見ることで以下のコード機能を把握できます。
@@ -258,16 +247,16 @@ lab:
     - どのようにコード インタープリター ツールを使用する新しいエージェントを作成すると共に、データの分析と.png ファイル形式でのグラフの作成に必要な明示的な指示を提供しているか。
     - 分析対象のデータとユーザーからのプロンプト メッセージを含むスレッドをどのように実行しているか。
     - エラーが発生した場合に実行の状態を確認します
-    - 完了したスレッドからメッセージを取得し、エージェントによって最後に送信されたメッセージを表示します。
+    - 完了済みのスレッドからメッセージを取得し、エージェントによって最後に送信されたメッセージを表示する
     - 会話履歴を表示する
     - 生成された各ファイルを保存します。
     - 不要になったエージェントとスレッドは削除してください。
 
-1. 完了したら、コード ファイル (*CTRL + S*) を保存します。 コード エディター (*CTRL + Q*) を閉じてもかまいませんが、追加したコードを編集する必要がある場合に備えて開いたままにしておくこともできます。 どちらの場合も、Cloud Shell のコマンド ライン ペインは開いたままにします。
+1. 完了したら、コード ファイルを保存します (*CTRL + S*)。 コード エディターを閉じても構いません (*CTRL + Q*) が、追加したコードを編集する必要がある場合に備えて開いたままにしておくこともできます。 どちらの場合も、Cloud Shell のコマンド ライン ペインは開いたままにします。
 
 ### Azure にサインインしてアプリを実行する
 
-1. Cloud Shell コマンド ライン ペインで、次のコマンドを入力してアプリを実行します。
+1. Cloud Shell コマンド ライン ペインで、次のコマンドを入力して Azure にサインインします。
 
     ```
     az login
@@ -275,9 +264,9 @@ lab:
 
     **<font color="red">Cloud Shell セッションが既に認証されている場合でも、Azure にサインインする必要があります。</font>**
 
-    > **注**: ほとんどのシナリオでは、*[az ログイン]* を使用するだけで十分です。 ただし、複数のテナントにサブスクリプションがある場合は、*--tenant* パラメーターを使用してテナントを指定する必要があります。 詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)」を参照してください。
+    > **注**: ほとんどのシナリオでは、*az ログイン*を使用するだけで十分です。 ただし、複数のテナントにサブスクリプションがある場合は、*[--tenant]* パラメーターを使用してテナントを指定する必要があります。 詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)」を参照してください。
     
-1. メッセージが表示されたら、指示に従って新しいタブでサインイン ページを開き、指定された認証コードと Azure 資格情報を入力します。 次に、コマンド ラインでサインイン プロセスを完了し、プロンプトが表示されたら、必要な Azure AI Foundry ハブを含むサブスクリプションを選択します。
+1. メッセージが表示されたら、指示に従って新しいタブでサインイン ページを開き、指定された認証コードと Azure 資格情報を入力します。 次に、コマンド ラインでサインイン プロセスを完了し、プロンプトが表示されたら、Azure AI Foundry ハブを含むサブスクリプションを選択します。
 1. サインインしたら、次のコマンドを入力してアプリケーションを実行します。
 
     ```
