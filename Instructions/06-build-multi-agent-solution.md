@@ -6,9 +6,13 @@ lab:
 
 # マルチエージェント ソリューションの開発
 
-この演習では、Azure AI Foundry Agent Service を使用して複数の AI エージェントを調整するプロジェクトを作成します。 この演習では、ダンジョンを通じてパーティを案内するクエスト マスター エージェントを作成します。 パーティは、戦士、ヒーラー、スカウトを表す接続された AI エージェントで構成されます。 クエスト マスター エージェントは、ユーザーからシナリオを受け取り、それに応じてタスクをパーティ メンバーに委任します。 それでは始めましょう。
+この演習では、Azure AI Foundry Agent Service を使用して複数の AI エージェントを調整するプロジェクトを作成します。 チケット トリアージを支援する AI ソリューションを設計します。 接続されたエージェントは、チケットの優先度の評価、チーム割り当ての提案、チケットを完成させるために必要な作業レベルの決定を行います。 それでは始めましょう。
+
+> **ヒント**: この演習で使用するコードは、Python 用の Azure AI Foundry SDK に基づいています。 Microsoft .NET、JavaScript、Java 用の SDK を使用して、同様のソリューションを開発できます。 詳細については、「[Azure AI Foundry SDK クライアント ライブラリ](https://learn.microsoft.com/azure/ai-foundry/how-to/develop/sdk-overview)」を参照してください。
 
 この演習の所要時間は約 **30** 分です。
+
+> **注**: この演習で使用されるテクノロジの一部は、プレビューの段階または開発中の段階です。 予期しない動作、警告、またはエラーが発生する場合があります。
 
 ## Azure AI Foundry プロジェクトにモデルをデプロイする
 
@@ -41,8 +45,6 @@ lab:
    > **注**: この演習で使用するデータには、40,000 TPM あれば十分でしょう。 使用可能なクォータがこれより低い場合は、演習を完了できますが、レート制限を超えた場合は、少し待ってからプロンプトを再送信する必要がある場合があります。
 
 1. 左側のナビゲーション ウィンドウで **[概要]** を選択すると、プロジェクトのメイン ページが表示されます。次のようになります。
-
-    > **注**: *アクセス許可が不十分です** というエラーが表示された場合は、**[修正]** ボタンを使用してエラーを解決します。
 
     ![Azure AI Foundry プロジェクトの概要ページのスクリーンショット。](./Media/ai-foundry-project.png)
 
@@ -112,10 +114,10 @@ lab:
 
 これで、マルチエージェント ソリューション向けにエージェントを作成する準備ができました。 それでは始めましょう。
 
-1. 次のコマンドを入力して、**agent_chat.py** ファイルを編集します。
+1. 次のコマンドを入力して、**agent_triage.py** ファイルを編集します。
 
     ```
-   code agent_quest.py
+   code agent_triage.py
     ```
 
 1. 各エージェント名と指示の文字列が含まれていることに注意して、ファイル内のコードを確認します。
@@ -125,65 +127,75 @@ lab:
     ```python
     # Add references
     from azure.ai.agents import AgentsClient
-    from azure.ai.agents.models import ConnectedAgentTool, MessageRole, ListSortOrder
+    from azure.ai.agents.models import ConnectedAgentTool, MessageRole, ListSortOrder, ToolSet, FunctionTool
     from azure.identity import DefaultAzureCredential
     ```
 
-1. 「**Create the devops agent on the Azure AI agent service (Azure AI エージェント サービスで devops エージェントを作成する)**」というコメントを見つけて以下のコードを追加し、Azure AI エージェントを作成します。
+1. コメント **Instructions for the primary agent** の下に、次のコードを入力します。
 
     ```python
-    # Create the healer agent on the Azure AI agent service
-    healer_agent = agents_client.create_agent(
+    # Instructions for the primary agent
+    triage_agent_instructions = """
+    Triage the given ticket. Use the connected tools to determine the ticket's priority, 
+    which team it should be assigned to, and how much effort it may take.
+    """
+    ```
+
+1. **Create the priority agent on the Azure AI agent service** というコメントを見つけて、Azure AI エージェントを作成するための次のコードを追加します。
+
+    ```python
+    # Create the priority agent on the Azure AI agent service
+    priority_agent = agents_client.create_agent(
         model=model_deployment,
-        name=healer_agent_name,
-        instructions=healer_instructions
+        name=priority_agent_name,
+        instructions=priority_agent_instructions
     )
     ```
 
     このコードにより、お使いの Azure AI エージェント クライアント上にエージェント定義が作成されます。
 
-1. 「**Create a connected agent tool for the healer agent**」というコメントを見つけて、次のコードを追加します。
+1. **Create a connected agent tool for the priority agent** というコメントを見つけて、次のコードを追加します。
 
     ```python
-    # Create a connected agent tool for the healer agent
-    healer_agent_tool = ConnectedAgentTool(
-        id=healer_agent.id, 
-        name=healer_agent_name, 
-        description="Responsible for healing party members and addressing injuries."
+    # Create a connected agent tool for the priority agent
+    priority_agent_tool = ConnectedAgentTool(
+        id=priority_agent.id, 
+        name=priority_agent_name, 
+        description="Assess the priority of a ticket"
     )
     ```
 
-    次に、他のパーティ メンバー エージェントを作成しましょう。
+    次に、他のトリアージ エージェントを作成しましょう。
 
-1. 「**Create the scout agent and connected tool (スカウト エージェントと接続されたツールを作成する)**」というコメントの下に、次のコードを追加します。
+1. コメント **Create the team agent and connected tool** の下に、次のコードを追加します。
     
     ```python
-    # Create the scout agent and connected tool
-    scout_agent = agents_client.create_agent(
+    # Create the team agent and connected tool
+    team_agent = agents_client.create_agent(
         model=model_deployment,
-        name=scout_agent_name,
-        instructions=scout_instructions
+        name=team_agent_name,
+        instructions=team_agent_instructions
     )
-    scout_agent_tool = ConnectedAgentTool(
-        id=scout_agent.id, 
-        name=scout_agent_name, 
-        description="Goes ahead of the main party to perform reconnaissance."
+    team_agent_tool = ConnectedAgentTool(
+        id=team_agent.id, 
+        name=team_agent_name, 
+        description="Determines which team should take the ticket"
     )
     ```
 
-1. 「**Create the warrior agent and connected tool (戦士エージェントと接続されたツールを作成する)**」というコメントの下に、次のコードを追加します。
+1. コメント **Create the effort agent and connected tool** の下に、次のコードを追加します。
     
     ```python
-    # Create the warrior agent and connected tool
-    warrior_agent = agents_client.create_agent(
+    # Create the effort agent and connected tool
+    effort_agent = agents_client.create_agent(
         model=model_deployment,
-        name=warrior_agent_name,
-        instructions=warrior_instructions
+        name=effort_agent_name,
+        instructions=effort_agent_instructions
     )
-    warrior_agent_tool = ConnectedAgentTool(
-        id=warrior_agent.id, 
-        name=warrior_agent_name, 
-        description="Responds to combat or physical challenges."
+    effort_agent_tool = ConnectedAgentTool(
+        id=effort_agent.id, 
+        name=effort_agent_name, 
+        description="Determines the effort required to complete the ticket"
     )
     ```
 
@@ -194,16 +206,12 @@ lab:
     # Create a main agent with the Connected Agent tools
     agent = agents_client.create_agent(
         model=model_deployment,
-        name="quest_master",
-        instructions="""
-            You are the Questmaster, the intelligent guide of a three-member adventuring party exploring a short dungeon. 
-            Based on the scenario, delegate tasks to the appropriate party member. The current party members are: Warrior, Scout, Healer.
-            Only include the party member's response, do not provide an analysis or summary.
-        """,
+        name="triage-agent",
+        instructions=triage_agent_instructions,
         tools=[
-            healer_agent_tool.definitions[0],
-            scout_agent_tool.definitions[0],
-            warrior_agent_tool.definitions[0]
+            priority_agent_tool.definitions[0],
+            team_agent_tool.definitions[0],
+            effort_agent_tool.definitions[0]
         ]
     )
     ```
@@ -217,10 +225,12 @@ lab:
     ```
 
 
-1. 「**Create the quest prompt (クエスト プロンプトを作成する)**」というコメントの下に、次のコードを追加します。
+1. コメント **Create the ticket prompt** の下に、次のコードを追加します。
     
     ```python
-    prompt = "We find a locked door with strange symbols, and the warrior is limping."
+    # Create the ticket prompt
+    prompt = "Users can't reset their password from the mobile app."
+
     ```
 
 1. 「**Send a prompt to the agent (プロンプトをエージェントに送信する)**」というコメントの下に、次のコードを追加します。
@@ -264,7 +274,7 @@ lab:
 1. サインインしたら、次のコマンドを入力してアプリケーションを実行します。
 
     ```
-   python agent_quest.py
+   python agent_triage.py
     ```
 
     次のような出力が表示されるはずです。
@@ -274,21 +284,23 @@ lab:
     Processing agent thread. Please wait.
 
     MessageRole.USER:
-    We find a locked door with strange symbols, and the warrior is limping.
+    Users can't reset their password from the mobile app.
 
     MessageRole.AGENT:
-    - **Scout:** Decipher the celestial patterns of the strange symbols and determine the sequence to unlock the door. 
-    - **Healer:** The warrior's injury has been addressed; moderate strain is relieved through healing magic and restorative salve.
-    - **Warrior:** Recovered and ready to assist physically or guard the party as we proceed.
+    ### Ticket Assessment
+
+    - **Priority:** High — This issue blocks users from resetting their passwords, limiting access to their accounts.
+    - **Assigned Team:** Frontend Team — The problem lies in the mobile app's user interface or functionality.
+    - **Effort Required:** Medium — Resolving this problem involves identifying the root cause, potentially updating the mobile app functionality, reviewing API/backend integration, and testing to ensure compatibility across Android/iOS platforms.
 
     Cleaning up agents:
-    Deleted quest master agent.
-    Deleted healer agent.
-    Deleted scout agent.
-    Deleted warrior agent.
+    Deleted triage agent.
+    Deleted priority agent.
+    Deleted team agent.
+    Deleted effort agent.
     ```
 
-    別のシナリオを使用してプロンプトを変更し、エージェントがどのように連携するかを確認できます。
+    別のシナリオを使用してプロンプトを変更し、エージェントがどのように共同作業を行うかを確認できます。 たとえば、「検索エンドポイントからときどき発生する 502 エラーを調査する」などです。
 
 ## クリーンアップ
 

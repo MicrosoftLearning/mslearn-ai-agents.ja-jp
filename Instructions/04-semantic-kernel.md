@@ -8,6 +8,8 @@ lab:
 
 この演習では、Azure AI エージェント サービスとセマンティック カーネルを使用して、経費請求を処理する AI エージェントを作成します。
 
+> **ヒント**: この演習で使用するコードは、Python 用の Semantic Kernel SDK に基づいています。 Microsoft .NET および Java 用の SDK を使用して、同様のソリューションを開発できます。 詳細については、「[サポートされているセマンティック カーネル言語](https://learn.microsoft.com/semantic-kernel/get-started/supported-languages)」を参照してください。
+
 この演習の所要時間は約 **30** 分です。
 
 > **注**: この演習で使用されるテクノロジの一部は、プレビューの段階または開発中の段階です。 予期しない動作、警告、またはエラーが発生する場合があります。
@@ -35,8 +37,6 @@ lab:
 1. プロジェクトが作成されると、チャット プレイグラウンドが自動的に開きます。
 1. **[セットアップ]** ウィンドウで、モデル デプロイの名前をメモします (**gpt-4o** のはずです)。 これを確認するには、**[モデルとエンドポイント]** ページでデプロイを表示します (左側のナビゲーション ウィンドウでそのページを開くだけです)。
 1. 左側のナビゲーション ウィンドウで **[概要]** を選択すると、プロジェクトのメイン ページが表示されます。次のようになります。
-
-    > **注**: *アクセス許可が不十分です** というエラーが表示された場合は、**[修正]** ボタンを使用してエラーを解決します。
 
     ![Azure AI Foundry ポータルの Azure AI プロジェクトの詳細のスクリーンショット。](./Media/ai-foundry-project.png)
 
@@ -85,10 +85,10 @@ lab:
     ```
    python -m venv labenv
    ./labenv/bin/Activate.ps1
-   pip install python-dotenv azure-identity semantic-kernel[azure] 
+   pip install python-dotenv azure-identity semantic-kernel --upgrade 
     ```
 
-    > **注**: *semantic-kernel[azure]* をインストールすると、セマンティック カーネル互換バージョンの *azure-ai-projects* が自動的にインストールされます。
+    > **注**:*semantic-kernel* をインストールすると、セマンティック カーネル互換バージョンの *azure-ai-projects* が自動的にインストールされます。
 
 1. 次のコマンドを入力して、提供されている構成ファイルを編集します。
 
@@ -207,12 +207,14 @@ lab:
 
     ```python
    # Use the agent to process the expenses data
-   thread: AzureAIAgentThread = AzureAIAgentThread(client=project_client)
+   # If no thread is provided, a new thread will be
+   # created and returned with the initial response
+   thread: AzureAIAgentThread | None = None
    try:
         # Add the input prompt to a list of messages to be submitted
         prompt_messages = [f"{prompt}: {expenses_data}"]
         # Invoke the agent for the specified thread with the messages
-        response = await expenses_agent.get_response(thread_id=thread.id, messages=prompt_messages)
+        response = await expenses_agent.get_response(prompt_messages, thread=thread)
         # Display the response
         print(f"\n# {response.name}:\n{response}")
    except Exception as e:
