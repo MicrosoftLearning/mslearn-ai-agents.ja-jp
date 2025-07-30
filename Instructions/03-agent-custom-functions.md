@@ -6,9 +6,9 @@ lab:
 
 # AI エージェントでカスタム関数を使用する
 
-この演習では、タスクを完了するためのツールとしてカスタム関数を使用できるエージェントの作成について説明します。
+この演習では、タスクを完了するためのツールとしてカスタム関数を使用できるエージェントの作成について説明します。 技術的な問題の詳細を収集し、サポート チケットを生成するシンプルなテクニカル サポート エージェントを構築します。
 
-技術的な問題の詳細を収集し、サポート チケットを生成するシンプルなテクニカル サポート エージェントを構築します。
+> **ヒント**: この演習で使用するコードは、Python 用の Azure AI Foundry SDK に基づいています。 Microsoft .NET、JavaScript、Java 用の SDK を使用して、同様のソリューションを開発できます。 詳細については、「[Azure AI Foundry SDK クライアント ライブラリ](https://learn.microsoft.com/azure/ai-foundry/how-to/develop/sdk-overview)」を参照してください。
 
 この演習の所要時間は約 **30** 分です。
 
@@ -33,15 +33,13 @@ lab:
     > \* 一部の Azure AI リソースは、リージョンのモデル クォータによって制限されます。 演習の後半でクォータ制限を超えた場合は、別のリージョンに別のリソースを作成する必要が生じる可能性があります。
 
 1. **[作成]** を選択して、プロジェクトが作成されるまで待ちます。
-1. プロジェクトが作成されると、エージェント プレイグラウンドが自動的に開かれ、モデルを選択あるいはデプロイできます。
+1. メッセージが表示されたら、(クォータの可用性に応じて) *[Global Standard]* または *[Standard]* デプロイ オプションを使用して、**gpt-4o** モデルをデプロイします。
 
-    ![Azure AI Foundry プロジェクトのエージェント プレイグラウンドのスクリーンショット。](./Media/ai-foundry-agents-playground.png)
+    >**注**:クォータが使用可能な場合は、エージェントとプロジェクトの作成時に GPT-4o 基本モデルが自動的にデプロイされることがあります。
 
-    >**注**: GPT-4o 基本モデルは、エージェントとプロジェクトの作成時に自動的にデプロイされます。
+1. プロジェクトが作成されると、エージェント プレイグラウンドが開きます。
 
 1. 左側のナビゲーション ウィンドウで **[概要]** を選択すると、プロジェクトのメイン ページが表示されます。次のようになります。
-
-    > **注**: *アクセス許可が不十分です** というエラーが表示された場合は、**[修正]** ボタンを使用してエラーを解決します。
 
     ![Azure AI Foundry プロジェクトの概要ページのスクリーンショット。](./Media/ai-foundry-project.png)
 
@@ -105,7 +103,7 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
 
     このファイルをコード エディターで開きます。
 
-1. コード ファイルで、**[your_project_endpoint]** プレースホルダーをプロジェクトのエンドポイント (Azure AI Foundry ポータルでプロジェクトの **[概要]** ページからコピーしたもの) に置き換えます。
+1. コード ファイルで、**your_project_endpoint** プレースホルダーをプロジェクトのエンドポイント (Azure AI Foundry ポータルのプロジェクトの **[概要]** ページからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がモデル デプロイ名 (*gpt-4o*) に設定されていることを確認します。
 1. プレースホルダーを置き換えたら、**Ctrl + S** コマンドを使用して変更を保存してから、**Ctrl + Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
 
 ### カスタム関数を定義する
@@ -159,7 +157,7 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
    # Add references
    from azure.identity import DefaultAzureCredential
    from azure.ai.agents import AgentsClient
-   from azure.ai.agents.models import FunctionTool, ToolSet, ListSortOrder
+   from azure.ai.agents.models import FunctionTool, ToolSet, ListSortOrder, MessageRole
    from user_functions import user_functions
     ```
 
@@ -245,7 +243,7 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
    print("\nConversation Log:\n")
    messages = agent_client.messages.list(thread_id=thread.id, order=ListSortOrder.ASCENDING)
    for message in messages:
-       if message.text_messages:
+        if message.text_messages:
            last_msg = message.text_messages[-1]
            print(f"{message.role}: {last_msg.text.value}\n")
     ```
