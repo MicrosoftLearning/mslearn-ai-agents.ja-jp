@@ -28,7 +28,13 @@ lab:
     - **Azure AI Foundry リソース**: *Azure AI Foundry リソースの有効な名前*
     - **[サブスクリプション]**:"*ご自身の Azure サブスクリプション*"
     - **リソース グループ**: *リソース グループを作成または選択します*
-    - **リージョン**: ***AI サービスでサポートされている場所を選択します***\*
+    - **[リージョン]**: *サポートされている次のいずれかの場所を選択します:* \*
+      * 米国西部 2
+      * 米国西部
+      * ノルウェー東部
+      * スイス北部
+      * アラブ首長国連邦北部
+      * インド南部
 
     > \* 一部の Azure AI リソースは、リージョンのモデル クォータによって制限されます。 演習の後半でクォータ制限を超えた場合は、別のリージョンに別のリソースを作成する必要が生じる可能性があります。
 
@@ -43,7 +49,7 @@ lab:
 
     ![Azure AI Foundry プロジェクトの概要ページのスクリーンショット。](./Media/ai-foundry-project.png)
 
-1. **Azure AI Foundry プロジェクト エンドポイント**の値をメモ帳にコピーします。後でこれを使用して、クライアント アプリケーション内でプロジェクトに接続します。
+1. **Azure AI Foundry プロジェクト エンドポイント**の値をコピーします。 これを使用して、クライアント アプリケーションでプロジェクトに接続します。
 
 ## MCP 関数ツールを使用するエージェントを開発する
 
@@ -109,13 +115,21 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
 
 このタスクでは、リモート MCP サーバーに接続し、AI エージェントを準備し、ユーザー プロンプトを実行します。
 
+1. 次のコマンドを入力して、提供されているコード ファイルを編集します。
+
+    ```
+   code client.py
+    ```
+
+    このファイルはコード エディターで開きます。
+
 1. コメント **Add references** を見つけて、クラスをインポートする次のコードを追加します。
 
     ```python
    # Add references
    from azure.identity import DefaultAzureCredential
    from azure.ai.agents import AgentsClient
-   from azure.ai.agents.models import McpTool
+   from azure.ai.agents.models import McpTool, ToolSet, ListSortOrder
     ```
 
 1. コメント **Connect to the agents client** を見つけて、現在の Azure 資格情報を使用して Azure AI プロジェクトに接続する次のコードを追加します。
@@ -136,25 +150,29 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
     ```python
    # Initialize agent MCP tool
    mcp_tool = McpTool(
-       server_label=mcp_server_label,
-       server_url=mcp_server_url,
+        server_label=mcp_server_label,
+        server_url=mcp_server_url,
    )
+    
+   mcp_tool.set_approval_mode("never")
+    
+   toolset = ToolSet()
+   toolset.add(mcp_tool)
     ```
 
     このコードは、Microsft Learn Docs リモート MCP サーバーに接続します。 これは、クライアントが Microsoft の公式ドキュメントから信頼できる最新の情報に直接アクセスできるようにするクラウド ホスト サービスです。
 
-1. コメント **Create a new agent with the mcp tool definitions** の下に、次のコードを追加します。
+1. コメント **Create a new agent (新しいエージェントを作成する)** の下に、次のコードを追加します。
 
     ```python
-   # Create a new agent with the mcp tool definitions
+   # Create a new agent
    agent = agents_client.create_agent(
-       model=model_deployment,
-       name="my-mcp-agent",
-       instructions="""
+        model=model_deployment,
+        name="my-mcp-agent",
+        instructions="""
         You have access to an MCP server called `microsoft.docs.mcp` - this tool allows you to 
         search through Microsoft's latest official documentation. Use the available MCP tools 
-        to answer questions and perform tasks.""",
-       tools=mcp_tool.definitions,
+        to answer questions and perform tasks."""
    )
     ```
 
@@ -172,33 +190,20 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
 
     ```python
    # Create a message on the thread
+   prompt = input("\nHow can I help?: ")
    message = agents_client.messages.create(
-       thread_id=thread.id,
-       role="user",
-       content="Give me the Azure CLI commands to create an Azure Container App with a managed identity.",
+        thread_id=thread.id,
+        role="user",
+        content=prompt,
    )
    print(f"Created message, ID: {message.id}")
     ```
 
-1. コメント **Update mcp tool headers** の下に、次のコードを追加します。
-
-    ```python
-   # Update mcp tool headers
-   mcp_tool.update_headers("SuperSecret", "123456")
-    ```
-
-1. コメント **Set approval mode** を見つけて、次のコードを追加します。
-
-    ```python
-   # Set approval mode
-   mcp_tool.set_approval_mode("never")
-    ```
-
-1. コメント **Create and process agent run in thread with MCP tools** を見つけて、次のコードを追加します。
+1. コメント **Create and process agent run in thread with MCP tools (MCP ツールを使用してスレッドで実行されるエージェントを作成して処理する)** を見つけて、次のコードを追加します。
 
     ```python
    # Create and process agent run in thread with MCP tools
-   run = agents_client.runs.create_and_process(thread_id=thread.id, agent_id=agent.id, tool_resources=mcp_tool.resources)
+   run = agents_client.runs.create_and_process(thread_id=thread.id, agent_id=agent.id, toolset=toolset)
    print(f"Created run, ID: {run.id}")
     ```
     
@@ -226,7 +231,13 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
    python client.py
     ```
 
-    次のような出力が表示されます。
+1. メッセージが表示されたら、次のような技術情報の要求を入力します。
+
+    ```
+    Give me the Azure CLI commands to create an Azure Container App with a managed identity.
+    ```
+
+1. エージェントがプロンプトを処理するまで待ち、MCP サーバーを使用して、要求された情報を取得するための適切なツールを見つけます。 次のような出力が表示されるはずです。
 
     ```
     Created agent, ID: <<agent-id>>
@@ -251,25 +262,28 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
     ---
 
     ### **1. Create a Resource Group**
-    ```azurecli
+    '''azurecli
     az group create --name myResourceGroup --location eastus
+    '''
+    
+
+    {{continued...}}
+
+    By following these steps, you can deploy an Azure Container App with either system-assigned or user-assigned managed identities to integrate seamlessly with other Azure services.
+    --------------------------------------------------
+    USER: Give me the Azure CLI commands to create an Azure Container App with a managed identity.
+    --------------------------------------------------
+    Deleted agent
     ```
 
-    {{続き...}}
+    要求を満たすために、エージェントが MCP ツール `microsoft_docs_search` を自動的に呼び出したことに注目してください。
 
-    これらの手順に従うことで、システム割り当てまたはユーザー割り当てのマネージド ID を使って Azure コンテナー アプリをデプロイし、他の Azure サービスとシームレスに統合できます。
-    --------------------------------------------------
-    USER:マネージド ID を使って Azure コンテナー アプリを作成するための Azure CLI コマンドを教えてください。
-    --------------------------------------------------
-    削除されたエージェント
-    ```
+1. 異なる情報を要求する際は、(コマンド `python client.py`を使用して) アプリを再度実行できます。いずれの場合も、エージェントは MCP ツールを使用して技術ドキュメントの検索を試みます。
 
-    Notice that the agent was able to invoke the MCP tool `microsoft_docs_search` automatically to fulfill the request.
+## クリーンアップ
 
-## Clean up
+これで演習が完了したので、不要なリソース使用を避けるために、作成したクラウド リソースを削除してください。
 
-Now that you've finished the exercise, you should delete the cloud resources you've created to avoid unnecessary resource usage.
-
-1. Open the [Azure portal](https://portal.azure.com) at `https://portal.azure.com` and view the contents of the resource group where you deployed the hub resources used in this exercise.
-1. On the toolbar, select **Delete resource group**.
-1. Enter the resource group name and confirm that you want to delete it.
+1. `https://portal.azure.com` で [Azure ポータル](https://portal.azure.com) を開き、この演習で使用したハブ リソースをデプロイしたリソース グループの内容を表示します。
+1. ツール バーの **[リソース グループの削除]** を選びます。
+1. リソース グループ名を入力し、削除することを確認します。
