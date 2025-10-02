@@ -1,20 +1,18 @@
 ---
 lab:
-  title: セマンティック カーネルを使用してマルチエージェント ソリューションを開発する
-  description: Semantic Kernel SDK を使用して共同作業するよう複数のエージェントを構成する方法について説明します
+  title: Microsoft Agent Framework を使用してマルチエージェント ソリューションを開発する
+  description: Microsoft Agent Framework SDK を使用して共同作業するための複数のエージェントを構成する方法について学習します
 ---
 
 # マルチエージェント ソリューションの開発
 
-この演習では、セマンティック カーネル SDK で順次オーケストレーション パターンを使用する方法を練習します。 連携して顧客からのフィードバックを処理し、次の手順を提案する 3 つのエージェントのシンプルなパイプラインを作成します。 次のエージェントを作成します。
+この演習では、Microsoft Agent Framework SDK での順次オーケストレーション パターンの使用について練習します。 連携して顧客からのフィードバックを処理し、次の手順を提案する 3 つのエージェントのシンプルなパイプラインを作成します。 次のエージェントを作成します。
 
 - サマライザー エージェントは、生のフィードバックを短い中立的な文に要約します。
 - 分類子エージェントは、フィードバックを肯定的、否定的、または機能要求に分類します。
 - 最後に、推奨アクション エージェントは、適切なフォローアップ手順を推奨します。
 
-セマンティック カーネル SDK を使用して問題を切り分け、適切なエージェントにルーティングし、実用的な結果を生成する方法について学習します。 それでは始めましょう。
-
-> **ヒント**: この演習で使用するコードは、Python 用の Semantic Kernel SDK に基づいています。 Microsoft .NET および Java 用の SDK を使用して、同様のソリューションを開発できます。 詳細については、「[サポートされているセマンティック カーネル言語](https://learn.microsoft.com/semantic-kernel/get-started/supported-languages)」を参照してください。
+Microsoft Agent Framework SDK を使用して問題を切り分け、適切なエージェントにルーティングし、実用的な結果を生成する方法について学習します。 それでは始めましょう。
 
 この演習の所要時間は約 **30** 分です。
 
@@ -95,10 +93,8 @@ lab:
     ```
    python -m venv labenv
    ./labenv/bin/Activate.ps1
-   pip install python-dotenv azure-identity semantic-kernel --upgrade
+   pip install azure-identity agent-framework
     ```
-
-    > **注**:*semantic-kernel* をインストールすると、セマンティック カーネル互換バージョンの *azure-ai-projects* が自動的にインストールされます。
 
 1. 次のコマンドを入力して、提供されている構成ファイルを編集します。
 
@@ -108,7 +104,7 @@ lab:
 
     このファイルをコード エディターで開きます。
 
-1. コード ファイルで、**[your_openai_endpoint]** プレースホルダーをプロジェクトの Azure Open AI エンドポイント (Azure AI Foundry ポータルの **Azure OpenAI** の下にあるプロジェクトの **[概要]** ページからコピーしたもの) に置き換えます。 **[your_openai_api_key]** をプロジェクトの API キーに置き換え、MODEL_DEPLOYMENT_NAME 変数がモデルのデプロイ名 (*gpt-4o*) に設定されていることを確認します。
+1. コード ファイルで、**[your_openai_endpoint]** プレースホルダーをプロジェクトのエンドポイント (Azure AI Foundry ポータルでプロジェクトの **[概要]** ページからコピーしたもの) に置き換えます。 **your_model_deployment** プレースホルダーを、gpt-4o モデル デプロイに割り当てた名前に置き換えます。
 
 1. プレースホルダーを置き換えたら、**Ctrl + S** キー コマンドを使用して変更を保存してから、**Ctrl + Q** キー コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
 
@@ -127,130 +123,86 @@ lab:
     ```python
    # Add references
    import asyncio
-   from semantic_kernel.agents import Agent, ChatCompletionAgent, SequentialOrchestration
-   from semantic_kernel.agents.runtime import InProcessRuntime
-   from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
-   from semantic_kernel.contents import ChatMessageContent
+   from typing import cast
+   from agent_framework import ChatMessage, Role, SequentialBuilder, WorkflowOutputEvent
+   from agent_framework.azure import AzureOpenAIChatClient
+   from azure.identity import AzureCliCredential
     ```
 
+1. **main** 関数で、エージェントの指示をレビューします。 これらの手順で、オーケストレーション内の各エージェントの動作を定義します。
 
-1. **get_agents** 関数で、コメント **Create a summarizer agent (サマライザー エージェントを作成する)** の下に次のコードを追加します。
+1. **Create the chat client (チャット クライアントを作成する)** というコメントの下に、次のコードを追加します。
 
     ```python
-   # Create a summarizer agent
-   summarizer_agent = ChatCompletionAgent(
-       name="SummarizerAgent",
-       instructions="""
-       Summarize the customer's feedback in one short sentence. Keep it neutral and concise.
-       Example output:
-       App crashes during photo upload.
-       User praises dark mode feature.
-       """,
-       service=AzureChatCompletion(),
+   # Create the chat client
+   chat_client = AzureOpenAIChatClient(credential=AzureCliCredential())
+    ```
+
+1. **Create agents (エージェントを作成する)** というコメントの下に、次のコードを追加します。
+
+    ```python
+   # Create agents
+   summarizer = chat_client.create_agent(
+       instructions=summarizer_instructions,
+       name="summarizer",
+   )
+
+   classifier = chat_client.create_agent(
+       instructions=classifier_instructions,
+       name="classifier",
+   )
+
+   action = chat_client.create_agent(
+       instructions=action_instructions,
+       name="action",
    )
     ```
-
-1. コメント **Create a classifier agent (分類子エージェントを作成する)** の下に次のコードを追加します。
-
-    ```python
-   # Create a classifier agent
-   classifier_agent = ChatCompletionAgent(
-       name="ClassifierAgent",
-       instructions="""
-       Classify the feedback as one of the following: Positive, Negative, or Feature request.
-       """,
-       service=AzureChatCompletion(),
-   )
-    ```
-
-1. コメント **Create a recommended action agent (推奨アクション エージェントを作成する)** の下に次のコードを追加します。
-
-    ```python
-   # Create a recommended action agent
-   action_agent = ChatCompletionAgent(
-       name="ActionAgent",
-       instructions="""
-       Based on the summary and classification, suggest the next action in one short sentence.
-       Example output:
-       Escalate as a high-priority bug for the mobile team.
-       Log as positive feedback to share with design and marketing.
-       Log as enhancement request for product backlog.
-       """,
-       service=AzureChatCompletion(),
-   )
-    ```
-
-1. コメント **Return a list of agents (エージェントの一覧を返す)** の下に次のコードを追加します。
-
-    ```python
-   # Return a list of agents
-   return [summarizer_agent, classifier_agent, action_agent]
-    ```
-
-    この一覧のエージェントの順序が、オーケストレーション中に選択される順序になります。
 
 ## 順次オーケストレーションを作成する
 
-1. **main** 関数で、コメント **Initialize the input task (入力タスクを初期化する)** を見つけて、次のコードを追加します。
+1. **main** 関数で、**Initialize the current feedback (現在のフィードバックを初期化する)** というコメントを見つけて、次のコードを追加します。
     
     ```python
-   # Initialize the input task
-   task="""
-   I tried updating my profile picture several times today, but the app kept freezing halfway through the process. 
-   I had to restart it three times, and in the end, the picture still wouldn't upload. 
-   It's really frustrating and makes the app feel unreliable.
+   # Initialize the current feedback
+   feedback="""
+   I use the dashboard every day to monitor metrics, and it works well overall. 
+   But when I'm working late at night, the bright screen is really harsh on my eyes. 
+   If you added a dark mode option, it would make the experience much more comfortable.
    """
     ```
 
-1. コメント **Create a sequential orchestration (順次オーケストレーションを作成する)** の下に次のコードを追加し、応答コールバックを使用して順次オーケストレーションを定義します。
+1. **Build a sequential orchestration (順次オーケストレーションを構築する)** というコメントの下に次のコードを追加し、定義したエージェントを使用して順次オーケストレーションを定義します。
 
     ```python
-   # Create a sequential orchestration
-   sequential_orchestration = SequentialOrchestration(
-       members=get_agents(),
-       agent_response_callback=agent_response_callback,
-   )
+   # Build sequential orchestration
+    workflow = SequentialBuilder().participants([summarizer, classifier, action]).build()
     ```
 
-    `agent_response_callback` を使用すると、オーケストレーション中に各エージェントからの応答を表示できます。
+    エージェントは、オーケストレーションに追加された順序でフィードバックを処理します。
 
-1. コメント **Create a runtime and start it (ランタイムを作成して開始する)** の下に次のコードを追加します。
+1. **Run and collect outputs (実行して出力を収集する)** というコメントの下に、次のコードを追加します。
 
     ```python
-   # Create a runtime and start it
-   runtime = InProcessRuntime()
-   runtime.start()
+   # Run and collect outputs
+   outputs: list[list[ChatMessage]] = []
+   async for event in workflow.run_stream(f"Customer feedback: {feedback}"):
+       if isinstance(event, WorkflowOutputEvent):
+           outputs.append(cast(list[ChatMessage], event.data))
     ```
 
-1. コメント **Invoke the orchestration with a task and the runtime (タスクとランタイムでオーケストレーションを起動する)** の下に次のコードを追加します。
+    このコードはオーケストレーションを実行し、参加している各エージェントからの出力を収集します。
+
+1. **Display output (出力を表示する)** というコメントの下に、次のコードを追加します。
 
     ```python
-   # Invoke the orchestration with a task and the runtime
-   orchestration_result = await sequential_orchestration.invoke(
-       task=task,
-       runtime=runtime,
-   )
+   # Display outputs
+   if outputs:
+       for i, msg in enumerate(outputs[-1], start=1):
+           name = msg.author_name or ("assistant" if msg.role == Role.ASSISTANT else "user")
+           print(f"{'-' * 60}\n{i:02d} [{name}]\n{msg.text}")
     ```
 
-1. コメント **Wait for the results (結果を待機する)** の下に次のコードを追加します。
-
-    ```python
-   # Wait for the results
-   value = await orchestration_result.get(timeout=20)
-   print(f"\n****** Task Input ******{task}")
-   print(f"***** Final Result *****\n{value}")
-    ```
-
-    このコードで、オーケストレーションの結果を取得して表示します。 指定したタイムアウト内にオーケストレーションが完了しない場合は、タイムアウト例外がスローされます。
-
-1. コメント **Stop the runtime when idle (アイドル時はランタイムを停止する)** を見つけて、次のコードを追加します。
-
-    ```python
-   # Stop the runtime when idle
-   await runtime.stop_when_idle()
-    ```
-
-    処理が完了したら、ランタイムを停止してリソースをクリーンアップします。
+    このコードは、オーケストレーションから収集したワークフロー出力からのメッセージを書式設定して表示します。
 
 1. **CTRL + S** コマンドを使用して、変更をコード ファイルに保存します。 エラーを修正するためにコードを編集する必要がある場合は、開いたままにしてもかまいません。また、**CTRL+Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままでコード エディターを閉じることもできます。
 
@@ -279,23 +231,25 @@ lab:
     次のような出力が表示されるはずです。
 
     ```output
-    # SummarizerAgent
-    App freezes during profile picture upload, preventing completion.
-    # ClassifierAgent
-    Negative
-    # ActionAgent
-    Escalate as a high-priority bug for the development team.
+    ------------------------------------------------------------
+    01 [user]
+    Customer feedback:
+        I use the dashboard every day to monitor metrics, and it works well overall.
+        But when I'm working late at night, the bright screen is really harsh on my eyes.
+        If you added a dark mode option, it would make the experience much more comfortable.
 
-    ****** Task Input ******
-    I tried updating my profile picture several times today, but the app kept freezing halfway through the process.
-    I had to restart it three times, and in the end, the picture still wouldn't upload.
-    It's really frustrating and makes the app feel unreliable.
-
-    ***** Final Result *****
-    Escalate as a high-priority bug for the development team.
+    ------------------------------------------------------------
+    02 [summarizer]
+    User requests a dark mode for better nighttime usability.
+    ------------------------------------------------------------
+    03 [classifier]
+    Feature request
+    ------------------------------------------------------------
+    04 [action]
+    Log as enhancement request for product backlog.
     ```
 
-1. 必要に応じて、次のようなさまざまなタスク入力を使用してコードの実行を試すこともできます。
+1. 必要に応じて、次のようなさまざまなフィードバック入力を使用してコードの実行を試すこともできます。
 
     ```output
     I use the dashboard every day to monitor metrics, and it works well overall. But when I'm working late at night, the bright screen is really harsh on my eyes. If you added a dark mode option, it would make the experience much more comfortable.
@@ -306,7 +260,7 @@ lab:
 
 ## まとめ
 
-この演習では、セマンティック カーネル SDK を使用した順次オーケストレーションを練習し、複数のエージェントを 1 つの合理化されたワークフローに結合しました。 上出来
+この演習では、Microsoft Agent Framework SDK を使用した順次オーケストレーションを練習し、複数のエージェントを 1 つの合理化されたワークフローに結合しました。 上出来
 
 ## クリーンアップ
 
