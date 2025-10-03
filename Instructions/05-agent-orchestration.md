@@ -125,7 +125,7 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
    import asyncio
    from typing import cast
    from agent_framework import ChatMessage, Role, SequentialBuilder, WorkflowOutputEvent
-   from agent_framework.azure import AzureOpenAIChatClient
+   from agent_framework.azure import AzureAIAgentClient
    from azure.identity import AzureCliCredential
     ```
 
@@ -135,10 +135,15 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 
     ```python
    # Create the chat client
-   chat_client = AzureOpenAIChatClient(credential=AzureCliCredential())
+   credential = AzureCliCredential()
+   async with (
+       AzureAIAgentClient(async_credential=credential) as chat_client,
+   ):
     ```
 
 1. **Create agents (エージェントを作成する)** というコメントの下に、次のコードを追加します。
+
+    (インデント レベルは必ず維持してください)
 
     ```python
    # Create agents
@@ -162,6 +167,8 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 
 1. **main** 関数で、**Initialize the current feedback (現在のフィードバックを初期化する)** というコメントを見つけて、次のコードを追加します。
     
+    (インデント レベルは必ず維持してください)
+
     ```python
    # Initialize the current feedback
    feedback="""
@@ -175,7 +182,7 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 
     ```python
    # Build sequential orchestration
-    workflow = SequentialBuilder().participants([summarizer, classifier, action]).build()
+   workflow = SequentialBuilder().participants([summarizer, classifier, action]).build()
     ```
 
     エージェントは、オーケストレーションに追加された順序でフィードバックを処理します。
