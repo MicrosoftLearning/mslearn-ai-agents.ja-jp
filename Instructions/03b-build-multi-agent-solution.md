@@ -14,35 +14,30 @@ lab:
 
 > **注**: この演習で使用されるテクノロジの一部は、プレビューの段階または開発中の段階です。 予期しない動作、警告、またはエラーが発生する場合があります。
 
-## Azure AI Foundry プロジェクトにモデルをデプロイする
+## Azure AI Foundry プロジェクトを作成する
 
-まず、Azure AI Foundry プロジェクトにモデルをデプロイします。
+まず、Azure AI Foundry プロジェクトを作成します。
 
 1. Web ブラウザーで [Azure AI Foundry ポータル](https://ai.azure.com) (`https://ai.azure.com`) を開き、Azure 資格情報を使用してサインインします。 初めてサインインするときに開いたヒントまたはクイック スタート ウィンドウを閉じます。また、必要に応じて左上にある **Azure AI Foundry** ロゴを使用してホーム ページに移動します。それは次の画像のようになります (**[ヘルプ]** ウィンドウが開いている場合は閉じます)。
 
     ![Azure AI Foundry ポータルのスクリーンショット。](./Media/ai-foundry-home.png)
 
-1. ホーム ページの **[モデルと機能を調査する]** セクションで、プロジェクトで使用する `gpt-4o` モデルを検索します。
-1. 検索結果で **gpt-4o** モデルを選んで詳細を確認してから、モデルのページの上部にある **[このモデルを使用する]** を選択します。
+1. ホーム ページで、**[エージェントを作成する]** を選択します。
 1. プロジェクトの作成を求められたら、プロジェクトの有効な名前を入力し、**[詳細]** オプションを展開します。
 1. プロジェクトについて次の設定を確認します。
     - **Azure AI Foundry リソース**: *Azure AI Foundry リソースの有効な名前*
     - **[サブスクリプション]**:"*ご自身の Azure サブスクリプション*"
     - **リソース グループ**: *リソース グループを作成または選択します*
-    - **リージョン**: ***AI サービスでサポートされている場所を選択します***\*
+    - **リージョン**: **AI Foundry が推奨する**もの*の中から選択します\*
 
     > \* 一部の Azure AI リソースは、リージョンのモデル クォータによって制限されます。 演習の後半でクォータ制限を超えた場合は、別のリージョンに別のリソースを作成する必要が生じる可能性があります。
 
-1. **[作成]** を選択し、選んだ gpt-4 モデル デプロイを含むプロジェクトが作成されるまで待ちます。
-1. プロジェクトが作成されると、チャット プレイグラウンドが自動的に開きます。
+1. **[作成]** を選択して、プロジェクトが作成されるまで待ちます。
+1. メッセージが表示されたら、(クォータの可用性に応じて) *[Global Standard]* または *[Standard]* デプロイ オプションを使用して、**gpt-4o** モデルをデプロイします。
 
-    > **注**: このモデルの既定の TPM 設定は、この演習には低すぎる場合があります。 TPM を低めに設定しておくことで、サブスクリプション内のクォータが過剰に消費されるのを防ぐことができます。 
+    >**注**:クォータが使用可能な場合は、エージェントとプロジェクトの作成時に GPT-4o 基本モデルが自動的にデプロイされることがあります。
 
-1. 左側のナビゲーション ウィンドウで、**[モデルとエンドポイント]** を選択し、**[gpt-4o]** デプロイを選択します。
-
-1. **[編集]** を選択して、**[1 分あたりのレート制限の トークン数]** を増やします。　
-
-   > **注**: この演習で使用するデータには、40,000 TPM あれば十分でしょう。 使用可能なクォータがこれより低い場合は、演習を完了できますが、レート制限を超えた場合は、少し待ってからプロンプトを再送信する必要がある場合があります。
+1. プロジェクトが作成されると、エージェント プレイグラウンドが開きます。
 
 1. 左側のナビゲーション ウィンドウで **[概要]** を選択すると、プロジェクトのメイン ページが表示されます。次のようになります。
 
@@ -106,7 +101,7 @@ lab:
 
     このファイルをコード エディターで開きます。
 
-1. コード ファイルで、**your_project_endpoint** プレースホルダーをプロジェクトのエンドポイント (Azure AI Foundry ポータルでプロジェクトの **[概要]** ページからコピーしたもの) に置き換え、**your_model_deployment** プレースホルダーを gpt-4o モデル デプロイに割り当てた名前に置き換えます。
+1. コード ファイルで、**your_project_endpoint** プレースホルダーをプロジェクトのエンドポイント (Azure AI Foundry ポータルのプロジェクトの **[概要]** ページからコピーしたもの) に置き換え、**your_model_deployment** プレースホルダーを gpt-4o モデル デプロイに割り当てた名前 (既定では `gpt-4o`) に置き換えます。
 
 1. プレースホルダーを置き換えたら、**Ctrl + S** キー コマンドを使用して変更を保存してから、**Ctrl + Q** キー コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
 
@@ -125,133 +120,200 @@ lab:
 1. 「**Add references (参照を追加する)**」というコメントを見つけて以下のコードを追加し、必要なクラスをインポートします。
 
     ```python
-    # Add references
-    from azure.ai.agents import AgentsClient
-    from azure.ai.agents.models import ConnectedAgentTool, MessageRole, ListSortOrder, ToolSet, FunctionTool
-    from azure.identity import DefaultAzureCredential
+   # Add references
+   from azure.ai.agents import AgentsClient
+   from azure.ai.agents.models import ConnectedAgentTool, MessageRole, ListSortOrder, ToolSet, FunctionTool
+   from azure.identity import DefaultAzureCredential
     ```
 
-1. コメント **Instructions for the primary agent** の下に、次のコードを入力します。
+1. 環境変数からプロジェクトのエンドポイントとモデル名を読み込むコードが提供されていることに注目してください。
+
+1. コメント **Connect to the agents client (エージェント クライアントに接続する)** を見つけて次のコードを追加し、プロジェクトに接続された AgentsClient を作成します。
 
     ```python
-    # Instructions for the primary agent
-    triage_agent_instructions = """
-    Triage the given ticket. Use the connected tools to determine the ticket's priority, 
-    which team it should be assigned to, and how much effort it may take.
-    """
+   # Connect to the agents client
+   agents_client = AgentsClient(
+        endpoint=project_endpoint,
+        credential=DefaultAzureCredential(
+            exclude_environment_credential=True, 
+            exclude_managed_identity_credential=True
+        ),
+   )
     ```
 
-1. **Create the priority agent on the Azure AI agent service** というコメントを見つけて、Azure AI エージェントを作成するための次のコードを追加します。
+    次に、AgentsClient を使用して複数のエージェントを作成するコードを追加します。各エージェントには、サポート チケットの処理で果たす特定の役割があります。
+
+    > **ヒント**: 後続のコードを追加するときは、`using agents_client:` ステートメントの下で適切なレベルのインデントを維持してください。
+
+1. コメント **Create an agent to prioritize support tickets (サポート チケットに優先順位を付けるエージェントを作成する)** を見つけて、次のコードを入力します (適切なレベルのインデントを保持するように注意してください)。
 
     ```python
-    # Create the priority agent on the Azure AI agent service
-    priority_agent = agents_client.create_agent(
+   # Create an agent to prioritize support tickets
+   priority_agent_name = "priority_agent"
+   priority_agent_instructions = """
+   Assess how urgent a ticket is based on its description.
+
+   Respond with one of the following levels:
+   - High: User-facing or blocking issues
+   - Medium: Time-sensitive but not breaking anything
+   - Low: Cosmetic or non-urgent tasks
+
+   Only output the urgency level and a very brief explanation.
+   """
+
+   priority_agent = agents_client.create_agent(
         model=model_deployment,
         name=priority_agent_name,
         instructions=priority_agent_instructions
-    )
+   )
     ```
 
-    このコードにより、お使いの Azure AI エージェント クライアント上にエージェント定義が作成されます。
-
-1. **Create a connected agent tool for the priority agent** というコメントを見つけて、次のコードを追加します。
+1. コメント **Create an agent to assign tickets to the appropriate team (適切なチームにチケットを割り当てるエージェントを作成する)** を見つけて、次のコードを入力します。
 
     ```python
-    # Create a connected agent tool for the priority agent
-    priority_agent_tool = ConnectedAgentTool(
-        id=priority_agent.id, 
-        name=priority_agent_name, 
-        description="Assess the priority of a ticket"
-    )
-    ```
+   # Create an agent to assign tickets to the appropriate team
+   team_agent_name = "team_agent"
+   team_agent_instructions = """
+   Decide which team should own each ticket.
 
-    次に、他のトリアージ エージェントを作成しましょう。
+   Choose from the following teams:
+   - Frontend
+   - Backend
+   - Infrastructure
+   - Marketing
 
-1. コメント **Create the team agent and connected tool** の下に、次のコードを追加します。
-    
-    ```python
-    # Create the team agent and connected tool
-    team_agent = agents_client.create_agent(
+   Base your answer on the content of the ticket. Respond with the team name and a very brief explanation.
+   """
+
+   team_agent = agents_client.create_agent(
         model=model_deployment,
         name=team_agent_name,
         instructions=team_agent_instructions
-    )
-    team_agent_tool = ConnectedAgentTool(
-        id=team_agent.id, 
-        name=team_agent_name, 
-        description="Determines which team should take the ticket"
-    )
+   )
     ```
 
-1. コメント **Create the effort agent and connected tool** の下に、次のコードを追加します。
-    
+1. コメント **Create an agent to estimate effort for a support ticket (サポート チケットの作業量を見積もるエージェントを作成する)** を見つけて、次のコードを入力します。
+
     ```python
-    # Create the effort agent and connected tool
-    effort_agent = agents_client.create_agent(
+   # Create an agent to estimate effort for a support ticket
+   effort_agent_name = "effort_agent"
+   effort_agent_instructions = """
+   Estimate how much work each ticket will require.
+
+   Use the following scale:
+   - Small: Can be completed in a day
+   - Medium: 2-3 days of work
+   - Large: Multi-day or cross-team effort
+
+   Base your estimate on the complexity implied by the ticket. Respond with the effort level and a brief justification.
+   """
+
+   effort_agent = agents_client.create_agent(
         model=model_deployment,
         name=effort_agent_name,
         instructions=effort_agent_instructions
-    )
-    effort_agent_tool = ConnectedAgentTool(
+   )
+    ```
+
+    ここまでで、3 つのエージェントを作成しました。それぞれに、サポート チケットのトリアージにおいて特定の役割があります。 では、これらのエージェントごとに ConnectedAgentTool オブジェクトを作成し、他のエージェントが使用できるようにしましょう。
+
+1. コメント **Create a connected agent tool for the priority agent (サポート エージェントの接続済みエージェント ツールを作成する)** を見つけて、次のコードを追加します。
+
+    ```python
+   # Create connected agent tools for the support agents
+   priority_agent_tool = ConnectedAgentTool(
+        id=priority_agent.id, 
+        name=priority_agent_name, 
+        description="Assess the priority of a ticket"
+   )
+    
+   team_agent_tool = ConnectedAgentTool(
+        id=team_agent.id, 
+        name=team_agent_name, 
+        description="Determines which team should take the ticket"
+   )
+    
+   effort_agent_tool = ConnectedAgentTool(
         id=effort_agent.id, 
         name=effort_agent_name, 
         description="Determines the effort required to complete the ticket"
-    )
+   )
     ```
 
+    これで、必要に応じて接続済みエージェントを使用して、チケットのトリアージ プロセスを調整するプライマリ エージェントを作成する準備ができました。
 
-1. 「**Create a main agent with the Connected Agent tools (接続されたエージェント ツールを使用してメイン エージェントを作成する)**」というコメントの下に、次のコードを追加します。
-    
+1. コメント **Create an agent to triage support ticket processing by using connected agents (接続済みエージェントを使用してサポート チケット処理をトリアージするためのエージェントを作成する)** を見つけて、次のコードを入力します。
+
     ```python
-    # Create a main agent with the Connected Agent tools
-    agent = agents_client.create_agent(
+   # Create an agent to triage support ticket processing by using connected agents
+   triage_agent_name = "triage-agent"
+   triage_agent_instructions = """
+   Triage the given ticket. Use the connected tools to determine the ticket's priority, 
+   which team it should be assigned to, and how much effort it may take.
+   """
+
+   triage_agent = agents_client.create_agent(
         model=model_deployment,
-        name="triage-agent",
+        name=triage_agent_name,
         instructions=triage_agent_instructions,
         tools=[
             priority_agent_tool.definitions[0],
             team_agent_tool.definitions[0],
             effort_agent_tool.definitions[0]
         ]
-    )
+   )
     ```
 
-1. 「**Create thread for the chat session**」というコメントを見つけて、次のコードを追加します。
-    
+    プライマリ エージェントを定義したので、これにプロンプトを送信し、他のエージェントを使用してサポートの問題をトリアージすることができます。
+
+1. コメント **Use the agents to triage a support issue (エージェントを使用してサポートの問題をトリアージする)** を見つけて、次のコードを入力します。
+
     ```python
-    # Create thread for the chat session
-    print("Creating agent thread.")
-    thread = agents_client.threads.create()
-    ```
+   # Use the agents to triage a support issue
+   print("Creating agent thread.")
+   thread = agents_client.threads.create()  
 
-
-1. コメント **Create the ticket prompt** の下に、次のコードを追加します。
+   # Create the ticket prompt
+   prompt = input("\nWhat's the support problem you need to resolve?: ")
     
-    ```python
-    # Create the ticket prompt
-    prompt = "Users can't reset their password from the mobile app."
-
-    ```
-
-1. 「**Send a prompt to the agent (プロンプトをエージェントに送信する)**」というコメントの下に、次のコードを追加します。
-    
-    ```python
-    # Send a prompt to the agent
-    message = agents_client.messages.create(
+   # Send a prompt to the agent
+   message = agents_client.messages.create(
         thread_id=thread.id,
         role=MessageRole.USER,
         content=prompt,
-    )
-    ```
-
-1. 「**Create and process Agent run in thread with tools (ツールを使用してスレッドで実行されるエージェントを作成して処理する)**」というコメントの下に、次のコードを追加します。
+   )   
     
-    ```python
-    # Create and process Agent run in thread with tools
-    print("Processing agent thread. Please wait.")
-    run = agents_client.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+   # Run the thread usng the primary agent
+   print("\nProcessing agent thread. Please wait.")
+   run = agents_client.runs.create_and_process(thread_id=thread.id, agent_id=triage_agent.id)
+        
+   if run.status == "failed":
+        print(f"Run failed: {run.last_error}")
+
+   # Fetch and display messages
+   messages = agents_client.messages.list(thread_id=thread.id, order=ListSortOrder.ASCENDING)
+   for message in messages:
+        if message.text_messages:
+            last_msg = message.text_messages[-1]
+            print(f"{message.role}:\n{last_msg.text.value}\n")
+   
     ```
 
+1. コメント **Cleain up (クリーンアップする)** を見つけて、不要になったエージェントを削除するための次のコードを入力します。
+
+    ```python
+   # Clean up
+   print("Cleaning up agents:")
+   agents_client.delete_agent(triage_agent.id)
+   print("Deleted triage agent.")
+   agents_client.delete_agent(priority_agent.id)
+   print("Deleted priority agent.")
+   agents_client.delete_agent(team_agent.id)
+   print("Deleted team agent.")
+   agents_client.delete_agent(effort_agent.id)
+   print("Deleted effort agent.")
+    ```
+    
 
 1. **CTRL + S** コマンドを使用して、変更をコード ファイルに保存します。 エラーを修正するためにコードを編集する必要がある場合は、開いたままにしてもかまいません。また、**CTRL+Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままでコード エディターを閉じることもできます。
 
@@ -277,7 +339,9 @@ lab:
    python agent_triage.py
     ```
 
-    次のような出力が表示されるはずです。
+1. `Users can't reset their password from the mobile app.` のようなプロンプトを入力します。
+
+    エージェントがプロンプトを処理すると、次のような出力が表示されるはずです。
 
     ```output
     Creating agent thread.
