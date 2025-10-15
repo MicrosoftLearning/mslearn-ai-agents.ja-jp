@@ -199,6 +199,15 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
    print(f"Created message, ID: {message.id}")
     ```
 
+1. コメント "**Set approval mode**" を見つけて、次のコードを追加します。
+
+    ```python
+    # Set approval mode
+    mcp_tool.set_approval_mode("never")
+    ```
+
+    これにより、エージェントはユーザーの承認を必要とせずに MCP ツールを自動的に呼び出すことができます。 承認を必須にする場合は、`mcp_tool.update_headers` を使用してヘッダー値を指定する必要があります。
+
 1. コメント **Create and process agent run in thread with MCP tools (MCP ツールを使用してスレッドで実行されるエージェントを作成して処理する)** を見つけて、次のコードを追加します。
 
     ```python
