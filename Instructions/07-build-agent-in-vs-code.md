@@ -68,7 +68,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. モデル カタログで、**[gpt-4o]** モデルを見つけます (検索バーを使用すると、すばやく見つけることができます)。
 
-    ![Azure AI Foundry VS Code 拡張機能のモデル カタログのスクリーンショット。](media/vs-code-model.png)
+    ![Azure AI Foundry VS Code 拡張機能のモデル カタログのスクリーンショット。](Media/vs-code-model.png)
 
 1. gpt-4o モデルの横にある **[Azure にデプロイ]** を選択します。
 
@@ -92,7 +92,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. **[エージェント]** サブセクションの横にある** +** (プラス) アイコンを選択して、新しい AI エージェントを作成します。
 
-    ![Azure AI Foundry VS Code 拡張機能でのエージェントの作成を示すスクリーンショット。](media/vs-code-new-agent.png)
+    ![Azure AI Foundry VS Code 拡張機能でのエージェントの作成を示すスクリーンショット。](Media/vs-code-new-agent.png)
 
 1. プロンプトが表示されたら、エージェント ファイルを保存する場所を選択します。
 
@@ -117,7 +117,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. デザイナーの **[ツール]** セクションで、右上隅にある **[ツールの追加]** ボタンを選択します。
 
-![Azure AI Foundry VS Code 拡張機能でのエージェントへのツールの追加を示すスクリーンショット。](media/vs-code-agent-tools.png)
+![Azure AI Foundry VS Code 拡張機能でのエージェントへのツールの追加を示すスクリーンショット。](Media/vs-code-agent-tools.png)
 
 1. ドロップダウン メニューから、**[MCP サーバー]** を選択します。
 
