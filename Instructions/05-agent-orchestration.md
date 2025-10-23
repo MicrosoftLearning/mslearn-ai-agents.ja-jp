@@ -141,6 +141,8 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
    ):
     ```
 
+    **AzureCliCredential** オブジェクトを使用すると、お使いの Azure アカウントに対してコードが認証できるようになることに注意してください。 **AzureAIAgentClient** オブジェクトには、.env 構成の Azure AI Foundry プロジェクト設定が自動的に含まれます。
+
 1. **Create agents (エージェントを作成する)** というコメントの下に、次のコードを追加します。
 
     (インデント レベルは必ず維持してください)

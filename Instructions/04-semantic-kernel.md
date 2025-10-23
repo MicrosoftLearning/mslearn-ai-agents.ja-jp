@@ -157,7 +157,7 @@ lab:
    ):
     ```
 
-    **AzureCliCredential** オブジェクトには、構成からの Azure AI Foundry プロジェクト設定が自動的に含まれます。
+    **AzureCliCredential** オブジェクトを使用すると、お使いの Azure アカウントに対してコードが認証できるようになることに注意してください。 **AzureAIAgentClient** オブジェクトには、.env 構成の Azure AI Foundry プロジェクト設定が自動的に含まれます。
 
 1. 「**Use the agent to process the expenses data （エージェントを使用して経費データを処理する)**」というコメントを見つけて、次のコードを追加し、エージェントを実行するスレッドを作成してから、チャット メッセージで呼び出します。
 
