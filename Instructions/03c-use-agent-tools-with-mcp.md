@@ -6,7 +6,7 @@ lab:
 
 # モデル コンテキスト プロトコル (MCP) を使用して AI エージェントをツールに接続する
 
-この演習では、クラウドでホストされる MCP サーバーに接続するエージェントを構築します。 このエージェントは AI を利用した検索機能を使って、開発者が Microsoft の公式ドキュメントからリアルタイムに正確な回答を見つけるのを支援します。 これは、Azure、.NET、Microsoft 365 などのツールに関する最新のガイダンスで開発者をサポートするアシスタントを構築するのに役立ちます。 エージェントは提供された `microsoft_docs_search` ツールを使ってドキュメントのクエリを実行し、関連する結果を返します。
+この演習では、クラウドでホストされる MCP サーバーに接続するエージェントを構築します。 このエージェントは AI を利用した検索機能を使って、開発者が Microsoft の公式ドキュメントからリアルタイムに正確な回答を見つけるのを支援します。 これは、Azure、.NET、Microsoft 365 などのツールに関する最新のガイダンスで開発者をサポートするアシスタントを構築するのに役立ちます。 エージェントは、使用可能な MCP ツールを使用してドキュメントのクエリを実行し、関連する結果を返します。
 
 > **ヒント**: この演習で使用したコードは、Azure AI エージェント サービス MCP サポート サンプル リポジトリに基づいています。 [Azure OpenAI のデモ](https://github.com/retkowsky/Azure-OpenAI-demos/blob/main/Azure%20Agent%20Service/9%20Azure%20AI%20Agent%20service%20-%20MCP%20support.ipynb)を参照するか、「[モデル コンテキスト プロトコル サーバーへの接続](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol)」にアクセスして詳細を確認してください。
 
@@ -261,7 +261,7 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
     MCP Tool calls:
         Tool Call ID: <<tool-call-id>>
         Type: mcp
-        Type: microsoft_docs_search
+        Type: microsoft_code_sample_search
 
 
     Conversation:
@@ -285,7 +285,7 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
     Deleted agent
     ```
 
-    要求を満たすために、エージェントが MCP ツール `microsoft_docs_search` を自動的に呼び出したことに注目してください。
+    要求を満たすために、エージェントが MCP ツール `microsoft_code_sample_search` を自動的に呼び出したことに注目してください。
 
 1. 異なる情報を要求する際は、(コマンド `python client.py`を使用して) アプリを再度実行できます。いずれの場合も、エージェントは MCP ツールを使用して技術ドキュメントの検索を試みます。
 
