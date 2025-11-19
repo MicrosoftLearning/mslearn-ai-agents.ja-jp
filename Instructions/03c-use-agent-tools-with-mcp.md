@@ -94,7 +94,7 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
     ```
    python -m venv labenv
    ./labenv/bin/Activate.ps1
-   pip install -r requirements.txt --pre azure-ai-projects mcp
+   pip install -r requirements.txt --pre azure-ai-projects azure-ai-agents mcp
     ```
 
     >**注:** ライブラリのインストール中に表示される警告やエラー メッセージは無視しても構いません。
