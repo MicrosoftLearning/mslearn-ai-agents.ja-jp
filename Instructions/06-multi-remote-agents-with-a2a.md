@@ -108,7 +108,7 @@ lab:
     ```
    python -m venv labenv
    ./labenv/bin/Activate.ps1
-   pip install -r requirements.txt azure-ai-projects a2a-sdk
+   pip install -r requirements.txt azure-ai-projects azure-ai-agents a2a-sdk
     ```
 
 1. 次のコマンドを入力して、提供されている構成ファイルを編集します。
