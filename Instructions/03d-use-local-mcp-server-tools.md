@@ -4,24 +4,26 @@
 
 化粧品小売業者向けの簡単な在庫評価エージェントを構築します。 MCP サーバーを使用すると、エージェントは在庫に関する情報を取得し、在庫の補充または一掃の提案を行うことができます。
 
-> **ヒント**: この演習で使用するコードは、Python 用の Azure AI Foundry SDK と MCP SDK に基づいています。 Microsoft .NET 用の SDK を使用して、同様のソリューションを開発できます。 詳細については、「[Azure AI Foundry SDK クライアント ライブラリ](https://learn.microsoft.com/azure/ai-foundry/how-to/develop/sdk-overview)」と [MCP C# SDK](https://modelcontextprotocol.github.io/csharp-sdk/api/ModelContextProtocol.html) を参照してください。
+> **ヒント**: この演習で使用するコードは、Python 用の Microsoft Foundry SDK と MCP SDK に基づいています。 Microsoft .NET 用の SDK を使用して、同様のソリューションを開発できます。 詳細については、[Microsoft Foundry SDK クライアント ライブラリ](https://learn.microsoft.com/azure/ai-foundry/how-to/develop/sdk-overview)および [MCP C# SDK](https://modelcontextprotocol.github.io/csharp-sdk/api/ModelContextProtocol.html) に関するページを参照してください。
 
 この演習の所要時間は約 **30** 分です。
 
 > **注**: この演習で使用されるテクノロジの一部は、プレビューの段階または開発中の段階です。 予期しない動作、警告、またはエラーが発生する場合があります。
 
-## Azure AI Foundry プロジェクトを作成する
+## Foundry プロジェクトを作成する
 
-まず、Azure AI Foundry プロジェクトを作成します。
+まず、Foundry プロジェクトを作成しましょう。
 
-1. Web ブラウザーで [Azure AI Foundry ポータル](https://ai.azure.com) (`https://ai.azure.com`) を開き、Azure 資格情報を使用してサインインします。 初めてサインインするときに開いたヒントまたはクイック スタート ウィンドウを閉じます。また、必要に応じて左上にある **Azure AI Foundry** ロゴを使用してホーム ページに移動します。それは次の画像のようになります (**[ヘルプ]** ウィンドウが開いている場合は閉じます)。
+1. Web ブラウザーで、[Foundry ポータル](https://ai.azure.com) (`https://ai.azure.com`) を開き、Azure 資格情報を使用してサインインします。 初めてサインインする場合に開かれるヒントまたはクイック スタートのペインを閉じ、必要に応じて、左上にある **[Foundry]** ロゴを使用してホーム ページに移動します。次の図のようなページが表示されます (**[ヘルプ]** ペインが表示される場合は閉じます)。
 
-    ![Azure AI Foundry ポータルのスクリーンショット。](./Media/ai-foundry-home.png)
+    ![Foundry ポータルのスクリーンショット。](./Media/ai-foundry-home.png)
+
+    > **重要**: このラボの場合、**[新しい Foundry]** トグルが "オフ" になっていることを確認します。**
 
 1. ホーム ページで、**[エージェントを作成する]** を選択します。
 1. プロジェクトの作成を求められたら、プロジェクトの有効な名前を入力し、**[詳細]** オプションを展開します。
 1. プロジェクトについて次の設定を確認します。
-    - **Azure AI Foundry リソース**: *Azure AI Foundry リソースの有効な名前*
+    - **Foundry リソース**: "Foundry リソースの有効な名前"**
     - **[サブスクリプション]**:"*ご自身の Azure サブスクリプション*"
     - **リソース グループ**: *リソース グループを作成または選択します*
     - **リージョン**: **AI Foundry が推奨する**もの*の中から選択します\*
@@ -37,9 +39,9 @@
 
 1. 左側のナビゲーション ウィンドウで **[概要]** を選択すると、プロジェクトのメイン ページが表示されます。次のようになります。
 
-    ![Azure AI Foundry プロジェクトの概要ページのスクリーンショット。](./Media/ai-foundry-project.png)
+    ![Foundry プロジェクトの [概要] ページのスクリーンショット。](./Media/ai-foundry-project.png)
 
-1. **Azure AI Foundry プロジェクト エンドポイント**の値をメモ帳にコピーします。後でこれを使用して、クライアント アプリケーション内でプロジェクトに接続します。
+1. **[Azure AI Foundry プロジェクト エンドポイント]** の値をメモ帳にコピーします。後でこれを使用して、クライアント アプリケーション内でプロジェクトに接続します。
 
 ## MCP 関数ツールを使用するエージェントを開発する
 
@@ -47,7 +49,7 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
 
 ### アプリケーション コードを含むリポジトリを複製する
 
-1. 新しいブラウザー タブを開きます (既存のタブで Azure AI Foundry ポータルを開いたままにします)。 新しいブラウザー タブで [Azure portal](https://portal.azure.com) (`https://portal.azure.com`) を開き、メッセージに応じて Azure 資格情報を使用してサインインします。
+1. 新しいブラウザー タブを開きます (既存のタブでは Foundry ポータルを開いたままにしておきます)。 新しいブラウザー タブで [Azure portal](https://portal.azure.com) (`https://portal.azure.com`) を開き、メッセージに応じて Azure 資格情報を使用してサインインします。
 
     ウェルカム通知を閉じて、Azure portal のホーム ページを表示します。
 
@@ -102,7 +104,7 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
 
     このファイルをコード エディターで開きます。
 
-1. コード ファイルで、**your_project_endpoint** プレースホルダーをプロジェクトのエンドポイント (Azure AI Foundry ポータルのプロジェクトの **[概要]** ページからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がモデル デプロイ名 (*gpt-4o*) に設定されていることを確認します。
+1. コード ファイルで、プレースホルダー **your_project_endpoint** をプロジェクトのエンドポイント (Foundry ポータルのプロジェクトの **[概要]** ページからコピーした値) に置き換え、変数 MODEL_DEPLOYMENT_NAME がモデルのデプロイ名 (*gpt-4o*) に設定されていることを確認します。
 
 1. プレースホルダーを置き換えたら、**Ctrl + S** コマンドを使用して変更を保存してから、**Ctrl + Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
 
@@ -362,7 +364,7 @@ MCP クライアントは、MCP サーバーに接続してツールの検出と
 
     > **注**: ほとんどのシナリオでは、*az ログイン*を使用するだけで十分です。 ただし、複数のテナントにサブスクリプションがある場合は、*[--tenant]* パラメーターを使用してテナントを指定する必要があります。 詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)」を参照してください。
     
-1. メッセージが表示されたら、指示に従って新しいタブでサインイン ページを開き、指定された認証コードと Azure 資格情報を入力します。 次に、コマンド ラインでサインイン プロセスを完了し、プロンプトが表示されたら、Azure AI Foundry ハブを含むサブスクリプションを選択します。
+1. メッセージが表示されたら、指示に従って新しいタブでサインイン ページを開き、指定された認証コードと Azure 資格情報を入力します。 次に、コマンド ラインでサインイン プロセスを完了し、プロンプトが表示されたら、Foundry ハブを含むサブスクリプションを選択します。
 
 1. サインインしたら、次のコマンドを入力してアプリケーションを実行します。
 

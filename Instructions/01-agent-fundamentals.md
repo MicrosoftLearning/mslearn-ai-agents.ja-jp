@@ -1,29 +1,31 @@
 ---
 lab:
   title: AI エージェントの開発について学習する
-  description: AI エージェントの開発を始める最初の取り組みとして、Azure AI Foundry ポータル内で Azure AI エージェント サービスについて学習します。
+  description: AI エージェントの開発を始める最初の手順として、Microsoft Foundry ポータルで Azure AI エージェント サービスを探索します。
 ---
 
 # AI エージェントの開発を調べる
 
-この演習では、Azure AI Foundry ポータル内で Azure AI エージェント サービスを使用して、経費請求に関して従業員を支援するシンプルな AI エージェントを作成します。
+この演習では、Microsoft Foundry ポータルで Azure AI エージェント サービスを使用して、従業員の経費請求を支援する単純な AI エージェントを作成します。
 
 この演習は約 **30** 分かかります。
 
 > **注**: この演習で使用されるテクノロジの一部は、プレビューの段階または開発中の段階です。 予期しない動作、警告、またはエラーが発生する場合があります。
 
-## Azure AI Foundry プロジェクトとエージェントを作成する
+## Foundry プロジェクトとエージェントを作成する
 
-まず、Azure AI Foundry プロジェクトを作成します。
+まず、Foundry プロジェクトを作成しましょう。
 
-1. Web ブラウザーで [Azure AI Foundry ポータル](https://ai.azure.com) (`https://ai.azure.com`) を開き、Azure 資格情報を使用してサインインします。 初めてサインインするときに開いたヒントまたはクイック スタート ウィンドウを閉じます。また、必要に応じて左上にある **Azure AI Foundry** ロゴを使用してホーム ページに移動します。それは次の画像のようになります (**[ヘルプ]** ウィンドウが開いている場合は閉じます)。
+1. Web ブラウザーで、[Foundry ポータル](https://ai.azure.com) (`https://ai.azure.com`) を開き、Azure 資格情報を使用してサインインします。 初めてサインインする場合に開かれるヒントまたはクイック スタートのペインを閉じ、必要に応じて、左上にある **[Foundry]** ロゴを使用してホーム ページに移動します。次の図のようなページが表示されます (**[ヘルプ]** ペインが表示される場合は閉じます)。
 
-    ![Azure AI Foundry ポータルのスクリーンショット。](./Media/ai-foundry-home.png)
+    ![Foundry ポータルのスクリーンショット。](./Media/ai-foundry-home.png)
+
+    > **重要**: このラボの場合、**[新しい Foundry]** トグルが "オフ" になっていることを確認します。**
 
 1. ホーム ページで、**[エージェントを作成する]** を選択します。
 1. プロジェクトの作成を求められたら、プロジェクトの有効な名前を入力します。
 1. **[詳細オプション]** を展開し、次の設定を指定します。
-    - **Azure AI Foundry リソース**: *Azure AI Foundry リソースの有効な名前*
+    - **Foundry リソース**: "Foundry リソースの有効な名前"**
     - **[サブスクリプション]**:"*ご自身の Azure サブスクリプション*"
     - **リソース グループ**: *お手持ちのリソース グループを選択するか、新しいリソース グループを作成します*
     - **リージョン**: ***AI Foundry が推奨するもの***\** の中から選択します
@@ -37,7 +39,7 @@ lab:
 
 1. プロジェクトが作成されると、エージェント プレイグラウンドが自動的に開かれ、モデルを選択あるいはデプロイできます。
 
-    ![Azure AI Foundry プロジェクトのエージェント プレイグラウンドのスクリーンショット。](./Media/ai-foundry-agents-playground.png)
+    ![Foundry プロジェクトの [エージェント プレイグラウンド] のスクリーンショット。](./Media/ai-foundry-agents-playground.png)
 
     >**注**: GPT-4o 基本モデルは、エージェントとプロジェクトの作成時に自動的にデプロイされます。
 
@@ -57,7 +59,7 @@ lab:
    If a user wants to submit an expense claim, you get their email address, a description of the claim, and the amount to be claimed and write the claim details to a text file that the user can download.
     ```
 
-    ![Azure AI Foundry ポータル内の AI エージェント セットアップ ページのスクリーンショット。](./Media/ai-agent-setup.png)
+    ![Foundry ポータル内の AI エージェントのセットアップ ページを示すスクリーンショット。](./Media/ai-agent-setup.png)
 
 1. **[セットアップ]** ペインのさらに下の方の **[ナレッジ]** ヘッダーの横にある **[+ 追加]** を選択します。 次に、**[ナレッジの追加]** ダイアログ ボックスで、**[ファイル]** を選択します。
 1. **[ファイルの追加]** ダイアログ ボックスで、`Expenses_Vector_Store` という名前の新しいベクター ストアを作成し、前にダウンロードした**Expenses_policy.docx** ローカル ファイルをアップロードして保存します。
@@ -79,7 +81,7 @@ lab:
 1. 請求と金額を説明するプロンプト (例: `Breakfast cost me $20`) を送信します。
 1. エージェントは、コード インタープリターを使用して経費請求のテキスト ファイルを準備し、ダウンロードできるようにリンクを提供する必要があります。
 
-    ![Azure AI Foundry ポータル内のプレイグラウンドのスクリーンショット。](./Media/ai-agent-playground.png)
+    ![Foundry ポータル内の [エージェント プレイグラウンド] のスクリーンショット。](./Media/ai-agent-playground.png)
 
 1. テキスト ドキュメントをダウンロードして開き、経費明細書の詳細を表示します。
 
