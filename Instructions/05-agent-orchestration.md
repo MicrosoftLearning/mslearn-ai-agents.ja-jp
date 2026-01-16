@@ -139,7 +139,7 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
    # Create the chat client
    credential = AzureCliCredential()
    async with (
-       AzureAIAgentClient(async_credential=credential) as chat_client,
+       AzureAIAgentClient(credential=credential) as chat_client,
    ):
     ```
 
