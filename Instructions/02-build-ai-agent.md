@@ -20,32 +20,34 @@ lab:
 
 1. Web ブラウザーで、[Foundry ポータル](https://ai.azure.com) (`https://ai.azure.com`) を開き、Azure 資格情報を使用してサインインします。 初めてサインインする場合に開かれるヒントまたはクイック スタートのペインを閉じ、必要に応じて、左上にある **[Foundry]** ロゴを使用してホーム ページに移動します。次の図のようなページが表示されます (**[ヘルプ]** ペインが表示される場合は閉じます)。
 
-    ![Foundry ポータルのスクリーンショット。](./Media/ai-foundry-home.png)
+    ![Foundry ポータルのスクリーンショット。](./Media/ai-foundry-home-new.png)
 
-    > **重要**: このラボの場合、**[新しい Foundry]** トグルが "オフ" になっていることを確認します。**
-
-1. ホーム ページで、**[エージェントを作成する]** を選択します。
-1. プロジェクトの作成を求められたら、プロジェクトの有効な名前を入力し、**[詳細]** オプションを展開します。
-1. プロジェクトについて次の設定を確認します。
+    > **重要**: このラボでは、**新しい** Foundry エクスペリエンスを使用しています。
+1. 上部のバナーで **[構築の開始]** を選択して、新しい Microsoft Foundry エクスペリエンスをお試しください。
+1. プロンプトが表示されたら、**新しい**プロジェクトを作成し、プロジェクトに有効な名前を入力します。
+1. **[詳細オプション]** を展開し、次の設定を指定します。
     - **Foundry リソース**: "Foundry リソースの有効な名前"**
     - **[サブスクリプション]**:"*ご自身の Azure サブスクリプション*"
-    - **リソース グループ**: *リソース グループを作成または選択します*
-    - **リージョン**: **AI Foundry が推奨する**もの*の中から選択します\*
+    - **リソース グループ**: *お手持ちのリソース グループを選択するか、新しいリソース グループを作成します*
+    - **リージョン**: ***AI Foundry が推奨するもの***\** の中から選択します
 
     > \* 一部の Azure AI リソースは、リージョンのモデル クォータによって制限されます。 演習の後半でクォータ制限を超えた場合は、別のリージョンに別のリソースを作成する必要が生じる可能性があります。
 
 1. **[作成]** を選択して、プロジェクトが作成されるまで待ちます。
-1. メッセージが表示されたら、(クォータの可用性に応じて) *[Global Standard]* または *[Standard]* デプロイ オプションを使用して、**gpt-4o** モデルをデプロイします。
 
-    >**注**:クォータが使用可能な場合は、エージェントとプロジェクトの作成時に GPT-4o 基本モデルが自動的にデプロイされることがあります。
+1. プロジェクトが作成されたら、ナビゲーション バーから **[ビルド]** を選択します。
 
-1. プロジェクトが作成されると、エージェント プレイグラウンドが開きます。
+1. 左側のメニューから **[モデル]** を選択し、**[基本モデルのデプロイ]** を選択します。
 
-1. 左側のナビゲーション ウィンドウで **[概要]** を選択すると、プロジェクトのメイン ページが表示されます。次のようになります。
+1. 検索ボックスに「**gpt-4.1**」と入力し、検索結果から **[gpt-4.1]** モデルを選択します。
 
-    ![Foundry プロジェクトの [概要] ページのスクリーンショット。](./Media/ai-foundry-project.png)
+1. 既定の設定で **[デプロイ]** を選択して、モデルのデプロイを作成します。
 
-1. **[Azure AI Foundry プロジェクト エンドポイント]** の値をメモ帳にコピーします。後でこれらを使用して、クライアント アプリケーション内でプロジェクトに接続します。
+    モデルがデプロイされると、モデルのプレイグラウンドが表示されます。
+
+1. 左側のナビゲーション バーで **[Microsoft Foundry]** を選択して Foundry のホーム ページに戻ります。
+
+1. **[プロジェクト エンドポイント]** の値をメモ帳にコピーし、これを使用して、クライアント アプリケーションのプロジェクトに接続します。
 
 ## エージェント クライアント アプリを作成する
 
@@ -92,7 +94,7 @@ lab:
     ```
    python -m venv labenv
    ./labenv/bin/Activate.ps1
-   pip install -r requirements.txt azure-ai-projects azure-ai-agents
+   pip install -r requirements.txt azure-ai-agents
     ```
 
 1. 次のコマンドを入力して、提供されている構成ファイルを編集します。
@@ -103,7 +105,8 @@ lab:
 
     このファイルをコード エディターで開きます。
 
-1. コード ファイルで、プレースホルダー **your_project_endpoint** をプロジェクトのエンドポイント (Foundry ポータルのプロジェクトの **[概要]** ページからコピーした値) に置き換え、変数 MODEL_DEPLOYMENT_NAME がモデルのデプロイ名 (*gpt-4o*) に設定されていることを確認します。
+1. コード ファイルで、**[your_project_endpoint]** プレースホルダーをプロジェクトのエンドポイント (Foundry ポータルのプロジェクトの概要ページからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がモデル デプロイ名 (*[gpt-4.1]*) に設定されていることを確認します。
+
 1. プレースホルダーを置き換えたら、**Ctrl + S** コマンドを使用して変更を保存してから、**Ctrl + Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
 
 ### エージェント アプリのコードを作成する
@@ -122,23 +125,24 @@ lab:
     ```python
    # Add references
    from azure.identity import DefaultAzureCredential
-   from azure.ai.agents import AgentsClient
-   from azure.ai.agents.models import FilePurpose, CodeInterpreterTool, ListSortOrder, MessageRole
+   from azure.ai.projects import AIProjectClient
+   from azure.ai.projects.models import PromptAgentDefinition, CodeInterpreterTool, CodeInterpreterToolAuto
+
     ```
 
-1. 「**Connect to the Agent client （エージェント クライアントに接続する)**」コメントを見つけて以下のコードを追加し、Azure AI プロジェクトに接続します。
+1. **AI プロジェクトと OpenAI クライアントに接続する**のコメントを見つけ、次のコードを追加して、Azure AI プロジェクトに接続します。
 
     > **ヒント**: インデント レベルを正しく維持するように注意してください。
 
     ```python
-   # Connect to the Agent client
-   agent_client = AgentsClient(
-       endpoint=project_endpoint,
-       credential=DefaultAzureCredential
-           (exclude_environment_credential=True,
-            exclude_managed_identity_credential=True)
-   )
-   with agent_client:
+   # Connect to the AI Project and OpenAI clients
+   with (
+       DefaultAzureCredential(
+           exclude_environment_credential=True,
+           exclude_managed_identity_credential=True) as credential,
+        AIProjectClient(endpoint=project_endpoint, credential=credential) as project_client,
+        project_client.get_openai_client() as openai_client
+   ):
     ```
 
     このコードでは、現在の Azure 資格情報を使用して Foundry プロジェクトに接続します。 最後の *with project_client* ステートメントを使用すると、クライアントのスコープを定義するコード ブロックが開始され、ブロック内のコードが完了したときにクリーンアップされます。
@@ -147,33 +151,37 @@ lab:
 
     ```python
    # Upload the data file and create a CodeInterpreterTool
-   file = agent_client.files.upload_and_poll(
-        file_path=file_path, purpose=FilePurpose.AGENTS
+   file = openai_client.files.create(
+       file=open(file_path, "rb"), purpose="assistants"
    )
    print(f"Uploaded {file.filename}")
 
-   code_interpreter = CodeInterpreterTool(file_ids=[file.id])
+   code_interpreter = CodeInterpreterTool(
+       container=CodeInterpreterToolAuto(file_ids=[file.id])
+   )
+
     ```
     
 1. 「**Define an agent that uses the CodeInterpreterTool （CodeInterpreterTool を使用するエージェントを定義する)**」コメントを見つけ、以下のコードを追加して、データを分析し定義されたコード インタープリター ツールを使用する AI エージェントを定義します。
 
     ```python
    # Define an agent that uses the CodeInterpreterTool
-   agent = agent_client.create_agent(
-        model=model_deployment,
-        name="data-agent",
-        instructions="You are an AI agent that analyzes the data in the file that has been uploaded. Use Python to calculate statistical metrics as necessary.",
-        tools=code_interpreter.definitions,
-        tool_resources=code_interpreter.resources,
+   agent = project_client.agents.create_version(
+       agent_name="data-agent",
+       definition=PromptAgentDefinition(
+           model=model_deployment,
+           instructions="You are an AI agent that analyzes the data in the file that has been uploaded. Use Python to calculate statistical metrics as necessary.",
+           tools=[code_interpreter],
+       ),
    )
    print(f"Using agent: {agent.name}")
     ```
 
-1. 「**Create a thread for the conversation （会話用のスレッドを作成する)**」コメントを見つけ、以下のコードを追加して、エージェントとのチャット セッションを実行するスレッドを開始します。
+1. **チャット セッションの会話を作成する**のコメントを見つけ、次のコードを追加して、エージェントとのチャット セッションを実行するスレッドを開始します。
 
     ```python
-   # Create a thread for the conversation
-   thread = agent_client.threads.create()
+   # Create a conversation for the chat session
+   conversation = openai_client.conversations.create()
     ```
     
 1. コードの次のセクションにはユーザーがプロンプトを入力するためのループが設定されており、ユーザーが「quit （終了）」と入力するとチャットが終了します。
@@ -182,33 +190,31 @@ lab:
 
     ```python
    # Send a prompt to the agent
-   message = agent_client.messages.create(
-        thread_id=thread.id,
-        role="user",
-        content=user_prompt,
-    )
+   openai_client.conversations.items.create(
+       conversation_id=conversation.id,
+       items=[{"type": "message", "role": "user", "content": user_prompt}],
+   )
 
-   run = agent_client.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+   response = openai_client.responses.create(
+       conversation=conversation.id,
+       extra_body={"agent": {"name": agent.name, "type": "agent_reference"}},
+       input="",
+   )
     ```
 
-1. "**Check the run status for failures**" （実行状態をチェックしてエラーがないか確認する) というコメントを見つけ、以下のコードを追加して、エラーがないか確認します。
+1. **エラーの応答状態を確認する**のコメントを見つけ、次のコードを追加して、エラーがないかどうかを確認します。
 
     ```python
-   # Check the run status for failures
-   if run.status == "failed":
-        print(f"Run failed: {run.last_error}")
+   # Check the response status for failures
+   if response.status == "failed":
+       print(f"Response failed: {response.error}")
     ```
 
 1. 「**Show the latest response from the agent エージェントからの最新の応答を表示する)**」コメントを見つけて以下のコードを追加し、完了済みのスレッドからメッセージを取得してエージェントによって最後に送信されたメッセージを表示します。
 
     ```python
    # Show the latest response from the agent
-   last_msg = agent_client.messages.get_last_message_text_by_role(
-       thread_id=thread.id,
-       role=MessageRole.AGENT,
-   )
-   if last_msg:
-       print(f"Last Message: {last_msg.text.value}")
+   print(f"Agent: {response.output_text}")
     ```
 
 1. ループの終了後にある「**Get the conversation history (会話履歴を取得する)**」を見つけて以下のコードを追加すると、会話スレッドからメッセージが出力されます。メッセージは時系列順を逆にして古いものから順に表示されます。
@@ -216,18 +222,24 @@ lab:
     ```python
    # Get the conversation history
    print("\nConversation Log:\n")
-   messages = agent_client.messages.list(thread_id=thread.id, order=ListSortOrder.ASCENDING)
-   for message in messages:
-       if message.text_messages:
-           last_msg = message.text_messages[-1]
-           print(f"{message.role}: {last_msg.text.value}\n")
+       items = openai_client.conversations.items.list(conversation_id=conversation.id)
+       for item in items:
+           if item.type == "message":
+               print(f"item.content[0].type = {item.content[0].type}")
+               role = item.role.upper()
+               content = item.content[0].text
+               print(f"{role}: {content}\n")
     ```
 
 1. 「**Cleain up （クリーンアップする)**」コメントを見つけて以下のコードを追加し、不要になったらエージェントとスレッドを削除します。
 
     ```python
    # Clean up
-   agent_client.delete_agent(agent.id)
+   openai_client.conversations.delete(conversation_id=conversation.id)
+   print("Conversation deleted")
+
+   project_client.agents.delete(agent_name=agent.name, agent_version=agent.version)
+   print("Agent deleted")
     ```
 
 1. コードを確認します。コメントを見ることで以下のコード機能を把握できます。
