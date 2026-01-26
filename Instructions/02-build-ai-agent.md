@@ -220,15 +220,15 @@ lab:
 1. ループの終了後にある「**Get the conversation history (会話履歴を取得する)**」を見つけて以下のコードを追加すると、会話スレッドからメッセージが出力されます。メッセージは時系列順を逆にして古いものから順に表示されます。
 
     ```python
-   # Get the conversation history
-   print("\nConversation Log:\n")
-       items = openai_client.conversations.items.list(conversation_id=conversation.id)
-       for item in items:
-           if item.type == "message":
-               print(f"item.content[0].type = {item.content[0].type}")
-               role = item.role.upper()
-               content = item.content[0].text
-               print(f"{role}: {content}\n")
+    # Get the conversation history
+    print("\nConversation Log:\n")
+    items = openai_client.conversations.items.list(conversation_id=conversation.id)
+    for item in items:
+        if item.type == "message":
+            print(f"item.content[0].type = {item.content[0].type}")
+            role = item.role.upper()
+            content = item.content[0].text
+            print(f"{role}: {content}\n")
     ```
 
 1. 「**Cleain up （クリーンアップする)**」コメントを見つけて以下のコードを追加し、不要になったらエージェントとスレッドを削除します。
