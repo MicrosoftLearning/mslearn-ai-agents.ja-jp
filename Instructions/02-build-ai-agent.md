@@ -94,7 +94,7 @@ lab:
     ```
    python -m venv labenv
    ./labenv/bin/Activate.ps1
-   pip install -r requirements.txt azure-ai-agents
+   pip install -r requirements.txt
     ```
 
 1. 次のコマンドを入力して、提供されている構成ファイルを編集します。
