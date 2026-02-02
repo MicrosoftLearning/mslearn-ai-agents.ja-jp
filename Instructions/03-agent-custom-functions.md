@@ -225,8 +225,8 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
 
     ```python
    # Create a thread for the chat session
-       conversation = openai_client.conversations.create()
-       print(f"Created conversation (id: {conversation.id})")
+   conversation = openai_client.conversations.create()
+   print(f"Created conversation (id: {conversation.id})")
     ```
 
 1. 「**Send a prompt to the agent (エージェントにプロンプトを送信する)**」コメントを見つけ、以下のコードを追加してユーザーのプロンプトをメッセージとして追加します。
