@@ -97,7 +97,7 @@ AI Foundry でプロジェクトを作成できたので、カスタム関数ツ
     ```
    python -m venv labenv
    ./labenv/bin/Activate.ps1
-   pip install -r requirements.txt azure-ai-agents
+   pip install -r requirements.txt
     ```
 
     >**注:** ライブラリのインストール中に表示される警告やエラー メッセージは無視しても構いません。
