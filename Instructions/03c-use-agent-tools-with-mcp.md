@@ -132,6 +132,7 @@ AI Foundry でプロジェクトを作成したので、AI エージェントと
    from azure.identity import DefaultAzureCredential
    from azure.ai.projects import AIProjectClient
    from azure.ai.projects.models import PromptAgentDefinition, MCPTool
+   from openai.types.responses.response_input_param import McpApprovalResponse, ResponseInputParam
     ```
 
 1. コメント **Connect to the agents client** を見つけて、現在の Azure 資格情報を使用して Azure AI プロジェクトに接続する次のコードを追加します。
