@@ -287,7 +287,7 @@ lab:
 
 1. **[完了]** を選択して、ノードを保存します。
 
-## ワークフローを実行してテストする
+## ワークフローをプレビューする
 
 1. **[保存]** ボタンを選択して、ワークフローに対するすべての変更を保存します。
 
@@ -309,6 +309,201 @@ lab:
     Please ensure that your API key has the necessary permissions for invoice creation and that your request is being sent to the correct endpoint. 
     If the issue persists, try regenerating your API key and updating it in your integration to see if that resolves the problem.
     ```
+
+## コードでワークフローを使用する
+
+Foundry ポータルでワークフローをビルドしてテストしたら、それを Azure AI Projects SDK を使用して自分のコードから呼び出すこともできます。 これにより、ワークフローをアプリケーションに統合したり、その実行を自動化したりできます。
+
+### 環境の準備
+
+1. 新しいブラウザー タブを開きます (既存のタブでは Foundry ポータルを開いたままにしておきます)。 新しいブラウザー タブで [Azure portal](https://portal.azure.com) (`https://portal.azure.com`) を開き、メッセージに応じて Azure 資格情報を使用してサインインします。
+
+    ウェルカム通知を閉じて、Azure portal のホーム ページを表示します。
+
+1. ページ上部の検索バーの右側にある **[\>_]** ボタンを使用して、Azure portal に新しい Cloud Shell を作成し、サブスクリプションにストレージがない ***PowerShell*** 環境を選択します。
+
+    Azure portal の下部にあるペインに Cloud Shell のコマンド ライン インターフェイスが表示されます。 作業しやすくするために、このウィンドウのサイズを変更したり最大化したりすることができます。
+
+    > **注**: *Bash* 環境を使用するクラウド シェルを以前に作成した場合は、それを ***PowerShell*** に切り替えます。
+
+1. Cloud Shell ツール バーの **[設定]** メニューで、**[クラシック バージョンに移動]** を選択します (これはコード エディターを使用するのに必要です)。
+
+    **<font color="red">続行する前に、クラシック バージョンの Cloud Shell に切り替えたことを確認します。</font>**
+
+1. Cloud Shell 画面で、次のコマンドを入力して、この演習のコード ファイルを含む GitHub リポジトリをクローンします (コマンドを入力するか、クリップボードにコピーしてから、コマンド ラインで右クリックし、プレーンテキストとして貼り付けます)。
+
+    ```
+   rm -r ai-agents -f
+   git clone https://github.com/MicrosoftLearning/mslearn-ai-agents ai-agents
+    ```
+
+    > **ヒント**: Cloud Shell にコマンドを入力すると、出力が大量のスクリーン バッファーを占有し、現在のライン上のカーソルが隠れてしまう可能性があります。 `cls` コマンドを入力して、各タスクに集中しやすくすることで、スクリーンをクリアできます。
+
+1. リポジトリが複製されたら、次のコマンドを入力して作業ディレクトリをコード ファイルを含むフォルダーに変更し、すべてを一覧表示します。
+
+    ```
+   cd ai-agents/Labfiles/08-build-workflow-ms-foundry/Python
+   ls -a -l
+    ```
+
+    指定されたファイルには、アプリケーション コードと構成設定用のファイルがあります。
+
+### アプリケーション設定を構成する
+
+1. Cloud Shell コマンド ライン ペインで、次のコマンドを入力して、使用するライブラリをインストールします。
+
+    ```
+   python -m venv labenv
+   ./labenv/bin/Activate.ps1
+   pip install -r requirements.txt
+    ```
+
+1. 次のコマンドを入力して、提供されている構成ファイルを編集します。
+
+    ```
+   code .env
+    ```
+
+    このファイルをコード エディターで開きます。
+
+1. コード ファイルで、プレースホルダー **your_project_endpoint** をプロジェクトのエンドポイント (Foundry ポータルのプロジェクトの **[概要]** ページからコピーした値) に置き換え、プレースホルダー **your_model_deployment** を gpt-4.1 モデル デプロイに割り当てた名前 (既定では `gpt-4.1`) に置き換えます。
+
+1. プレースホルダーを置き換えたら、**Ctrl + S** キー コマンドを使用して変更を保存してから、**Ctrl + Q** キー コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
+
+### ワークフローに接続して実行する
+
+1. 次のコマンドを入力して、**workflow.py** ファイルを編集します。
+
+    ```
+   code workflow.py
+    ```
+
+1. 各エージェント名と指示の文字列が含まれていることに注意して、ファイル内のコードを確認します。
+
+1. 「**Add references (参照を追加する)**」というコメントを見つけて以下のコードを追加し、必要なクラスをインポートします。
+
+    ```python
+   # Add references
+   from azure.identity import DefaultAzureCredential
+   from azure.ai.projects import AIProjectClient
+   from azure.ai.projects.models import ItemType
+    ```
+
+1. 環境変数からプロジェクトのエンドポイントとモデル名を読み込むコードが提供されていることに注目してください。
+
+1. コメント **Connect to the agents client (エージェント クライアントに接続する)** を見つけて次のコードを追加し、プロジェクトに接続された AgentsClient を作成します。
+
+    ```python
+   # Connect to the AI Project client
+   with (
+       DefaultAzureCredential() as credential,
+       AIProjectClient(endpoint=endpoint, credential=credential) as project_client,
+       project_client.get_openai_client() as openai_client,
+   ):
+    ```
+
+    次に、AgentsClient を使用して複数のエージェントを作成するコードを追加します。各エージェントには、サポート チケットの処理で果たす特定の役割があります。
+
+    > **ヒント**: 後続のコードを追加するときは、適切なレベルのインデントを維持してください。
+
+1. コメント **Specify the workflow** と次のコードを見つけます。
+
+    ```python
+   # Specify the workflow
+    workflow = {
+        "name": "ContosoPay-Customer-Support-Triage",
+        "version": "1",
+    }
+    ```
+
+    Foundry ポータルで作成したワークフローの名前とバージョンを必ず使用してください。
+
+1. コメント **Create a conversation and run the workflow** を見つけ、次のコードを追加して会話を作成し、ワークフローを呼び出します。
+
+    ```python
+    # Create a conversation and run the workflow
+    conversation = openai_client.conversations.create()
+    print(f"Created conversation (id: {conversation.id})")
+
+    stream = openai_client.responses.create(
+        conversation=conversation.id,
+        extra_body={"agent": {"name": workflow["name"], "type": "agent_reference"}},
+        input="Start",
+        stream=True,
+        metadata={"x-ms-debug-mode-enabled": "1"},
+    )
+    ```
+
+    このコードは、ワークフロー実行の出力をコンソールにストリーミングして、ワークフローが各チケットを処理するときにメッセージのフローを確認できるようにします。
+
+1. コメント **Process events from the workflow run** を見つけ、次のコードを追加してストリーミングされた出力を処理し、メッセージをコンソールに出力します。
+
+    ```python
+    # Process events from the workflow run
+    for event in stream:
+        if (event.type == "response.completed"):
+            print("\nResponse completed:")
+            for message in event.response.output:
+                if message.content:
+                    for content_item in message.content:
+                        if content_item.type == 'output_text':
+                            print(content_item.text)
+        if (event.type == "response.output_item.done") and event.item.type == ItemType.WORKFLOW_ACTION:
+            print(f"item action ID '{event.item.action_id}' is '{event.item.status}' (previous action ID: '{event.item.previous_action_id}')")
+    ```
+
+1. コメント **Clean up resources** を見つけ、次のコードを入力して不要になった会話を削除します。
+
+    ```python
+   # Clean up resources
+   openai_client.conversations.delete(conversation_id=conversation.id)
+   print("\nConversation deleted")
+    ```
+
+1. **CTRL + S** コマンドを使用して、変更をコード ファイルに保存します。 エラーを修正するためにコードを編集する必要がある場合は、開いたままにしてもかまいません。また、**CTRL+Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままでコード エディターを閉じることもできます。
+
+### Azure にサインインしてアプリを実行する
+
+これで、コードを実行し、AI エージェント間の共同作業を確認する準備ができました。
+
+1. Cloud Shell コマンド ライン ペインで、次のコマンドを入力してアプリを実行します。
+
+    ```
+   az login
+    ```
+
+    **<font color="red">Cloud Shell セッションが既に認証されている場合でも、Azure にサインインする必要があります。</font>**
+
+    > **注**: ほとんどのシナリオでは、*az ログイン*を使用するだけで十分です。 ただし、複数のテナントにサブスクリプションがある場合は、*[--tenant]* パラメーターを使用してテナントを指定する必要があります。 詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)」を参照してください。
+
+1. メッセージが表示されたら、指示に従って新しいタブでサインイン ページを開き、指定された認証コードと Azure 資格情報を入力します。 次に、コマンド ラインでサインイン プロセスを完了し、プロンプトが表示されたら、Foundry ハブを含むサブスクリプションを選択します。
+
+1. サインインしたら、次のコマンドを入力してアプリケーションを実行します。
+
+    ```
+   python workflow.py
+    ```
+
+1. ワークフローがチケットを処理するまで少し待ちます。 ワークフローが実行されると、エージェントによって生成されたメッセージやワークフロー内の各アクションの状態の更新など、ワークフローの進行状況を示す出力がコンソールに表示されます。
+
+1. ワークフローが完了すると、次のような出力が表示されるはずです。
+
+    ```output
+    Created conversation (id: {id})
+    item action ID 'action-{id}' is 'completed' (previous action ID: 'trigger_id')
+    item action ID 'action-{id}' is 'completed' (previous action ID: 'action-{id}')
+    item action ID 'action-{id}' is 'completed' (previous action ID: 'action-{id}_Start')
+    ...
+
+    Response completed:
+    ...
+    Current Ticket:
+    I was charged twice for the same invoice last Friday and my customer is also seeing two receipts. Can someone fix this?
+    {"customer_issue":"I was charged twice for the same invoice last Friday and my customer is also seeing two receipts. Can someone fix this?","category":"Billing","confidence":1}
+    Escalation required
+    ```
+
+    出力では、各チケットの分類や推奨される応答またはエスカレーションを含めて、ワークフローが各ステップをどのように完了するかを確認できます。 上出来
 
 ## まとめ
 
