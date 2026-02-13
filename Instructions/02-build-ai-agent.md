@@ -238,7 +238,7 @@ lab:
    openai_client.conversations.delete(conversation_id=conversation.id)
    print("Conversation deleted")
 
-   project_client.agents.delete(agent_name=agent.name, agent_version=agent.version)
+   project_client.agents.delete_version(agent_name=agent.name, agent_version=agent.version)
    print("Agent deleted")
     ```
 
