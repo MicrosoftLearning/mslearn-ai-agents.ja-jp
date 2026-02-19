@@ -10,13 +10,13 @@ layout: home
 
 ## 演習
 
-{% assign labs = site.pages | where_exp:"page", "page.url contains '/Instructions'" %} {% for activity in labs  %}
+{% assign labs = site.pages | where_exp:"page", "page.url contains '/Instructions'" %} {% for activity in labs  %} {% unless activity.lab.hidden %}
 <hr>
 ### [{{ activity.lab.title }}]({{ site.github.url }}{{ activity.url }})
 
 {{activity.lab.description}}
 
-{% endfor %}
+{% endunless %} {% endfor %}
 
 <hr>
 
