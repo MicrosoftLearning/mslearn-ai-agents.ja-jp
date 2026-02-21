@@ -2,6 +2,8 @@
 lab:
   title: AI エージェントと Foundry IQ を統合する
   description: Azure AI Agent サービスを使い、Foundry IQ を使ってナレッジ ベースを検索するエージェントを開発します。
+  level: 300
+  duration: 45
 ---
 
 # AI エージェントと Foundry IQ を統合する

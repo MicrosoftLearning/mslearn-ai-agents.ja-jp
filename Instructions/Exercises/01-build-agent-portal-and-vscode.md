@@ -2,7 +2,8 @@
 lab:
   title: ポータルと VS Code を使用して AI エージェントを構築する
   description: Microsoft Foundry ポータルと VS Code 拡張機能の両方を使用して、ファイル検索やコード インタープリターなどの組み込みツールを含む AI エージェントを作成します。
-  hidden: true
+  level: 300
+  duration: 45
 ---
 
 # ポータルと VS Code を使用して AI エージェントを構築する
