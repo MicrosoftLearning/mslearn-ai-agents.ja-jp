@@ -2,8 +2,6 @@
 lab:
   title: Microsoft Agent Framework SDK を使用して Azure AI エージェントを開発する
   description: Microsoft Agent Framework SDK を使用して、Azure AI チャット エージェントを作成して使用する方法について学習します。
-  level: 300
-  duration: 30
 ---
 
 # Microsoft Agent Framework SDK を使用して Azure AI チャット エージェントを開発する

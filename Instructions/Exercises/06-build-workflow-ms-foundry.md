@@ -2,8 +2,6 @@
 lab:
   title: Microsoft Foundry でワークフローを構築する
   description: Microsoft Foundry ポータルを使用して、AI エージェント用のワークフローを作成します。
-  level: 300
-  duration: 45
 ---
 
 # Microsoft Foundry でワークフローを構築する

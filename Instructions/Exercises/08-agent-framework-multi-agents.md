@@ -2,8 +2,6 @@
 lab:
   title: Microsoft Agent Framework を使用してマルチエージェント ソリューションを開発する
   description: Microsoft Agent Framework SDK を使用して共同作業するための複数のエージェントを構成する方法について学習します
-  level: 300
-  duration: 30
 ---
 
 # マルチエージェント ソリューションの開発
