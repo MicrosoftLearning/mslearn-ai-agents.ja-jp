@@ -16,6 +16,8 @@ layout: home
 
 {{activity.lab.description}}
 
+**レベル:** {{ activity.lab.level }} | **期間:** {{ activity.lab.duration }} 分
+
 {% endfor %}
 
 <hr>
