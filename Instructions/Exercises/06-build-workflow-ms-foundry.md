@@ -2,6 +2,8 @@
 lab:
   title: Microsoft Foundry でワークフローを構築する
   description: Microsoft Foundry ポータルを使用して、AI エージェント用のワークフローを作成します。
+  level: 300
+  duration: 45
 ---
 
 # Microsoft Foundry でワークフローを構築する
@@ -47,11 +49,11 @@ lab:
 
 1. **[新しい Foundry]** トグルが *[オン]* に設定されていることを確認します。
 
-    <img src="./Media/ai-foundry-toggle.png" alt="Screenshot of the New Foundry toggle" width="300">
+    <img src="../Media/ai-foundry-toggle.png" alt="Screenshot of the New Foundry toggle" width="300">
 
 1. 新しい Foundry エクスペリエンスに進む前に、新しいプロジェクトを作成するように求められる場合があります。 **[新しいプロジェクトの作成]** を選択します。
 
-    <img src="./Media/ai-foundry-new-project.png" alt="Screenshot of the Create project pane." width="600">
+    <img src="../Media/ai-foundry-new-project.png" alt="Screenshot of the Create project pane." width="600">
 
     メッセージが表示されない場合は、左上の [プロジェクト] ドロップダウン メニューを選択してから、**[新しいプロジェクトの作成]** を選択します。
 
@@ -81,7 +83,7 @@ lab:
 
 1. **[変数の設定]** ノード エディターで、**[新しい変数の作成]** を選択して新しい変数を作成します。 *SupportTickets* などの名前を入力します。
 
-    <img src="./Media/node-new-variable.png" alt="Screenshot of creating a new variable in the Set variable node." width="500">
+    <img src="../Media/node-new-variable.png" alt="Screenshot of creating a new variable in the Set variable node." width="500">
 
     新しい変数が `Local.SupportTickets` として表示されます。
 
@@ -120,7 +122,7 @@ lab:
 
 1. エディターの **[詳細]** で、モデル名の近くにある **[パラメーター]** ボタンを選択します。
 
-    <img src="./Media/agent-parameters.png" alt="Screenshot of the Parameters button in the agent editor." width="400">
+    <img src="../Media/agent-parameters.png" alt="Screenshot of the Parameters button in the agent editor." width="400">
 
 1. **[パラメーター]** ペインで、**[テキスト形式]** の横にある **[JSON スキーマ]** を選択します。
 
