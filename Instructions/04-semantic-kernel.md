@@ -93,7 +93,7 @@ lab:
     ```
    python -m venv labenv
    ./labenv/bin/Activate.ps1
-   pip install agent-framework==1.0.0b260212 --pre
+   pip install agent-framework==1.0.0b260212 opentelemetry-semantic-conventions-ai==0.4.13 --pre
     ```
 
 1. 次のコマンドを入力して、提供されている構成ファイルを編集します。
@@ -128,7 +128,7 @@ lab:
     ```python
    # Add references
    from agent_framework import tool, Agent
-   from agent_framework.azure import AzureAIAgentClient
+   from agent_framework.azure import AzureOpenAIResponsesClient
    from azure.identity.aio import AzureCliCredential
    from pydantic import Field
    from typing import Annotated
@@ -139,13 +139,13 @@ lab:
     ```python
    # Create a tool function for the email functionality
    @tool(approval_mode="never_require")
-   def send_email(
-    to: Annotated[str, Field(description="Who to send the email to")],
-    subject: Annotated[str, Field(description="The subject of the email.")],
-    body: Annotated[str, Field(description="The text body of the email.")]):
-        print("\nTo:", to)
-        print("Subject:", subject)
-        print(body, "\n")
+   def submit_claim(
+   to: Annotated[str, Field(description="Who to send the email to")],
+   subject: Annotated[str, Field(description="The subject of the email.")],
+   body: Annotated[str, Field(description="The text body of the email.")]):
+       print("\nTo:", to)
+       print("Subject:", subject)
+       print(body, "\n")
     ```
 
     > **注**: この関数は、コンソールにメールを出力することで電子メールの送信を*シミュレート*します。 実際のアプリケーションでは、SMTP サービスなどの手法で電子メールを実際に送信します。
