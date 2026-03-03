@@ -629,7 +629,7 @@ Copilot に対して発行した場合:
 **Microsoft のドキュメント:**
 - [エージェントを Teams に対して発行する](https://learn.microsoft.com/azure/ai-services/agents/how-to/publish-to-teams)
 - [Copilot の拡張性](https://learn.microsoft.com/microsoft-365-copilot/extensibility/)
-- [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/)
+- [Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/)
 
 **ツール:**
 - [Foundry ポータル](https://ai.azure.com)
