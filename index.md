@@ -10,16 +10,18 @@ layout: home
 
 ## 演習
 
-{% assign labs = site.pages | where_exp:"page", "page.url contains '/Instructions/Exercises'" %} {% for activity in labs  %}
 <hr>
+
+{% assign labs = site.pages | where_exp:"page", "page.url contains '/Instructions/Exercises'" %}
+{% for activity in labs  %}
+
 ### [{{ activity.lab.title }}]({{ site.github.url }}{{ activity.url }})
 
-{{activity.lab.description}}
+{% assign labs = site.pages | where_exp:"page", "page.url contains '/Instructions/Exercises'" %} {% for activity in labs  %}
 
-**レベル:** {{ activity.lab.level }} | **期間:** {{ activity.lab.duration }} 分
-
+*{{activity.lab.description}}*
+<hr>
 {% endfor %}
 
-<hr>
 
-> **注**: これらの演習は単独でも完了できますが、[Microsoft Learn](https://learn.microsoft.com/training/paths/develop-ai-agents-on-azure/) のモジュールを補完するように設計されています。このモジュールでは、これらの演習の基になる概念の一部について詳しく説明しています。
+> [{{ activity.lab.title }}]({{ site.github.url }}{{ activity.url }})
