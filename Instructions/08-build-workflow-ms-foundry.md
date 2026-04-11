@@ -1,38 +1,39 @@
 ---
 lab:
-  title: Microsoft Foundry でワークフローを構築する
+  title: Microsoft Foundry でワークフローを構築する (非推奨)
   description: Microsoft Foundry ポータルを使用して、AI エージェント用のワークフローを作成します。
+  islab: false
 ---
 
-# Microsoft Foundry でワークフローを構築する
+# Microsoft Foundry でワークフローを構築する (非推奨)
 
 この演習では、Microsoft Foundry ポータルを使用してワークフローを作成します。 ワークフローは、AI エージェントに関連する一連のアクションを定義するのに使用できる UI ベースのツールです。 この演習では、カスタマー サポート要求の解決に役立つワークフローを作成します。
 
 **ワークフローの概要**
 
 - 受信したサポート チケットを収集する
-    
+
     このワークフローは、事前に定義されたカスタマー サポートの問題の配列から始まります。 配列内の各項目は、ContosoPay に送信された個々のサポート チケットを表します。
 
 - チケットを一度に 1 つずつ処理する
-    
+
     for-each ループは配列を反復処理し、各サポート チケットが同じワークフロー ロジックを使用しながら個別に処理されるようにします。
 
 - AI エージェントを使用して各チケットを分類する
-    
+
     ワークフローでは、チケットごとにトリアージ エージェントを呼び出して、問題を課金、技術、または一般として分類し、信頼度を設定します。
 
 - 条件付きロジックを使用して不確実性を処理する
-    
+
     信頼度スコアが定義されたしきい値を下回る場合、ワークフローはそのチケットに関する追加情報を推奨します。
 
 - 問題のカテゴリに基づいてルーティングする
-    
+
     課金の問題にはエスカレーションのフラグが設定され、自動解決パスから削除されます。
     技術的および一般的な問題については、自動処理が続行されます。
 
 - 推奨される応答を生成する
-    
+
     課金以外のチケットの場合、ワークフローは解決エージェントを呼び出して、カテゴリに適したサポート応答の下書きを作成します。
 
 この演習の所要時間は約 **30** 分です。
@@ -396,7 +397,9 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
     ```python
    # Connect to the AI Project client
    with (
-       DefaultAzureCredential() as credential,
+       DefaultAzureCredential(
+           exclude_environment_credential=True,
+           exclude_managed_identity_credential=True) as credential,
        AIProjectClient(endpoint=endpoint, credential=credential) as project_client,
        project_client.get_openai_client() as openai_client,
    ):

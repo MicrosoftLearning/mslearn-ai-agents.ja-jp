@@ -1,10 +1,11 @@
 ---
 lab:
-  title: Microsoft Foundry を使用してマルチエージェント ソリューションを開発する
+  title: Microsoft Foundry を使用してマルチエージェント ソリューションを開発する (非推奨)
   description: Microsoft Foundry Agent Service を使用して、複数のエージェントを連携するように構成する方法を学習する
+  islab: false
 ---
 
-# マルチエージェント ソリューションの開発
+# マルチエージェント ソリューションの開発 (非推奨)
 
 この演習では、Microsoft Foundry Agent Service を使用して複数の AI エージェントを調整するプロジェクトを作成します。 チケット トリアージを支援する AI ソリューションを設計します。 接続されたエージェントは、チケットの優先度の評価、チーム割り当ての提案、チケットを完成させるために必要な作業レベルの決定を行います。 それでは始めましょう。
 
@@ -315,7 +316,6 @@ lab:
    agents_client.delete_agent(effort_agent.id)
    print("Deleted effort agent.")
     ```
-    
 
 1. **CTRL + S** コマンドを使用して、変更をコード ファイルに保存します。 エラーを修正するためにコードを編集する必要がある場合は、開いたままにしてもかまいません。また、**CTRL+Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままでコード エディターを閉じることもできます。
 

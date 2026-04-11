@@ -2,6 +2,9 @@
 lab:
   title: モデル コンテキスト プロトコル (MCP) ツールを使用してエージェントを拡張する
   description: モデル コンテキスト プロトコル (MCP) サーバー ツールを統合して、エージェント機能を拡張します。
+  level: 300
+  duration: 60
+  islab: true
 ---
 
 # モデル コンテキスト プロトコル (MCP) ツールを使用して AI エージェントを開発する
@@ -15,9 +18,11 @@ lab:
 ## 前提条件
 
 この演習を開始するには、以下のものが必要です。
-- Visual Studio Code がインストールされていること
-- 有効な Azure サブスクリプション
-- Python バージョン 3.10 以降がインストールされている
+
+- ローカル コンピューターにインストールされている [Visual Studio Code](https://code.visualstudio.com/)
+- 有効な [Azure サブスクリプション](https://azure.microsoft.com/free/)
+- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
+- ローカル コンピューターにインストールされている [Git](https://git-scm.com/downloads)
 
 ## Microsoft Foundry VS Code 拡張機能をインストールする
 
@@ -35,7 +40,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 ## Azure にサインインしてプロジェクトを作成する
 
-次に、Azure リソースに接続し、新しい AI Foundry プロジェクトを作成します。
+次に、Azure リソースに接続し、新しい Microsoft Foundry プロジェクトを作成します。
 
 1. VS Code のサイド バーで、**[Microsoft Foundry]** 拡張機能のアイコンを選択します。
 
@@ -48,12 +53,12 @@ VS Code 拡張機能をインストールして設定することから始めま
 1. ドロップダウンから Azure サブスクリプションを選択します。
 
 1. 新しいリソース グループを作成するか、既存のリソース グループを使用するかを選択します。
-   
+
    **新しいリソース グループを作成する場合:**
    - **[新しいリソース グループの作成]** を選択し、Enter キーを押します
    - リソース グループの名前 (例: "rg-ai-agents-lab") を入力し、Enter キーを押します
    - 使用可能なオプションから場所を選択し、Enter キーを押します
-   
+
    **既存のリソース グループを使用する場合:**
    - 使用するリソース グループを一覧から選択し、Enter キーを押します
 
@@ -71,7 +76,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. モデル カタログで、**[gpt-4.1]** モデルを見つけます (検索バーを使用するとすばやく見つけることができます)。
 
-    ![Foundry VS Code 拡張機能の [モデル カタログ] のスクリーンショット。](Media/vs-code-model.png)
+    ![Foundry VS Code 拡張機能の [モデル カタログ] のスクリーンショット。](../Media/vs-code-model.png)
 
 1. gpt-4.1 モデルの横にある **[デプロイ]** を選択します。
 
@@ -89,7 +94,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. プロジェクトのデプロイ名を右クリックし、**[プロジェクト エンドポイントのコピー]** を選択します。 次のステップでエージェントを Foundry プロジェクトに接続するために、この URL が必要になります。
 
-   <img src="Media/vs-code-endpoint.png" alt="Screenshot of copying the project endpoint in the Foundry VS Code extension." width="550">
+   <img src="../Media/vs-code-endpoint.png" alt="Screenshot of copying the project endpoint in the Foundry VS Code extension." width="550">
 
 ## スタート コード リポジトリをクローンする
 
@@ -105,9 +110,11 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. **requirements.txt** ファイルを右クリックし、**[統合ターミナルで開く]** を選択します。
 
-1. ターミナルで、次のコマンドを入力して、必要な Python パッケージをインストールします。
+1. ターミナルで、次のコマンドを入力して、必要な Python パッケージ仮想環境にインストールします。
 
     ```
+    python -m venv labenv
+    .\labenv\Scripts\Activate.ps1
     pip install -r requirements.txt
     ```
 
@@ -270,6 +277,7 @@ VS Code 拡張機能をインストールして設定することから始めま
     [続き...]
 
     エージェントが削除されました
+
     ```
 
     Notice that the agent was able to invoke the MCP tool to automatically fulfill the request.
@@ -297,7 +305,7 @@ In addition to connecting to remote MCP servers, you can also create your own cu
 
     ```python
    # Create an MCP server
-   mcp = FastMCP(server_label="Inventory")
+   mcp = FastMCP(name="Inventory")
     ```
 
     このコードにより、"Inventory" というラベルで新しい MCP サーバーが初期化されます。
@@ -311,7 +319,7 @@ In addition to connecting to remote MCP servers, you can also create your own cu
       # continued...
     ```
 
-    このディクショナリは、サンプル インベントリを表します。 `@mcp.tool()` デコレーターは、MCP サーバー上にツールとして関数を登録し、LLM が関数を検出できるようにします。 
+    このディクショナリは、サンプル インベントリを表します。 `@mcp.tool()` デコレーターは、MCP サーバー上にツールとして関数を登録し、LLM が関数を検出できるようにします。
 
 1. コメント **Add a weekly sales mcp tool** を見つけ、関数定義の上に次のデコレーターを追加します。
 
@@ -401,7 +409,7 @@ MCP クライアントは、MCP サーバーに接続してツールの検出と
     ```
 
     このコードは、AI エージェントから呼び出すことができるように、MCP サーバーで使用可能なツールを動的にラップします。 各ツールは、エージェントで呼び出しができる非同期関数に変換されます。
-    
+
 1. コメント **Create FunctionTool definitions for the agent** を見つけ、次のコードを追加します。
 
     ```python
@@ -514,7 +522,7 @@ MCP クライアントは、MCP サーバーに接続してツールの検出と
 
     エージェントが MCP ツールを呼び出して在庫と売上のデータを取得し、その情報を使用してユーザーに役に立つ応答を提供できたことがわかります。
 
-1. 必要に応じて会話を続けることができます。 スレッドは*ステートフル*であるため、会話履歴を保持します。つまり、エージェントには各応答の完全なコンテキストが保持されます。 
+1. 必要に応じて会話を続けることができます。 スレッドは*ステートフル*であるため、会話履歴を保持します。つまり、エージェントには各応答の完全なコンテキストが保持されます。
 
     次のようなプロンプトを入力してみてください。
 
@@ -530,7 +538,9 @@ MCP クライアントは、MCP サーバーに接続してツールの検出と
    What are the best sellers this week?
     ```
 
-    完了したら、「`quit`」と入力します。
+1. 「`quit`」と入力してアプリケーションを終了します。
+
+    `deactivate` を使用して、ターミナルの Python 仮想環境を終了することもできます。
 
 ## まとめ
 
@@ -552,6 +562,6 @@ Foundry VS Code 拡張機能を調べ終えたら、不要な Azure コストが
 
 1. [Azure Portal](https://portal.azure.com)を開きます。
 
-1. AI Foundry リソースを含むリソース グループに移動します。
+1. Microsoft Foundry リソースを含むリソース グループに移動します。
 
 1. **[リソース グループの削除]** を選択し、削除を確認します。

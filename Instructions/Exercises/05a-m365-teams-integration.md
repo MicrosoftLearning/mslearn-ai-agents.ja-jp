@@ -1,12 +1,13 @@
 ---
 lab:
-  title: エージェントを Microsoft Teams と Copilot に展開する
+  title: エージェントを Microsoft Teams と Copilot にデプロイする
   description: エンタープライズ アクセスできるように AI エージェントを Microsoft Teams と Microsoft 365 Copilot に対して発行する
   level: 300
   duration: 40
+  islab: true
 ---
 
-# エージェントを Microsoft Teams と Copilot に展開する
+# エージェントを Microsoft Teams と Copilot にデプロイする
 
 このラボでは、従業員が既に仕事に使用している場所からアクセスできるように AI エージェントを **Microsoft Teams** と **Microsoft 365 Copilot** に対して発行する方法を学習します。 単純なエージェントを Foundry ポータルで作成し、知識典拠を追加してから、両方のプラットフォームに展開します。
 
@@ -31,7 +32,7 @@ lab:
 
 このラボを開始する前に、次のものがそろっていることを確認してください。
 
-- **Azure サブスクリプション**: AI リソース作成のためのアクセス許可が付与されていること
+- [Azure サブスクリプション](https://azure.microsoft.com/free/): AI リソース作成のためのアクセス許可が付与されていること
 - **Microsoft 365 アカウント**: Teams にアクセスできること
 - **Microsoft 365 Copilot ライセンス** (Copilot 展開の場合に必要)
 - Microsoft Foundry ポータルに関する基本的な知識
@@ -51,27 +52,33 @@ lab:
 
 最初に、Microsoft Foundry ポータルを使用してエージェントを短時間で作成します。 この所要時間は約 5 分です。
 
+> **重要**: 更新されたユーザー インターフェイスを使うには、このラボで **[新しい Foundry]** トグルが "オン" になっていることを確認します。**
+
 ### Foundry ポータルを開く
 
-1. ブラウザーを開いて Foundry ポータル (`https://ai.azure.com`) に移動します
+1. ブラウザーを開いて Foundry ポータル (`https://ai.azure.com`) に移動し、まだしていない場合はサインインします。
+1. **[新しい Foundry]** に切り替えると、プロジェクトを選択するように求められます。 ドロップダウンで **[新しいプロジェクトの作成]** を選びます。
+1. **[プロジェクトの作成]** ダイアログで、プロジェクトの有効な名前 (例: *m365-lab*) を入力します。
+1. プロジェクトで次の設定を確認または構成します。
+    - **Foundry リソース**: *新しい Foundry リソースを作成するか、既存のリソースを選択します*
+    - **[サブスクリプション]**:"*ご自身の Azure サブスクリプション*"
+    - **リソース グループ**: *リソース グループを作成または選択します*
+    - **[場所]**: *使用できるリージョンを選択する*\*
 
-2. Azure の資格情報でサインイン
+    > \* 一部の Azure AI リソースは、リージョンのモデル クォータによって制限されます。 演習の後半でクォータ制限を超えた場合は、別のリージョンに別のリソースを作成する必要が生じる可能性があります。
 
-3. サブスクリプションを選択する画面が表示された場合は選択し、プロジェクトを作成するか選択します
+1. **[作成]** を選択して、プロジェクトが作成されるまで待ちます。 これには数分かかることがあります。
+1. プロジェクトが作成されると、プロジェクトのホーム ページが表示されます。
 
 ### 新しいエージェントを作成する
 
-1. Foundry ポータルの左側のナビゲーションから **[ビルド]** を選択します
+1. ホーム ページの **[ビルドの開始]** で、**[エージェントの作成]** を選びます。
+1. エージェントの名前を指定します (例: `enterprise-knowledge-agent`)。
+1. **［作成］** を選択します
 
-2. **[エージェント]** を選択します
+エージェントの作成時には、既定のモデル (例: `gpt-4.1`) がデプロイされます。 エージェントが作成されると、その既定のモデルが自動的に選ばれたエージェント プレイグラウンドが表示されます。
 
-3. **[+ 新しいエージェント]** をクリックします
-
-4. エージェントの構成:
-   - **名前**: `enterprise-knowledge-agent`
-   - **[説明]**: 会社のポリシーと情報に関するエンタープライズ アシスタント
-
-5. **[手順]** を次の値に設定します。
+1. **[手順]** を次の値に設定します。
 
     ```
     You are an Enterprise Knowledge Assistant for Contoso Corporation.
@@ -85,13 +92,12 @@ lab:
     Always cite your sources when referencing specific policies.
     ```
 
-6. **[作成]** をクリックします。
-
-エージェントが作成されました。 プレイグラウンドが表示され、ここでエージェントをテストできます。
+1. **[保存]** を選んで、現在のエージェント構成を保存します。
 
 ### クイック テスト
 
 1. チャット パネルで、次のテスト メッセージを送信します。
+
     ```
     Hello! What can you help me with?
     ```
@@ -108,537 +114,565 @@ lab:
 
 ### ファイル検索を有効にする
 
-1. エージェントの構成画面で、**[ツール]** セクションまでスクロールします
-
-2. **[ファイル検索]** を有効にします
-
-3. **[保存]** をクリックします
-
-### 会社のドキュメントをアップロードする
-
-1. **[ファイルの検索]** の下の **[ファイルのアップロード]** をクリックします
-
-2. サンプル ポリシー ドキュメントをダウンロードします。 新しいブラウザー タブを開いて次の各ファイルを保存してください。
+1. まず、サンプル ポリシー ドキュメントをダウンロードします。 新しいブラウザー タブを開いて次の各ファイルを保存してください。
 
     **IT セキュリティ ポリシー:**
+
     ```
     https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ai-agents/main/Labfiles/05a-m365-teams-integration/Python/sample_documents/it_security_policy.txt
     ```
 
     **リモート ワーク ポリシー:**
+
     ```
     https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ai-agents/main/Labfiles/05a-m365-teams-integration/Python/sample_documents/remote_work_policy.txt
-    ```
 
-3. Foundry ポータルに戻り、両方のファイルをアップロードします
+1. Back to your agent's configuration, scroll to the **Tools** section
 
-4. ファイルのインデックスが作成されるまで待ちます (それぞれの確認が表示されます)
+1. Select **Add** and then **Browse all tools** and **Add tool**.
 
-### ナレッジ クエリを使用してテストする
+1. A pop up to attach files will show up, attach the files previously downloaded.
 
-1. プレイグラウンドで、次のように IT セキュリティについて質問します。
+1. Once they complete, select **Attach**.
+
+### Test with knowledge queries
+
+1. In the playground, ask a question about IT security:
+
     ```
     What are the password requirements for my laptop?
     ```
 
-2. エージェントが IT セキュリティ ポリシーからの具体的な情報を返すはずです (12 文字以上、大文字、小文字、数字、特殊文字など)。
+2. The agent should provide specific information from the IT security policy (minimum 12 characters, uppercase, lowercase, numbers, special characters, etc.)
 
-3. リモート ワークについての質問を試します。
+3. Try a question about remote work:
+
     ```
     What are the core hours for remote employees?
     ```
 
-4. エージェントが応答としてリモート ワーク ポリシーからの情報を提示するはずです (午前 9 時から午後 3 時まで)
+4. The agent should respond with information from the remote work policy (9 AM - 3 PM)
 
-5. 別のクエリを試します。
+5. Try another query:
+
     ```
     What encryption is required on company laptops?
     ```
 
-6. エージェントがどのように正しいドキュメントを見つけて BitLocker の要件に関する正確な回答を返すかに注目してください
+6. Notice how the agent finds the right document and provides accurate answers about BitLocker requirements
 
-**これでエージェントは知識の典拠を持つようになりました。** 会社のドキュメントに基づいて質問に回答できます。
+**Your agent now has knowledge grounding!** It can answer questions based on your company documents.
+
+1. Select **Save**.
 
 ---
 
-## Microsoft Teams に公開する
+## Publish to Microsoft Teams
 
-次にエージェントを Microsoft Teams に対して発行します。これで従業員が Teams の中でこのエージェントと直接チャットできるようになります。
+Now you'll publish your agent to Microsoft Teams so employees can chat with it directly in Teams.
 
-### 何が作成されるか
+### What gets created
 
-Foundry ポータルで Teams に対して発行すると、自動的に次のことが行われます。
-- Azure Bot Service を作成する
-- Teams アプリ マニフェストを生成する
-- アプリのアイコンと構成をパッケージ化する
-- ダウンロード可能なアプリ パッケージを作成する
+When you publish to Teams, the Foundry portal automatically:
 
-### アプリ情報を準備する
+- Creates an Azure Bot Service
+- Generates a Teams app manifest
+- Packages app icons and configuration
+- Provides a downloadable app package
 
-発行の前に、次の情報を集めます。
+### Prepare app information
 
-| フィールド | 値 |
+Before publishing, gather this information:
+
+| Field | Value |
 |-------|-------|
-| **アプリ名** | Enterprise Knowledge Agent |
-| **簡単な説明** | 会社のポリシーに関する AI アシスタント |
-| **詳細な説明** | エンタープライズ AI アシスタントとして会社のポリシー、IT 手順、従業員リソースに関する質問に回答する |
-| **開発者名** | 自分の名前または会社名 |
-| **Web サイトの URL** | https://contoso.com (ラボではプレースホルダーのままでかまいません) |
-| **プライバシー ポリシーの URL** | https://contoso.com/privacy |
-| **使用条件の URL** | https://contoso.com/terms |
+| **App Name** | Enterprise Knowledge Agent |
+| **Short Description** | AI assistant for company policies |
+| **Full Description** | Enterprise AI assistant that answers questions about company policies, IT procedures, and employee resources |
+| **Developer Name** | Your name or company name |
+| **Website URL** | <https://contoso.com> (placeholder is fine for lab) |
+| **Privacy Policy URL** | <https://contoso.com/privacy> |
+| **Terms of Use URL** | <https://contoso.com/terms> |
 
-### アプリのアイコンを作成する
+### Create app icons
 
-Teams アプリには次の 2 つのアイコンが必要です。
+You'll need two icons for the Teams app:
 
-1. **カラー アイコン** (192x192 ピクセル)
-   - アプリのロゴのフル カラー バージョン
-   - PNG 形式
+1. **Color icon** (192x192 pixels)
+   - Full color version of your app logo
+   - PNG format
 
-2. **アウトライン アイコン** (32x32 ピクセル)
-   - 透明な背景に白のアウトライン
-   - PNG 形式
-   - Teams サイド バーで使用される
+2. **Outline icon** (32x32 pixels)
+   - White outline on transparent background
+   - PNG format
+   - Used in the Teams sidebar
 
-> **このラボ用の簡単な方法**: PowerPoint、ペイント、またはオンライン ツール (例: Canva) を使用して、単純な色付きの正方形を作成してテキストまたはイニシャルを追加します。
+> **Quick option for this lab**: Create a simple colored square with text or initials using PowerPoint, Paint, or an online tool like Canva.
 
-### ポータルから発行する
+### Publish from the portal
 
-1. Foundry ポータルで、エージェントを開きます (**[ビルド]** → **[エージェント]** → **enterprise-knowledge-agent**)
+1. In the Foundry portal, open your agent (**Build** → **Agents** → **enterprise-knowledge-agent**)
 
-2. ページの上部にある **[発行]** ボタンをクリックします
+2. Click the **Publish** button at the top of the page
 
-3. **Microsoft Teams** を展開のターゲットとして選択します
+3. Select **Publish to Teams and Microsoft 365 Copilot**.
 
-4. **[続行]** をクリックします
+4. Click **Continue**
 
-### Teams アプリの詳細を構成する
+### Configure Teams app details
 
-次のとおりに構成フォームに入力します。
+Fill in the configuration form:
 
-**基本情報:**
-- **[アプリ名]**:Enterprise Knowledge Agent
-- **短い説明**: 会社のポリシーに関する AI アシスタント
-- **詳細な説明**: エンタープライズ AI アシスタントとして会社のポリシー、IT 手順、従業員リソースに関する質問に回答する
+**Basic Information:**
 
-**開発者情報:**
-- **開発者名**: 名前
-- **Web サイト**: https://contoso.com
-- **プライバシー ポリシー**: https://contoso.com/privacy
-- **使用条件**: https://contoso.com/terms
+- **App Name**: Enterprise Knowledge Agent
+- **Short Description**: AI assistant for company policies
+- **Full Description**: Enterprise AI assistant that answers questions about company policies, IT procedures, and employee resources
 
-**アプリ アイコン:**
-- **カラー アイコン** (192x192 ピクセル) をアップロードする
-- **アウトライン アイコン** (32x32 ピクセル) をアップロードする
+**Developer Information:**
 
-**アプリ スコープ:**
-- 個人チャットでアクセスできるようにするには **[個人用]** を選択します
-- (省略可能) チャネルでアクセスできるようにするには **[チーム]** を選択します
+- **Developer Name**: Your name
+- **Website**: <https://contoso.com>
+- **Privacy Policy**: <https://contoso.com/privacy>
+- **Terms of Use**: <https://contoso.com/terms>
 
-**[エージェントを準備する]** をクリックします
+**App Icons:**
 
-### Teams へのデプロイ
+- Upload your **color icon** (192x192 px)
+- Upload your **outline icon** (32x32 px)
 
-エージェント パッケージの準備 (これには 1 分から 2 分ほどかかります) が完了した後の選択肢として、次の 2 つがあります。
+**App Scope:**
 
-#### オプション A:直接発行 (推奨)
+- Select **Personal** for individual chat access
+- Optionally select **Team** for channel access
 
-このオプションを選択すると、パッケージを手動でアップロードすることなく直接 Teams に対して発行できます。
+Click **Prepare Agent**
 
-1. パッケージの準備ができたら、**[製品内発行フローを続行する]** を選択します
+### Deploy to Teams
 
-2. 発行スコープを選択します。
-   - **共有範囲**:エージェントは Teams エージェント ストアの "あなたのエージェント" の下に表示されます。 管理者の承認は必要ありません。 個人でテストする場合に最適です。
-   - **組織スコープ**: エージェントはすべてのユーザーを対象として "組織による構築" の下に表示されます。 管理者の承認が必要です。
+After the agent package is prepared (this takes 1-2 minutes), you have two options:
 
-3. このラボでは、**[共有スコープ]** を選択します
+#### Option A: Direct publish (recommended)
 
-4. **[発行]** をクリックします。
+This option publishes directly to Teams without manually uploading a package:
 
-5. 発行が完了するまで待ちます (成功メッセージが表示されます)
+1. When the package is ready, select **Continue the in-product publishing flow**
 
-6. これで、作成したエージェントを Teams で利用できるようになりました。 これは **[アプリ]** → **[エージェント]** の下にあります
+2. Choose your publish scope:
+   - **Individual scope**: Agent appears under "Your agents" in the Teams agent store. No admin approval required. Best for personal testing.
+   - **Organization (tenant) scope**: Agent appears under "Built by your org" for all users. Requires admin approval.
 
-#### オプション B:ダウンロードして手動でアップロードする
+3. For this lab, select **Individual scope**
 
-このオプションを選択するとパッケージを手動でアップロードできるため、テストするときや直接発行ができない場合に便利です。
+4. Click **Submit**
 
-1. パッケージの準備ができたら、**[パッケージのダウンロード]** をクリックします
+5. Wait for publishing to complete (you'll see a success message)
 
-2. `manifest.zip` ファイルを自分のコンピューターに保存します
+6. Your agent is now available in Teams! Find it under **Apps** → **Your agents**
 
-3. **Microsoft Teams** を開きます (デスクトップ アプリまたは https://teams.microsoft.com))
+#### Option B: Download and manually upload
 
-4. 左側のサイド バーの **[アプリ]** をクリックします
+This option gives you a package to upload manually, useful for testing or when direct publishing isn't available:
 
-5. 左下にある **[アプリの管理]** をクリックします
+1. When the package is ready, click **Download zip**
 
-6. **[アプリのアップロード]** → **[カスタム アプリのアップロード]** をクリックします
+2. Save the `manifest.zip` file to your computer
 
-7. ダウンロードした `manifest.zip` を参照画面で選択します
+3. Open **Microsoft Teams** (desktop app or <https://teams.microsoft.com>)
 
-8. アプリの詳細を確認して **[追加]** をクリックします
+4. Click **Apps** in the left sidebar
 
-アプリがインストールされて自動的に開きます。
+5. Click **Manage your apps** at the bottom left
 
-### エージェントを Teams でテストする
+6. Click **Upload an app** → **Upload a custom app**
 
-1. エージェントのチャットがインストール後に開くはずです (開いていない場合は **[アプリ]** → **[エージェント]** で見つけてください)
+7. Browse and select your downloaded `manifest.zip`
 
-2. あいさつを送ります。
+8. Review the app details and click **Add**
+
+The app will install and open automatically.
+
+### Test your agent in Teams
+
+1. The agent chat should open after installation (or find it under **Apps** → **Your agents**)
+
+2. Send a greeting:
+
     ```
-    Hello! What can you help me with?
+    こんにちは。 What can you help me with?
     ```
 
-3. ナレッジ クエリをテストします。
+3. Test a knowledge query:
+
     ```
     What are the laptop password requirements?
     ```
 
-4. 別の質問を試します。
+4. Try another question:
+
     ```
     What MFA methods are supported?
     ```
 
-5. エージェントの応答として、IT セキュリティ ポリシー ドキュメントからの情報が返されるはずです。
+5. The agent should respond with information from the IT security policy document!
 
-**🎉 お疲れ様でした。** あなたのエージェントは Microsoft Teams で利用できるようになりました。
+**🎉 Congratulations!** Your agent is now available in Microsoft Teams!
 
-### 他の人との共有
+### Sharing with others
 
-**個人で使用する場合:**
-- アプリは既にインストールされてあなたが使用できる状態です
+**For personal use:**
 
-**チーム全体でアクセスできるようにする場合:**
-1. チーム チャネルに移動します
-2. **[+]** をクリックしてタブまたはアプリを追加します
-3. 自分のアプリの名前を検索します
-4. チャネルに追加します
+- The app is already installed for you
 
-**組織全体でアクセスできるようにする場合:**
-1. Teams 管理者に連絡します
-2. アプリを組織のアプリ カタログに対して発行してもらいます
-3. これで、すべての従業員が見つけてインストールできるようになります
+**For team-wide access:**
 
-### Teams 展開のトラブルシューティング
+1. Go to a Team channel
+2. Click **+** to add a tab or app
+3. Search for your app name
+4. Add it to the channel
 
-**エージェントを Teams で見つけられない (直接発行後):**
-- Teams の **[アプリ]** → **[エージェント]** セクションを確認します
-- 発行後にエージェントが表示されるまで 1 分から 2 分ほど待ちます
-- 発行が正常に完了したことを Foundry ポータルで確認します
+**For organization-wide access:**
 
-**アプリをアップロードできない (手動アップロード):**
-- manifest.zip ファイルが破損していないことを確認します (必要に応じて再ダウンロードします)
-- カスタム アプリのアップロードが Teams 管理者によって無効化されていないことを確認します
-- アイコンのサイズが正しいことを確認します (192x192 と 32x32)
+1. Contact your Teams administrator
+2. They can publish the app to the organization's app catalog
+3. All employees can then find and install it
 
-**エージェントが応答しない:**
-- インストール後にボットが初期化されるまで 30 秒待ちます
-- Azure Bot Service が作成されたことを確認します (発行中に表示されます)
-- エージェントを最初に Foundry プレイグラウンドでテストします
+### Troubleshooting Teams deployment
 
-**応答が一般論的である (知識なし):**
-- エージェントに対してファイル検索が有効になっていることを確認します
-- ドキュメントがアップロード済みでインデックス作成済みであることを確認します
-- Foundry プレイグラウンドでナレッジ クエリをテストします
+**Can't find the agent in Teams (after direct publish):**
+
+- Check the **Apps** → **Your agents** section in Teams
+- Wait 1-2 minutes for the agent to appear after publishing
+- Verify publishing completed successfully in the Foundry portal
+
+**Can't upload the app (manual upload):**
+
+- Ensure the manifest.zip file isn't corrupted (re-download if needed)
+- Check that your Teams admin hasn't disabled custom app uploads
+- Verify the icons are the correct sizes (192x192 and 32x32)
+
+**Agent doesn't respond:**
+
+- Wait 30 seconds after installation for the bot to initialize
+- Check that the Azure Bot Service was created (shown during publishing)
+- Test the agent in the Foundry playground first
+
+**Responses are generic (no knowledge):**
+
+- Verify file search is enabled on the agent
+- Confirm documents were uploaded and indexed
+- Test knowledge queries in the Foundry playground
 
 ---
 
-## Microsoft 365 Copilot に対して発行する
+## Publish to Microsoft 365 Copilot
 
-次にエージェントを Microsoft 365 Copilot 拡張機能として公開します。これでユーザーが Copilot の中で直接アクセスできるようになります。
+Now you'll publish your agent as a Microsoft 365 Copilot extension, allowing users to access it directly within Copilot.
 
-> **注**:このセクションの内容を実行するには Microsoft 365 Copilot のライセンスが必要です。 お持ちでない場合は、手順を読んでプロセスを理解してください。
+> **Note**: This section requires a Microsoft 365 Copilot license. If you don't have one, you can read through the steps to understand the process.
 
-### Copilot 拡張機能について
+### Understanding Copilot extensions
 
-Copilot に対して発行されたエージェントは、**Copilot 拡張機能** (プラグインまたは宣言型エージェントとも呼ばれます) になります。 ユーザーは次のことができます。
+When you publish to Copilot, your agent becomes a **Copilot extension** (also called a plugin or declarative agent). Users can:
 
-- そのエージェントを Copilot で @mentions を使用して呼び出す
-- Copilot の能力に加えてそのエージェントの知識にアクセスする
-- Copilot とエージェントをシームレスに切り替える
+- Invoke your agent using @mentions in Copilot
+- Access your agent's knowledge alongside Copilot's capabilities
+- Switch between Copilot and your agent seamlessly
 
-### 相違点: Teams と Copilot の比較
+### Differences: Teams vs Copilot
 
-| 特徴 | Teams アプリ | Copilot Extension |
+| Aspect | Teams App | Copilot Extension |
 |--------|-----------|-------------------|
-| **Access (アクセス)** | Teams でのスタンドアロン チャット | Microsoft 365 Copilot の中 |
-| **[呼び出し]** | アプリを直接開く | @mention、または拡張機能から選択する |
-| **Context** | 独立した会話 | Copilot のコンテキストと組み合わせることができる |
-| **ライセンス** | 標準 M365 | Copilot ライセンスが必要 |
-| **検出** | Teams アプリ ストア | Copilot 拡張機能パネル |
+| **Access** | Standalone chat in Teams | Within Microsoft 365 Copilot |
+| **Invocation** | Open the app directly | @mention or select from extensions |
+| **Context** | Isolated conversation | Can combine with Copilot's context |
+| **License** | Standard M365 | Requires Copilot license |
+| **Discovery** | Teams app store | Copilot extensions panel |
 
-### ポータルから発行する
+### Publish from the portal
 
-1. Foundry ポータルに戻ります (**https://ai.azure.com**)
+1. Return to the Foundry portal (**<https://ai.azure.com>**)
 
-2. エージェントに移動します (**[ビルド]** → **[エージェント]** → **enterprise-knowledge-agent**)
+2. Navigate to your agent (**Build** → **Agents** → **enterprise-knowledge-agent**)
 
-3. **[発行]** ボタンをクリックします
+3. Click the **Publish** button
 
-4. **[Teams と Microsoft 365 Copilot に対して発行する]** を選択します
+4. Select **Publish to Teams and Microsoft 365 Copilot**
 
-5. **[続行]** をクリックします
+5. Click **Continue**
 
-> **注**:この発行フローは、Teams の場合に使用されるものと同じです。 1 つの発行プロセスを通じてエージェントが Teams と Copilot の両方で使用可能になります。
+> **Note**: This is the same publishing flow used for Teams. The agent becomes available in both Teams and Copilot through a single publishing process.
 
-### 発行の詳細を構成する
+### Configure publishing details
 
-このエージェントをまだ発行していない場合は、次のとおりに構成の情報を入力します (Teams のセクションと同じです)。
+If you haven't already published this agent, fill in the configuration (same as the Teams section):
 
-- **[名前]**: Enterprise Knowledge Agent
-- **[説明]**: 会社の IT ポリシーに関する AI アシスタント
-- **アイコン**: 192x192 と 32x32 のアイコンをアップロードする
-- **発行元の情報**: 自分の名前とプレースホルダー URL
+- **Name**: Enterprise Knowledge Agent
+- **Description**: AI assistant for company IT policies
+- **Icons**: Upload your 192x192 and 32x32 icons
+- **Publisher information**: Your name and placeholder URLs
 
-### 発行スコープを選択する
+### Choose publish scope
 
-配布のスコープを選択します。
+Select your distribution scope:
 
-| 範囲 | 視程 | 管理者の承認 | 最適な用途 |
+| Scope | Visibility | Admin Approval | Best For |
 |-------|-----------|----------------|----------|
-| **共有** | エージェント ストアの "あなたのエージェント" の下 | 必須ではない | 個人でのテスト、小規模チーム |
-| **組織** | "組織による構築" の下 (すべてのユーザーが対象) | 必須 | 組織全体への配布 |
+| **Shared** | Under "Your agents" in agent store | Not required | Personal testing, small teams |
+| **Organization** | Under "Built by your org" for all users | Required | Organization-wide distribution |
 
-このラボでは、管理者の承認なしですぐにアクセスできるように **[共有スコープ]** を選択します。
+For this lab, select **Shared scope** for immediate access without admin approval.
 
-### 発行を完了する
+### Complete publishing
 
-1. **[エージェントを準備する]** をクリックしてパッケージ化の完了を待ちます (1 分から 2 分ほど)
+1. Click **Prepare Agent** and wait for packaging (1-2 minutes)
 
-2. **[製品内発行フローを続行する]** を選択します
+2. Select **Continue the in-product publishing flow**
 
-3. スコープの選択を確認して **[発行]** をクリックします
+3. Confirm your scope selection and click **Publish**
 
-4. 発行が完了するまで待ちます
+4. Wait for publishing to complete
 
-### Microsoft 365 Copilot でのアクセス
+### Access in Microsoft 365 Copilot
 
-共有スコープを指定して発行されたエージェントは、即座に使用可能になります。
+Once published with shared scope, your agent is immediately available:
 
-1. **Microsoft 365 Copilot** を開きます (copilot.microsoft.com で、または Microsoft 365 のアプリの中で)
+1. Open **Microsoft 365 Copilot** (copilot.microsoft.com or in Microsoft 365 apps)
 
-2. エージェント ストアまたは **[拡張機能]** パネルを探します
+2. Look for the agent store or **Extensions** panel
 
-3. 作成したエージェントを **"あなたのエージェント"** の下で見つけます (共有スコープの場合)
+3. Find your agent under **Your agents** (for shared scope)
 
-4. 会話を開始します。
+4. Start a conversation:
+
     ```
     @Enterprise Knowledge Agent What are the laptop security requirements?
     ```
 
-5. または、エージェントを選択して直接質問します。
+5. Or select your agent and ask directly:
+
     ```
     What MFA methods are supported for company systems?
     ```
 
-6. クエリが Copilot からエージェントに転送されて、IT セキュリティ ポリシーからの情報が返されます
+6. Copilot routes the query to your agent and returns information from the IT security policy
 
-> **注**:**組織スコープ**の場合は、最初に管理者がアプリを [Microsoft 365 管理センター](https://admin.cloud.microsoft/?#/agents/all/requested)の **[要求]** の下で承認する必要があります。 承認されると、エージェントはすべてのユーザーを対象として **"組織による構築"** の下に表示されます。
+> **Note**: For **organization scope**, an admin must first approve the app in the [Microsoft 365 admin center](https://admin.cloud.microsoft/?#/agents/all/requested) under **Requests**. Once approved, the agent appears under **Built by your org** for all users.
 
-### 発行済みエージェントの管理
+### Managing your published agent
 
-**エージェントを更新する:**
-1. Foundry ポータルでエージェントに変更を加えます (手順、ドキュメント、ツール)
-2. 小規模な変更は自動的に有効になります
-3. 大規模な変更の場合は再発行が必要になることがあります
+**Update the agent:**
 
-**使用状況を監視する**:
-1. Foundry ポータルで分析を確認します
-2. 会話ログを確認します
-3. エラーや問題がないか監視します
+1. Make changes to your agent in the Foundry portal (instructions, documents, tools)
+2. Minor changes take effect automatically
+3. Major changes may require re-publishing
 
-**発行取り消し:**
-1. Foundry ポータルで、エージェントの詳細に移動します
-2. 発行状態のセクションを見つけます
-3. Teams と Copilot からアクセスできないようにするには **[発行取り消し]** をクリックします
+**Monitor usage:**
 
----
+1. Check analytics in the Foundry portal
+2. Review conversation logs
+3. Monitor for errors or issues
 
-## 発行済みエージェントを更新する
+**Unpublish:**
 
-発行後に、エージェントの更新が必要になることもあります。 更新の方法は次のとおりです。
-
-### 変更の実行
-
-1. Foundry ポータルで、エージェントを開きます
-
-2. 次のような変更を加えます。
-   - 手順を更新する
-   - ドキュメントを追加または削除する
-   - ツールの設定を変更する
-
-3. **[保存]** をクリックします
-
-### 更新の反映
-
-**Teams アプリの場合:**
-- 手順とドキュメントの変更は即座に有効になります
-- マニフェストの再アップロードは必要ありません
-- ユーザーの次回の会話で更新後の応答が返されます
-
-**Copilot 拡張機能の場合:**
-- 小規模な変更 (手順、ドキュメント) は自動的に有効になることがあります
-- 大規模な変更の場合は承認のために再提出が必要になることがあります
-- 発行状態を見てレビュー待ちがあるかどうかを確認します
-
-### バージョン管理
-
-エージェントのバージョン管理のベスト プラクティスは次のとおりです。
-
-1. **ドキュメントの変更**: 更新を変更ログに記録する
-2. **発行前にテストする**: 常に最初にプレイグラウンドでテストする
-3. **更新のことを知らせる**: 重大な変更についてユーザーに知らせる
-4. **更新後に監視する**: 変更を展開した後に問題がないか監視する
+1. In the Foundry portal, go to your agent's details
+2. Find the publish status section
+3. Click **Unpublish** to remove access from Teams and Copilot
 
 ---
 
-## クリーンアップ
+## Update Published Agents
 
-不要な料金発生を回避するために、終了したらリソースをクリーンアップします。
+After publishing, you may need to update your agent. Here's how updates work.
 
-### エージェントを削除する
+### Making changes
 
-1. Foundry ポータルで、**[ビルド]** → **[エージェント]** に移動します
+1. In the Foundry portal, open your agent
 
-2. **enterprise-knowledge-agent** を見つけます
+2. Make your changes:
+   - Update instructions
+   - Add or remove documents
+   - Modify tool settings
 
-3. **[...]** メニュー → **[削除]** をクリックします
+3. Click **Save**
 
-4. 削除の確定
+### Propagating updates
 
-この操作で、次のものも削除されます。
-- Azure Bot Service では、
-- 関連付けられた構成
-- 発行済みの展開
+**For Teams apps:**
 
-### Teams からアンインストールする
+- Instruction and document changes take effect immediately
+- No need to re-upload the manifest
+- Users see updated responses in their next conversation
 
-1. Microsoft Teams を開きます
+**For Copilot extensions:**
 
-2. **[アプリ]** → **[アプリの管理]** に移動します
+- Minor changes (instructions, documents) may take effect automatically
+- Major changes may require re-submission for approval
+- Check the publish status for any pending reviews
 
-3. **Enterprise Knowledge Agent** を見つけます
+### Version management
 
-4. **[...]** → **[アンインストール]** をクリックします
+Best practices for managing agent versions:
 
-5. アンインストールを確認します
-
-### Copilot 拡張機能を削除する
-
-Copilot に対して発行した場合:
-
-1. 拡張機能はエージェントが削除されると非アクティブになります
-2. ユーザーが使用しようとするとエラーが表示されます
-3. 管理者が組織カタログから削除することが必要になる場合があります
+1. **Document changes**: Keep a changelog of updates
+2. **Test before publishing**: Always test in the playground first
+3. **Communicate updates**: Let users know about significant changes
+4. **Monitor after updates**: Watch for issues after deploying changes
 
 ---
 
-## まとめ
+## Cleanup
 
-**お疲れさまでした。** 🎉 これでこのラボは完了です。
+To avoid unnecessary charges, clean up resources when done.
 
-### ここまでに達成したこと
+### Delete the agent
 
-| タスク | 状態 |
+1. In the Foundry portal, go to **Build** → **Agents**
+
+2. Find **enterprise-knowledge-agent**
+
+3. Click the **...** menu → **Delete**
+
+4. Confirm deletion
+
+This also removes:
+
+- The Azure Bot Service
+- Associated configurations
+- Published deployments
+
+### Uninstall from Teams
+
+1. Open Microsoft Teams
+
+2. Go to **Apps** → **Manage your apps**
+
+3. Find **Enterprise Knowledge Agent**
+
+4. Click **...** → **Uninstall**
+
+5. Confirm uninstallation
+
+### Remove Copilot extension
+
+If you published to Copilot:
+
+1. The extension becomes inactive when the agent is deleted
+2. Users will see an error if they try to use it
+3. Admin may need to remove it from the organization catalog
+
+---
+
+## Summary
+
+**Congratulations!** 🎉 You've completed this lab!
+
+### What You Accomplished
+
+| Task | Status |
 |------|--------|
-| Foundry ポータルでエージェントを作成した | ✅ |
-| 知識をファイル検索で追加した | ✅ |
-| Microsoft Teams に対して発行した | ✅ |
-| Microsoft 365 Copilot に対して発行した | ✅ |
-| 発行済みエージェントを更新する方法を学習した | ✅ |
+| Created an agent in the Foundry portal | ✅ |
+| Added knowledge with file search | ✅ |
+| Published to Microsoft Teams | ✅ |
+| Published to Microsoft 365 Copilot | ✅ |
+| Learned to update published agents | ✅ |
 
-### 重要なポイント
+### Key Takeaways
 
-**Teams 展開:**
-- Foundry ポータルを使用して短時間で設定できる
-- Azure Bot Service が自動的に作成される
-- ユーザーは Teams アプリを介してアクセスする
-- スタンドアロン チャット エクスペリエンスに適している
+**Teams deployment:**
 
-**Copilot 展開:**
-- Microsoft 365 Copilot と統合される
-- ユーザーは @mention または選択を介して呼び出す
-- Copilot ライセンスが必要
-- Copilot の中でコンテキストに応じて支援するのに適している
+- Quick to set up using the Foundry portal
+- Creates Azure Bot Service automatically
+- Users access via Teams app
+- Good for standalone chat experiences
 
-**ベスト プラクティス:**
-- 発行する前にプレイグラウンドで十分にテストする
-- 正確な応答を返せるように常にドキュメントを最新の状態に保つ
-- 使用状況とフィードバックを監視する
-- ユーザーのニーズに基づいて手順を更新する
+**Copilot deployment:**
 
-### 各プラットフォームをいつ使用するか
+- Integrates with Microsoft 365 Copilot
+- Users invoke via @mention or selection
+- Requires Copilot license
+- Good for contextual assistance within Copilot
 
-| ユース ケース | 推奨されるプラットフォーム |
+**Best practices:**
+
+- Test thoroughly in playground before publishing
+- Keep documents up to date for accurate responses
+- Monitor usage and feedback
+- Update instructions based on user needs
+
+### When to Use Each Platform
+
+| Use Case | Recommended Platform |
 |----------|---------------------|
-| 専用サポート チャット | Teams |
-| ポリシー全体から簡単に見つける | Copilot |
-| チーム専用のアシスタント | Teams (チャネル) |
-| 組織全体の知識 | 両方 |
-| M365 ワークフローとの統合 | Copilot |
-| スタンドアロンの会話エクスペリエンス | Teams |
+| Dedicated support chat | Teams |
+| Quick policy lookups | Copilot |
+| Team-specific assistant | Teams (channel) |
+| Organization-wide knowledge | Both |
+| Integration with M365 workflow | Copilot |
+| Standalone conversational experience | Teams |
 
-### 次のステップ
+### Next Steps
 
-このラボの内容に基づいてさらに発展させるには、次のことを行います。
+To build on this lab:
 
-1. **ドキュメントをさらに追加する**: 包括的に知識をカバーするため
-2. **手順をカスタマイズする**: 特定のユース ケースに合わせるため
-3. **ツールを追加する**: コード インタープリターなどを追加して高度な機能を持たせる
-4. **認証を実装する**: 機密情報を扱う場合
-5. **監視を設定する**: 使用状況と品質を追跡するため
-
----
-
-## トラブルシューティングのリファレンス
-
-### Teams の問題
-
-| 問題 | 解決策 |
-|-------|----------|
-| カスタム アプリをアップロードできない | Teams の管理者設定にカスタム アプリ ポリシーがないか確認する |
-| アプリがインストールされない | manifest.zip が破損していないことを確認する。アイコンのサイズを確認する |
-| エージェントが応答しない | 最初に Foundry プレイグラウンドでテストする。インストール後 30 秒待つ |
-| 一般論的な応答 | ファイル検索が有効化済みでドキュメントがインデックス作成済みであることを確認する |
-| "ボットが見つかりません" エラー | Bot Service が実行されていることを Azure portal で確認する |
-
-### Copilot の問題
-
-| 問題 | 解決策 |
-|-------|----------|
-| 拡張機能が表示されない | 承認状態を確認する (管理者レビュー待ちの場合がある) |
-| @mention が機能しない | 拡張機能が Copilot の設定で有効化されていることを確認する |
-| 応答が正しくない | エージェントを Foundry プレイグラウンドでテストする。ドキュメントの内容を確認する |
-| "拡張機能を使用できません" | エージェントが稼働中であり削除されていないことを確認する |
-| 承認が拒否された | 却下の理由を確認する。更新して再提出する |
-
-### 一般的な問題
-
-| 問題 | 解決策 |
-|-------|----------|
-| エージェントが保存されない | ブラウザーの接続を確認する。最新の情報への更新を試す |
-| ドキュメントのインデックスが作成されない | 数分待つ。再アップロードを試す |
-| 応答が遅い | 大きなドキュメントには時間がかかる。分割を検討する |
-| 引用が正しくない | ドキュメントの内容と書式設定を確認する |
+1. **Add more documents** for comprehensive knowledge coverage
+2. **Customize instructions** for specific use cases
+3. **Add tools** like code interpreter for advanced capabilities
+4. **Implement authentication** for sensitive information
+5. **Set up monitoring** to track usage and quality
 
 ---
 
-## その他のリソース
+## Troubleshooting Reference
 
-**Microsoft のドキュメント:**
-- [エージェントを Teams に対して発行する](https://learn.microsoft.com/azure/ai-services/agents/how-to/publish-to-teams)
-- [Copilot の拡張性](https://learn.microsoft.com/microsoft-365-copilot/extensibility/)
+### Teams Issues
+
+| Issue | Solution |
+|-------|----------|
+| Can't upload custom app | Check Teams admin settings for custom app policy |
+| App won't install | Verify manifest.zip isn't corrupted; check icon sizes |
+| Agent not responding | Test in Foundry playground first; wait 30 seconds after install |
+| Generic responses | Verify file search enabled and documents indexed |
+| "Bot not found" error | Check Bot Service is running in Azure portal |
+
+### Copilot Issues
+
+| Issue | Solution |
+|-------|----------|
+| Extension not appearing | Check approval status; may be pending admin review |
+| @mention not working | Ensure extension is enabled in your Copilot settings |
+| Wrong responses | Test agent in Foundry playground; check document content |
+| "Extension unavailable" | Verify agent is running and not deleted |
+| Approval rejected | Review rejection reason; update and resubmit |
+
+### General Issues
+
+| Issue | Solution |
+|-------|----------|
+| Agent not saving | Check browser connection; try refreshing |
+| Documents not indexing | Wait a few minutes; try re-uploading |
+| Slow responses | Large documents take longer; consider chunking |
+| Incorrect citations | Review document content and formatting |
+
+---
+
+## Additional Resources
+
+**Microsoft Documentation:**
+
+- [Publish agents to Teams](https://learn.microsoft.com/azure/ai-services/agents/how-to/publish-to-teams)
+- [Copilot extensibility](https://learn.microsoft.com/microsoft-365-copilot/extensibility/)
 - [Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/)
 
-**ツール:**
-- [Foundry ポータル](https://ai.azure.com)
+**Tools:**
+
+- [Foundry Portal](https://ai.azure.com)
 - [Microsoft Teams](https://teams.microsoft.com)
 - [Microsoft 365 Copilot](https://copilot.microsoft.com)
-- [アダプティブ カード デザイナー](https://adaptivecards.io/designer/)
+- [Adaptive Cards Designer](https://adaptivecards.io/designer/)
 
 ---
 
-**ラボが完了しました** 🎉
+**Lab Complete!** 🎉
 
-AI エージェントを Microsoft Teams と Microsoft 365 Copilot の両方に展開できました。
+You've successfully deployed an AI agent to both Microsoft Teams and Microsoft 365 Copilot!

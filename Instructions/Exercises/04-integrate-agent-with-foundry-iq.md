@@ -4,17 +4,28 @@ lab:
   description: Azure AI Agent サービスを使い、Foundry IQ を使ってナレッジ ベースを検索するエージェントを開発します。
   level: 300
   duration: 45
+  islab: true
 ---
 
 # AI エージェントと Foundry IQ を統合する
 
-この演習では、Azure AI Foundry ポータルを使い、Foundry IQ と統合してナレッジ ベースの情報の検索と取得を行うエージェントを作成します。 検索リソースを作成し、サンプル データを使ってナレッジ ベースを構成し、ポータルでエージェントを構築した後、Visual Studio Code からそれに接続してプログラムで対話します。
+この演習では、Microsoft Foundry ポータルを使い、Foundry IQ と統合してナレッジ ベースの情報の検索と取得を行うエージェントを作成します。 検索リソースを作成し、サンプル データを使ってナレッジ ベースを構成し、ポータルでエージェントを構築した後、Visual Studio Code からそれに接続してプログラムで対話します。
 
 > **ヒント**: この演習で使われるコードは、Microsoft Foundry SDK for Python が基になっています。 Microsoft .NET、JavaScript、Java 用の SDK を使用して、同様のソリューションを開発できます。 詳細については、[Microsoft Foundry SDK クライアント ライブラリ](https://learn.microsoft.com/azure/ai-foundry/how-to/develop/sdk-overview)に関するページを参照してください。
 
 この演習の所要時間は約 **45** 分です。
 
 > **注**: この演習で使用されるテクノロジの一部は、プレビューの段階または開発中の段階です。 予期しない動作、警告、またはエラーが発生する場合があります。
+
+## 前提条件
+
+この演習を開始するには、以下のものが必要です。
+
+- [Azure サブスクリプション](https://azure.microsoft.com/free/): AI リソース作成のためのアクセス許可が付与されていること
+- ローカル コンピューターにインストールされている [Visual Studio Code](https://code.visualstudio.com/)
+- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
+- ローカル コンピューターにインストールされている [Git](https://git-scm.com/downloads)
+- Microsoft Foundry ポータルと Python プログラミングに関する基本的な知識
 
 ## Foundry プロジェクトを作成する
 
@@ -50,6 +61,7 @@ lab:
 次に、Foundry IQ を使ってナレッジ ベースを検索するエージェントを構成します。
 
 1. まず、エージェントに次のように指示します。
+
     ```
     You are a helpful AI assistant for Contoso, specializing in outdoor camping and hiking products. 
     You must ALWAYS search the knowledge base to answer questions about our products or product 
@@ -69,7 +81,7 @@ lab:
 
 次に、Foundry IQ を使って接続するサンプルの製品情報ドキュメントをアップロードします。
 
-1. 新しいブラウザー タブを開き、`https://github.com/MicrosoftLearning/mslearn-ai-agents/raw/main/Labfiles/09-integrate-agent-with-foundry-iq/data/contoso-products.zip` に移動して、サンプルの製品情報ファイルをダウンロードします
+1. 新しいブラウザー タブを開き、`https://github.com/MicrosoftLearning/mslearn-ai-agents/raw/main/Labfiles/04-integrate-agent-with-foundry-iq/data/contoso-products.zip` に移動して、サンプルの製品情報ファイルをダウンロードします
 1. zip からファイルを抽出します。Contoso の製品の詳細を示す 3 つの PDF があるはずです。
 1. Azure portal タブの上部の検索バーで "**ストレージ アカウント**" を検索し、サービス セクションから **[ストレージ アカウント]** を選びます。
 1. 次の設定でストレージ アカウントを作成します。
@@ -84,7 +96,7 @@ lab:
 1. **[BLOB のアップロード]** ブレードで、`contosoproducts` という名前の新しいコンテナーを作成します。
 1. zip ファイルから抽出されたファイルを参照し、3 つの PDF ファイルをすべて選んで、**[アップロード]** を選びます。
 1. ファイルがアップロードされたら、Azure portal のタブを閉じて Microsoft Foundry の Foundry IQ ページに戻り、ページを更新します。
-1. 検索サービスを選んで、**[接続]** をクリックします。
+1. 検索サービスを選択し、[認証方法] で **[API キー]** を選択し、**[接続]** をクリックします。
 1. Foundry IQ のページで、**[ナレッジ ベースの作成]** を選び、ナレッジ ソースとして **[Azure Blob Storage]** を選んで、**[接続]** を選びます。
 1. 次の設定でナレッジ ソースを構成します。
     - **名前**: `ks-contosoproducts`
@@ -110,7 +122,7 @@ lab:
     - `What types of tents does Contoso offer?`
     - `Tell me about which backpacks are available in XL.`
     - `What camping accessories are available?`
-    
+
 1. 応答を確認して次のことを理解します。
     - エージェントは、ナレッジ ベースから特定の情報を提供します
     - ソース ドキュメントの引用または参照が含まれる場合があります
@@ -120,79 +132,40 @@ lab:
 
 1. エージェントの詳細ページで、次の情報を見つけてメモ帳にコピーします (これらは後で必要になります)。
     - **エージェント名**: これは、ご自分で作成した名前です (`product-expert-agent`)
-    - **プロジェクト エンドポイント**: プロジェクトの設定または概要のページにあります
+    - **プロジェクト エンドポイント**: プロジェクトの設定またはホーム ページにあります
 
-## クライアント アプリケーションからエージェントに接続する
+## アプリからエージェントに接続する
 
 ここでは、プログラムを使ってエージェントと対話する Python アプリケーションを作成します。 すぐに始められるように、スターター ファイルが GitHub リポジトリに用意されています。
 
-### アプリケーション コードを含むリポジトリを複製する
+### Visual Studio Code でアプリの開発準備をする
 
-1. 新しいブラウザー タブを開きます (既存のタブでは Foundry ポータルを開いたままにしておきます)。 新しいブラウザー タブで [Azure portal](https://portal.azure.com) (`https://portal.azure.com`) を開き、メッセージに応じて Azure 資格情報を使用してサインインします。
+次に、Visual Studio Code を使用してアプリを開発してみましょう。 アプリのコード ファイルは、GitHub リポジトリで提供されています。
 
-    ウェルカム通知を閉じて、Azure portal のホーム ページを表示します。
+1. Visual Studio Code を開始し、コマンド パレットを開きます (Shift+Ctrl+P)。 次に、**Git: Clone** コマンドを検索して実行し、`https://github.com/MicrosoftLearning/mslearn-ai-agents` リポジトリをローカル フォルダーにクローンします (どのフォルダーでも問題ありません)。
+1. リポジトリを複製したら、Visual Studio Code でフォルダーを開きます。
 
-1. ページ上部の検索バーの右側にある **[\>_]** ボタンを使用して、Azure portal に新しい Cloud Shell を作成し、サブスクリプションにストレージがない ***PowerShell*** 環境を選択します。
+    > **注**: Visual Studio Code に、開こうとしているコードを信頼するかどうかを確認するポップアップ メッセージが表示された場合は、**[はい、作成者を信頼します]** オプションをクリックして続行します。
 
-    Azure portal の下部にあるペインに Cloud Shell のコマンド ライン インターフェイスが表示されます。 作業しやすくするために、このウィンドウのサイズを変更したり最大化したりすることができます。
+1. 必要に応じて、リポジトリ内の Python コード プロジェクトをサポートするために追加のファイルがインストールされるまで待ちます (ダイアログが表示された場合)。
 
-    > **注**: *Bash* 環境を使用するクラウド シェルを以前に作成した場合は、それを ***PowerShell*** に切り替えます。
+    > **注**: ビルドとデバッグに必要なアセットをインストールするように求めるプロンプトが表示された場合は、**[今はしない]** を選択します。
 
-1. Cloud Shell ツール バーの **[設定]** メニューで、**[クラシック バージョンに移動]** を選択します (これはコード エディターを使用するのに必要です)。
-
-    **<font color="red">続行する前に、クラシック バージョンの Cloud Shell に切り替えたことを確認します。</font>**
-
-1. Cloud Shell 画面で、次のコマンドを入力して、この演習のコード ファイルを含む GitHub リポジトリをクローンします (コマンドを入力するか、クリップボードにコピーしてから、コマンド ラインで右クリックし、プレーンテキストとして貼り付けます)。
-
-    ```
-   rm -r ai-agents -f
-   git clone https://github.com/MicrosoftLearning/mslearn-ai-agents ai-agents
-    ```
-
-    > **ヒント**: Cloudshell にコマンドを入力すると、出力が大量のスクリーン バッファーを占有し、現在のライン上のカーソルが隠れてしまう可能性があります。 `cls` コマンドを入力して、各タスクに集中しやすくすることで、スクリーンをクリアできます。
-
-1. 次のコマンドを入力して、作業ディレクトリをコード ファイルを含むフォルダーに変更し、すべてを一覧表示します。
-
-    ```
-   cd ai-agents/Labfiles/09-integrate-agent-with-foundry-iq/Python
-   ls -a -l
-    ```
+1. **エクスプローラー** ペインで、**Labfiles/04-integrate-agent-with-foundry-iq/Python** フォルダーを展開します。
 
     提供されたファイルには、アプリケーション コード、構成設定、エージェント クライアント スタート コードが含まれます。
 
 ### アプリケーション設定を構成する
 
-1. Cloud Shell コマンド ライン ペインで、次のコマンドを入力して、使用するライブラリをインストールします。
-
-    ```
-   python -m venv labenv
-   ./labenv/bin/Activate.ps1
-   pip install -r requirements.txt
-    ```
-
-    >**注:** ライブラリのインストール中に表示される警告やエラー メッセージは無視しても構いません。
-
-1. 次のコマンドを入力して、提供されている構成ファイルを編集します。
-
-    ```
-   code .env
-    ```
-
-    このファイルをコード エディターで開きます。
-
-1. コード ファイルで、**your_project_endpoint** プレースホルダーを (Foundry ポータルのプロジェクトの **[概要]** ページからコピーした) プロジェクトのエンドポイントに置き換え、AGENT_NAME 変数がエージェント名 (*product-expert-agent* になっているはずです) に設定されていることを確認します。
-1. プレースホルダーを置き換えたら、**Ctrl + S** コマンドを使用して変更を保存してから、**Ctrl + Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
+1. Visual Studio Code で、**Labfiles/04-integrate-agent-with-foundry-iq/Python** フォルダーの **.env** 構成ファイルを開きます。
+1. コード ファイルで、**your_project_endpoint** プレースホルダーを (Foundry ポータルでプロジェクトの **[ホーム]** ページからコピーした) プロジェクトのエンドポイントに置き換え、AGENT_NAME 変数がエージェント名 (*product-expert-agent* になっているはずです) に設定されていることを確認します。
+1. プレースホルダーを置き換えた後、ファイルを保存します。
 
 ### エージェント クライアント コードを完成させる
 
 > **ヒント**: コードを追加する際は、必ず正しいインデントを維持してください。 コメントのインデント レベルをガイドとして利用します。
 
-1. 次のコマンドを入力して、エージェント コード ファイルを編集します。
-
-    ```
-   code agent_client.py
-    ```
-
+1. Visual Studio Code で、**Labfiles/04-integrate-agent-with-foundry-iq/Python** フォルダーの **agent_client.py** コード ファイルを開きます。
 1. 次のような提供されているスタート コードを確認します。
     - import ステートメントと構成の読み込み
     - `send_message_to_agent()` 関数の構造
@@ -244,7 +217,7 @@ lab:
     # Create a response using the agent
     response = openai_client.responses.create(
         conversation=conversation.id,
-        extra_body={"agent": {"name": agent.name, "type": "agent_reference"}},
+        extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
         input=""
     )
 
@@ -300,13 +273,13 @@ lab:
         # Get the actual response after approval/denial
         response = openai_client.responses.create(
             conversation=conversation.id,
-            extra_body={"agent": {"name": agent.name, "type": "agent_reference"}},
+            extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
             input=""
         )
     
     ```
 
-1. コードを追加したら、**Ctrl + S** キーのコマンドを使って変更を保存します。 
+1. コードを追加したら、ファイルを保存します。
 
 1. コードが会話 API を使ってエージェントとの対話を管理するようになっていることを確認します。次のようなものです。
     - 会話が作成され、その ID によって追跡されます
@@ -317,25 +290,30 @@ lab:
     - 承認または拒否の後、`mcp_approval_response` が会話に追加されて、新しい応答が生成されます
     - エージェントは、ユーザーの承認の決定に基づいて Foundry IQ から情報を取得します
 
-1. **Ctrl + Q** コマンドを使用して、Cloud Shell コマンド ラインを開いたままコード エディターを閉じます。
-
 ## 統合をテストします
 
 次に、アプリケーションを実行し、ナレッジ ベースから情報を取得するエージェントの機能をテストします。
 
-1. Cloud Shell コマンド ライン ペインで、次のコマンドを入力して Azure にサインインします。
+1. Visual Studio Code で、**Labfiles/04-integrate-agent-with-foundry-iq/Python** フォルダーを右クリックし、**[統合ターミナルで開く]** を選択してそのフォルダーの統合ターミナルを開きます。
+1. まず、仮想環境を作成し、依存関係をインストールします。
+
+    ```
+   python -m venv labenv
+   ./labenv/Scripts/activate
+   pip install -r requirements.txt
+    ```
+
+1. ターミナル ペインで次のコマンドを入力して Azure にサインインします。
 
     ```
     az login
     ```
 
-    **<font color="red">Cloud Shell セッションが既に認証されている場合でも、Azure にサインインする必要があります。</font>**
-
     > **注**: ほとんどのシナリオでは、*az ログイン*を使用するだけで十分です。 ただし、複数のテナントにサブスクリプションがある場合は、*[--tenant]* パラメーターを使用してテナントを指定する必要があります。 詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)」を参照してください。
 
 1. メッセージが表示されたら、指示に従って新しいタブでサインイン ページを開き、指定された認証コードと Azure 資格情報を入力します。 次に、コマンド ラインでサインイン プロセスを完了し、メッセージが表示されたら Foundry リソースを含むサブスクリプションを選択します。
 
-1. Cloud Shell のコマンドライン ペインで、アプリケーションを実行します。
+1. ターミナル ペインでアプリケーションを実行します。
 
     ```
    python agent_client.py
@@ -344,38 +322,43 @@ lab:
 1. アプリケーションが開始したら、次のクエリを使ってエージェントをテストします。
 
     **クエリ 1 - 製品カテゴリ:**
+
     ```
     What types of outdoor products does Contoso offer?
     ```
-    
+
     承認を求められたら、「**yes**」と入力して、エージェントがナレッジ ベースを検索するのを許可します。 エージェントがナレッジ ベース内の複数のドキュメントから情報をどのように取得するかを観察します。
 
     **クエリ 2 - 特定の製品の詳細:**
+
     ```
     Tell me about the weatherproof features of your tents.
     ```
-    
+
     要求を承認し、エージェントがテント カタログから特定の詳細をどのように提供するかを注視します。
 
     **クエリ 3 - 製品の比較:**
+
     ```
     What's the difference between your daypacks and expedition backpacks?
     ```
-    
+
     要求を承認し、エージェントがバックパック ガイドからの情報をどのように合成するかを確認します。
 
     **クエリ 4 - アクセサリとアドオン:**
+
     ```
     What camping accessories would you recommend for a weekend hiking trip?
     ```
-    
+
     要求を承認し、ナレッジ ベースに基づいて推奨事項を提供するエージェントの機能を観察します。
 
     **クエリ 5 - フォローアップの質問:**
+
     ```
     How much do those items typically cost?
     ```
-    
+
     エージェントが前のクエリから会話コンテキストをどのように維持するかに注目します。
 
 1. 「`history`」と入力して、完全な会話履歴を表示します。
@@ -400,7 +383,7 @@ lab:
 - 新しい Foundry UI を使って Foundry プロジェクトとエージェントを作成しました
 - 製品情報ドキュメントを含むナレッジ ベースを構築しました
 - Foundry IQ を有効にしてポータルでエージェントを構成しました
-- Python SDK を使って Azure Cloud Shell からエージェントに接続しました
+- Python SDK を使って Visual Studio Code からエージェントに接続しました
 - クライアント アプリケーションに MCP 承認処理、会話履歴、エラー処理を実装しました
 - 外部ツールのアクセスについてユーザーが制御する承認を使って、ナレッジ ベースから情報を取得して合成するエージェントの機能をテストしました
 
@@ -410,9 +393,7 @@ lab:
 
 Azure AI Agent サービスと Foundry IQ を調べる演習が済んだら、不要な Azure コストが発生しないよう、この演習で作成したリソースを削除する必要があります。
 
-1. Cloud Shell のブラウザー タブを閉じます。
-1. ブラウザーに戻り、`https://portal.azure.com` で [Azure portal](https://portal.azure.com) を開きます。
+1. Web ブラウザーで [Azure portal](https://portal.azure.com) (`https://portal.azure.com`) を開きます。
 1. Foundry リソースと AI Search リソースを含むリソース グループに移動します。
 1. ツール バーの **[リソース グループの削除]** を選びます。
 1. リソース グループ名を入力し、削除することを確認します。
-

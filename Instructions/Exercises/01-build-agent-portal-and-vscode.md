@@ -4,6 +4,7 @@ lab:
   description: Microsoft Foundry ポータルと VS Code 拡張機能の両方を使用して、ファイル検索やコード インタープリターなどの組み込みツールを含む AI エージェントを作成します。
   level: 300
   duration: 45
+  islab: true
 ---
 
 # ポータルと VS Code を使用して AI エージェントを構築する
@@ -28,9 +29,10 @@ lab:
 
 この演習を開始するには、以下のものが必要です。
 
-- Azure AI リソースをプロビジョニングするための十分なアクセス許可とクォータを持つ Azure サブスクリプション
-- ローカル コンピューターにインストールされている Visual Studio Code
-- Python 3.12 以降がインストールされている
+- Azure AI リソースをプロビジョニングするための十分なアクセス許可とクォータを持つ [Azure サブスクリプション](https://azure.microsoft.com/free/)
+- ローカル コンピューターにインストールされている [Visual Studio Code](https://code.visualstudio.com/)
+- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
+- ローカル コンピューターにインストールされている [Git](https://git-scm.com/downloads)
 - Azure AI サービスと Python プログラミングに関する基本的な知識
 
 ## シナリオ
@@ -59,9 +61,9 @@ lab:
 
 1. **[詳細オプション]** を展開し、次の設定を指定します。
     - **Microsoft Foundry リソース**:"Foundry リソースの有効な名前"**
+    - **リージョン**: 近くから利用可能なものを選択します**\**
     - **[サブスクリプション]**:"*ご自身の Azure サブスクリプション*"
     - **リソース グループ**: *お手持ちのリソース グループを選択するか、新しいリソース グループを作成します*
-    - **リージョン**: ***AI Foundry が推奨するもの***\** の中から選択します
 
     > \* 一部の Azure AI リソースは、リージョンのモデル クォータによって制限されます。 演習の後半でクォータ制限を超えた場合は、別のリージョンに別のリソースを作成する必要が生じる可能性があります。
 
@@ -190,7 +192,23 @@ Foundry の拡張機能を既にインストールしている場合は、この
 
 1. プロジェクトを右クリックし **[アクティブなプロジェクトとして設定]** を選択します。
 
-1. [リソース] ビューでプロジェクトを展開し、**[エージェント]** の下に `it-support-agent` が表示されていることを確認します。
+1. [リソース] ビューでプロジェクトを展開し、**[プロンプト エージェント]** の下に `it-support-agent` が表示されていることを確認します。
+
+### VS Code でエージェントをテストする
+
+コードを記述する前に、拡張機能インターフェイスでエージェントを直接操作できます。
+
+1. [リソース] ビューで、プロジェクトの下にある **[宣言型エージェント]** を展開し、**it-support-agent** をダブルクリックして VS Code エージェント プレイグラウンドで開きます。
+
+1. チャット ペインで、次のような質問を入力します。
+
+    ```
+    What is the policy for reporting a lost or stolen device?
+    ```
+
+1. エージェントの応答を確認します。 これは、前にアップロードしたグラウンディング データを使用して、関連する IT ポリシー情報を提供するものである必要があります。
+
+    > **ヒント**: この組み込みのプレイグラウンドを使用すると、コードを記述することなく、エージェントの指示とナレッジをすばやくテストできます。
 
 ### Python アプリケーションを作成する
 
@@ -222,6 +240,7 @@ Foundry の拡張機能を既にインストールしている場合は、この
     from azure.identity import DefaultAzureCredential
     import base64
     from pathlib import Path
+    from dotenv import load_dotenv
     
     
     def save_image(image_data, filename):
@@ -241,6 +260,7 @@ Foundry の拡張機能を既にインストールしている場合は、この
     
     def main():
         # Initialize the project client
+        load_dotenv()
         project_endpoint = os.environ.get("PROJECT_ENDPOINT")
         agent_name = os.environ.get("AGENT_NAME", "it-support-agent")
         
@@ -295,7 +315,7 @@ Foundry の拡張機能を既にインストールしている場合は、この
             print("\n[Agent is thinking...]")
             response = openai_client.responses.create(
                 conversation=conversation.id,
-                extra_body={"agent": {"name": agent.name, "type": "agent_reference"}},
+                extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
                 input=""
             )
             
@@ -340,7 +360,7 @@ Foundry の拡張機能を既にインストールしている場合は、この
     PROJECT_ENDPOINT=<your_project_endpoint>
     AGENT_NAME=it-support-agent
     ```
-    
+
     **プロジェクト エンドポイントを取得するには:** VS Code で、**[Microsoft Foundry]** 拡張機能を開き、アクティブなプロジェクトを右クリックし、**[エンドポイントのコピー]** を選択します。
 
 1. `.env` ファイルを保存 (**Ctrl + S** または **[ファイル] > [保存]**) します。
@@ -364,26 +384,31 @@ Foundry の拡張機能を既にインストールしている場合は、この
 エージェントが起動したら、次のプロンプトを試して、さまざまな機能をテストしてください。
 
 1. ファイル検索を使用してポリシー検索をテストする:
+
     ```
     What's the policy for password resets?
     ```
 
 2. コード インタープリターを使用してデータ分析を要求する:
+
     ```
     Analyze the system performance data and identify any periods where CPU usage exceeded 80%
     ```
 
 3. 視覚化を要求する:
+
     ```
     Create a line chart showing memory usage trends over time
     ```
 
 4. 統計分析を依頼する:
+
     ```
     What are the average, minimum, and maximum values for disk usage in the performance data?
     ```
 
 5. 結合分析:
+
     ```
     Find any correlation between high CPU usage and memory usage in the performance data
     ```
@@ -397,6 +422,7 @@ Foundry の拡張機能を既にインストールしている場合は、この
 両方のアプローチを使用したので、それぞれをどのようなときに使用するかに関するガイダンスを示します。
 
 ### ポータルは、次の場合に使用します。
+
 - エージェント構成の迅速なプロトタイプ作成とテスト
 - 指示とシステム プロンプトの簡易的な調整
 - 典拠データと組み込みツールを使用したテスト
@@ -404,6 +430,7 @@ Foundry の拡張機能を既にインストールしている場合は、この
 - コードを記述せずに簡易的なエージェントが必要
 
 ### VS Code または SDK は、次の場合に使用します。
+
 - 運用アプリケーションの構築
 - エージェントと既存のコードおよびシステムの統合
 - プログラムによる会話と応答の管理
@@ -411,7 +438,8 @@ Foundry の拡張機能を既にインストールしている場合は、この
 - 高度なオーケストレーションとマルチエージェントのシナリオ
 - プログラムによる大規模なエージェント管理
 
-### ハイブリッドのアプローチ (ベスト プラクティス):
+### ハイブリッドのアプローチ (ベスト プラクティス)
+
 1. 概念を検証するためのポータルでの**プロトタイプ作成**
 2. 運用環境の実装のための VS Code での**開発**
 3. 両方のツールを使用した**監視と反復処理**
@@ -433,12 +461,15 @@ Foundry の拡張機能を既にインストールしている場合は、この
 ### 一般的な問題
 
 **問題点**:"プロジェクト エンドポイントが無効です"
+
 - **解決策**:ポータルから完全なプロジェクト エンドポイントをコピーしたことを確認してください。 `https://` で始まり、プロジェクトの詳細が含まれている必要があります。
 
 **問題点**:"エージェントが見つかりません"
+
 - **解決策**:VS Code 拡張機能で正しいプロジェクトをアクティブに設定していることを確認してください。
 
 **問題点**:"コード インタープリターが視覚化を生成しない"
+
 - **解決策**:CSV ファイルがエージェントに正しくアップロードされ、エージェント設定でコード インタープリターが有効になっていることを確認してください。
 
 ---
