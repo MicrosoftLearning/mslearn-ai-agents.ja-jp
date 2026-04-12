@@ -397,9 +397,7 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
     ```python
    # Connect to the AI Project client
    with (
-       DefaultAzureCredential(
-           exclude_environment_credential=True,
-           exclude_managed_identity_credential=True) as credential,
+       DefaultAzureCredential() as credential,
        AIProjectClient(endpoint=endpoint, credential=credential) as project_client,
        project_client.get_openai_client() as openai_client,
    ):

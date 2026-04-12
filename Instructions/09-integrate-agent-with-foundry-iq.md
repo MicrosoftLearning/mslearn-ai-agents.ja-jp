@@ -49,12 +49,13 @@ lab:
 次に、Foundry IQ を使ってナレッジ ベースを検索するエージェントを構成します。
 
 1. まず、エージェントに次のように指示します。
-     ```
+
+    ```
     You are a helpful AI assistant for Contoso, specializing in outdoor camping and hiking products. 
     You must ALWAYS search the knowledge base to answer questions about our products or product 
     catalog. Provide detailed, accurate information and always cite your sources.
     If you don't find relevant information in the knowledge base, say so clearly.
-     ```
+    ```
 
 1. **[保存]** を選んで、現在のエージェント構成を保存します。
 1. 次に、**[ナレッジ]** セクションで **[追加]** ドロップダウンを展開して、**[Foundry IQ に接続する]** を選びます。
@@ -202,7 +203,7 @@ lab:
 
     > **ヒント**: インデント レベルを正しく維持するように注意してください。
 
-     ```python
+    ```python
     # Connect to the project and agent
     credential = DefaultAzureCredential(
         exclude_environment_credential=True,
@@ -223,11 +224,11 @@ lab:
     # Create a new conversation
     conversation = openai_client.conversations.create(items=[])
     print(f"Created conversation (id: {conversation.id})\n")
-     ```
+    ```
 
 1. `send_message_to_agent()` 関数内で 2 番目の **TODO** コメントを見つけ、MCP 承認要求などのメッセージを送信して応答を処理する次のコードを追加します。
 
-     ```python
+    ```python
     # Add user message to the conversation
     openai_client.conversations.items.create(
         conversation_id=conversation.id,
@@ -303,7 +304,7 @@ lab:
             input=""
         )
     
-     ```
+    ```
 
 1. コードを追加したら、**Ctrl + S** キーのコマンドを使って変更を保存します。
 
@@ -324,9 +325,9 @@ lab:
 
 1. Cloud Shell コマンド ライン ペインで、次のコマンドを入力して Azure にサインインします。
 
-     ```
+    ```
     az login
-     ```
+    ```
 
     **<font color="red">Cloud Shell セッションが既に認証されている場合でも、Azure にサインインする必要があります。</font>**
 
@@ -343,38 +344,43 @@ lab:
 1. アプリケーションが開始したら、次のクエリを使ってエージェントをテストします。
 
     **クエリ 1 - 製品カテゴリ:**
-     ```
+
+    ```
     What types of outdoor products does Contoso offer?
-     ```
-    
+    ```
+
     承認を求められたら、「**yes**」と入力して、エージェントがナレッジ ベースを検索するのを許可します。 エージェントがナレッジ ベース内の複数のドキュメントから情報をどのように取得するかを観察します。
 
     **クエリ 2 - 特定の製品の詳細:**
-     ```
+
+    ```
     Tell me about the weatherproof features of your tents.
-     ```
-    
+    ```
+
     要求を承認し、エージェントがテント カタログから特定の詳細をどのように提供するかを注視します。
 
     **クエリ 3 - 製品の比較:**
-     ```
+
+    ```
     What's the difference between your daypacks and expedition backpacks?
-     ```
-    
+    ```
+
     要求を承認し、エージェントがバックパック ガイドからの情報をどのように合成するかを確認します。
 
     **クエリ 4 - アクセサリとアドオン:**
-     ```
+
+    ```
     What camping accessories would you recommend for a weekend hiking trip?
-     ```
-    
+    ```
+
     要求を承認し、ナレッジ ベースに基づいて推奨事項を提供するエージェントの機能を観察します。
 
     **クエリ 5 - フォローアップの質問:**
-     ```
+
+    ```
     How much do those items typically cost?
-     ```
-    
+    ```
+
     エージェントが前のクエリから会話コンテキストをどのように維持するかに注目します。
 
 1. 「`history`」と入力して、完全な会話履歴を表示します。
