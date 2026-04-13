@@ -1,10 +1,11 @@
 ---
 lab:
-  title: VS Code 拡張機能を使用して AI エージェントを開発する
+  title: VS Code 拡張機能を使用して AI エージェントを開発する (非推奨)
   description: Microsoft Foundry VS Code 拡張機能を使用して AI エージェントを作成します。
+  islab: false
 ---
 
-# VS Code 拡張機能を使用して AI エージェントを開発する
+# VS Code 拡張機能を使用して AI エージェントを開発する (非推奨)
 
 この演習では、Microsoft Foundry VS Code 拡張機能を使用して、モデル コンテキスト プロトコル (MCP) サーバー ツールを使用して外部データ ソースと API にアクセスできるエージェントを作成します。 エージェントは MCP ツールを使用して、最新情報を取得したり、さまざまなサービスと対話したりすることができます。
 
@@ -15,6 +16,7 @@ lab:
 ## 前提条件
 
 この演習を開始するには、以下のものが必要です。
+
 - Visual Studio Code がインストールされていること
 - 有効な Azure サブスクリプション
 
@@ -49,12 +51,12 @@ VS Code 拡張機能をインストールして設定することから始めま
 1. ドロップダウンから Azure サブスクリプションを選択します。
 
 1. 新しいリソース グループを作成するか、既存のリソース グループを使用するかを選択します。
-   
+
    **新しいリソース グループを作成する場合:**
    - **[新しいリソース グループの作成]** を選択し、Enter キーを押します
    - リソース グループの名前 (例: "rg-ai-agents-lab") を入力し、Enter キーを押します
    - 使用可能なオプションから場所を選択し、Enter キーを押します
-   
+
    **既存のリソース グループを使用する場合:**
    - 使用するリソース グループを一覧から選択し、Enter キーを押します
 
@@ -110,6 +112,7 @@ VS Code 拡張機能をインストールして設定することから始めま
    - **[名前]**: エージェントのわかりやすい名前を入力します (例: "data-research-agent")
    - **モデル**:ドロップダウンから GPT-4o デプロイを選択します
    - **手順**:次のようなシステム命令を入力します。
+
      ```
      You are an AI agent that helps users research information from various sources. Use the available tools to access up-to-date information and provide comprehensive responses based on external data sources.
      ```

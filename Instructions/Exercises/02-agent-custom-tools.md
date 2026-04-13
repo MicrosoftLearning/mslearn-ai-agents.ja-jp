@@ -2,6 +2,9 @@
 lab:
   title: AI エージェントでカスタム関数を使用する
   description: 関数を使用してエージェントにカスタム機能を追加する方法について説明します。
+  level: 300
+  duration: 50
+  islab: true
 ---
 
 # AI エージェントでカスタム関数を使用する
@@ -10,16 +13,18 @@ lab:
 
 > **ヒント**: この演習で使用するコードは、Microsoft Foundry SDK for Python に基づいています。 Microsoft .NET、JavaScript、Java 用の SDK を使用して、同様のソリューションを開発できます。 詳細については、[Microsoft Foundry SDK クライアント ライブラリ](https://learn.microsoft.com/azure/ai-foundry/how-to/develop/sdk-overview)に関するページを参照してください。
 
-この演習の所要時間は約 **60** 分です。
+この演習の所要時間は約 **50** 分です。
 
 > **注**: この演習で使用されるテクノロジの一部は、プレビューの段階または開発中の段階です。 予期しない動作、警告、またはエラーが発生する場合があります。
 
 ## 前提条件
 
 この演習を開始するには、以下のものが必要です。
-- Visual Studio Code がインストールされていること
-- 有効な Azure サブスクリプション
-- Python バージョン 3.10 以降がインストールされている
+
+- ローカル コンピューターに [Visual Studio Code](https://code.visualstudio.com/) がインストールされている
+- 有効な [Azure サブスクリプション](https://azure.microsoft.com/free/)
+- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
+- ローカル コンピューターに [Git](https://git-scm.com/downloads) がインストールされている
 
 ## Microsoft Foundry VS Code 拡張機能をインストールする
 
@@ -37,7 +42,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 ## Azure にサインインしてプロジェクトを作成する
 
-次に、Azure リソースに接続し、新しい AI Foundry プロジェクトを作成します。
+次に、Azure リソースに接続し、新しい Microsoft Foundry プロジェクトを作成します。
 
 1. VS Code のサイド バーで、**[Microsoft Foundry]** 拡張機能のアイコンを選択します。
 
@@ -50,12 +55,12 @@ VS Code 拡張機能をインストールして設定することから始めま
 1. ドロップダウンから Azure サブスクリプションを選択します。
 
 1. 新しいリソース グループを作成するか、既存のリソース グループを使用するかを選択します。
-   
+
    **新しいリソース グループを作成する場合:**
    - **[新しいリソース グループの作成]** を選択し、Enter キーを押します
    - リソース グループの名前 (例: "rg-ai-agents-lab") を入力し、Enter キーを押します
    - 使用可能なオプションから場所を選択し、Enter キーを押します
-   
+
    **既存のリソース グループを使用する場合:**
    - 使用するリソース グループを一覧から選択し、Enter キーを押します
 
@@ -73,7 +78,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. モデル カタログで、**[gpt-4.1]** モデルを見つけます (検索バーを使用するとすばやく見つけることができます)。
 
-    ![Foundry VS Code 拡張機能の [モデル カタログ] のスクリーンショット。](Media/vs-code-model.png)
+    ![Foundry VS Code 拡張機能の [モデル カタログ] のスクリーンショット。](../Media/vs-code-model.png)
 
 1. gpt-4.1 モデルの横にある **[デプロイ]** を選択します。
 
@@ -91,7 +96,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. プロジェクトのデプロイ名を右クリックし、**[プロジェクト エンドポイントのコピー]** を選択します。 次のステップでエージェントを Foundry プロジェクトに接続するために、この URL が必要になります。
 
-   <img src="Media/vs-code-endpoint.png" alt="Screenshot of copying the project endpoint in the Foundry VS Code extension." width="550">
+   <img src="../Media/vs-code-endpoint.png" alt="Screenshot of copying the project endpoint in the Foundry VS Code extension." width="550">
 
 ## スタート コード リポジトリをクローンする
 
@@ -107,9 +112,11 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. **requirements.txt** ファイルを右クリックし、**[統合ターミナルで開く]** を選択します。
 
-1. ターミナルで、次のコマンドを入力して、必要な Python パッケージをインストールします。
+1. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
 
     ```
+    python -m venv labenv
+    .\labenv\Scripts\Activate.ps1
     pip install -r requirements.txt
     ```
 
@@ -125,7 +132,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. **Determine the next visible astronomical event for a given location** というコメントを見つけて、次に示すコードを追加します。
 
-    ```python   
+    ```python
    # Determine the next visible astronomical event for a given location
    def next_visible_event(location: str) -> str:
        """Returns the next visible astronomical event for a location."""
@@ -144,7 +151,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 ## Foundry プロジェクトに接続する
 
-1. **agent.py** ファイルを開きます。 
+1. **agent.py** ファイルを開きます。
 
    > **ヒント**: コードを追加する際は、必ず正しいインデントを維持してください。 コメントのインデント レベルをガイドとして利用します。
 
@@ -305,7 +312,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
     このコードで、エージェントとのチャット セッションを作成します。
 
-1. **Create an input list to hold function call outputs to send back to the model** というコメントを見つけて、次に示すコードを追加します。
+1. **Create a list to hold function call outputs that will be sent back as input to the agent (エージェントへの入力として返される関数呼び出し出力を保持するリストを作成する)** というコメントを検索して、次のコードを追加します。
 
     ```python
    # Create a list to hold function call outputs that will be sent back as input to the agent
@@ -385,7 +392,7 @@ VS Code 拡張機能をインストールして設定することから始めま
 
     このコードでは、関数呼び出し出力が入力リストの中にあるかどうかを調べて、ある場合はその出力を入力としてエージェントに送り返し、更新された応答を取得します。 最後に、エージェントの応答を出力します。
 
-1. **Delete the conversation when done** というコメントを見つけて、次に示すコードを追加します。
+1. **Delete the agent when done (終了したらエージェントを削除する)** というコメントを検索して、次のコードを追加します。
 
     ```python
    # Delete the agent when done
@@ -403,7 +410,7 @@ VS Code 拡張機能をインストールして設定することから始めま
     - エージェントの応答を表示する
     - 完了したらエージェントを削除する
 
-1. 完了したら、コード ファイルを保存します (*CTRL + S*)。 
+1. 完了したら、コード ファイルを保存します (*CTRL + S*)。
 
 ## エージェント アプリケーションを実行する
 
@@ -457,6 +464,8 @@ VS Code 拡張機能をインストールして設定することから始めま
 
 1. 「`quit`」と入力してアプリケーションを終了します。
 
+    `deactivate` を使用して、ターミナルの Python 仮想環境を終了することもできます。
+
 ## まとめ
 
 この演習では、カスタム関数ツールを使用する AI エージェントを作成し、ユーザー プロンプトに基づいて情報の取得と計算の実行ができるようにしました。 関数ツールを定義してそのパラメーターを JSON スキーマで定義し、エージェントによって行われた関数呼び出しを処理するロジックを実装しました。 その後でアプリケーションを実行し、エージェントと対話しながら、エージェントがどのように関数ツールを使用して有益な応答を返すかを確認しました。 上出来
@@ -477,6 +486,6 @@ Foundry VS Code 拡張機能を調べ終えたら、不要な Azure コストが
 
 1. [Azure Portal](https://portal.azure.com)を開きます。
 
-1. AI Foundry リソースを含むリソース グループに移動します。
+1. Microsoft Foundry リソースを含むリソース グループに移動します。
 
 1. **[リソース グループの削除]** を選択し、削除を確認します。

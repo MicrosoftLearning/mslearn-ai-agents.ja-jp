@@ -4,6 +4,7 @@ lab:
   description: Work IQ とモデル コンテキスト プロトコルを利用して、Microsoft 365 のワークプレース データにアクセスする AI エージェントを作成し、会議の準備、プロジェクトの進捗管理、実施項目の管理を行います。
   level: 300
   duration: 40
+  islab: true
 ---
 
 # Work IQ - AI エージェント向けワークプレース インテリジェンス
@@ -32,9 +33,9 @@ lab:
 - AI エージェントとモデル コンテキスト プロトコル (MCP) の基本的な理解
 - **Copilot ライセンスが付属する Microsoft 365**
 - Work IQ の IT 管理者の承認 (組織アカウントのみ)
-- Node.js 18 以上がインストールされている
-- Python 3.10 以降がインストールされている
-- Azure CLI (`az login` で認証済み)
+- [Node.js 18](https://nodejs.org/en/download/) 以降がインストールされている
+- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
+- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) がインストールされている (`az login`で認証されている)
 - クエリを実行するためのアクティブな M365 データ (メール、会議、Teams チャット)
 
 > **重要:** Work IQ は、Microsoft 365 Copilot が有効になっているアカウントで**のみ**動作します。 Copilot を使わずにこのラボを完了することはできません。
@@ -118,42 +119,59 @@ lab:
    - 手順をよく読んで、概念を理解することは可能です
    - このラボはオプションとみなし、Copilot へのアクセスを取得後に再開してください
 
+### Visual Studio Code でアプリの開発準備をする
+
+次に、Visual Studio Code を使用してアプリを開発してみましょう。 アプリのコード ファイルは、GitHub リポジトリで提供されています。
+
+1. Visual Studio Code を起動し、[ターミナル] ウィンドウを開きます。
+   
+2. コマンドを入力して、リポジトリをローカル フォルダーにクローンします (どのフォルダーでも問題ありません)。
+
+   ```bash
+   git clone https://github.com/MicrosoftLearning/mslearn-ai-agents.git
+   ```
+
+3. リポジトリを複製したら、Visual Studio Code でフォルダーを開きます。
+
+    > **注**: Visual Studio Code に、開いているコードを信頼するかどうかを求めるポップアップ メッセージが表示された場合は、**[はい、作成者を信頼します]** オプションをクリックして続行します。
+
+4. 必要に応じて、リポジトリ内の Python コード プロジェクトをサポートするために追加のファイルがインストールされるまで待ちます (ダイアログが表示された場合)。
+
+    > **注**: ビルドとデバッグに必要なアセットをインストールするように求めるダイアログが表示された場合は、**[今はしない]** を選択します。
+
+5. **[エクスプローラー]** ペインで、**Labfiles/05b-work-iq-integration/Python** フォルダーを展開します。
+
+    提供されたファイルには、アプリケーション コード、構成設定、エージェント クライアント スタート コードが含まれます。
+
 ### ラボ環境を準備します
 
-1. Visual Studio Code を開きます。
-
-2. ラボ フォルダーに移動します:
-   ```
-   C:\repos\mslearn-ai-agents\Labfiles\05b-work-iq-integration\Python
-   ```
-   
-   VS Code で **[ファイル] > [フォルダーを開く]** を使用します。
-
-3. Python 仮想環境を作成します:
+1. ターミナルに次のコマンドを入力して Python 仮想環境を作成します。
 
    ```bash
    python -m venv venv
    ```
 
-4. 次のコマンドを実行して、仮想環境をアクティブにします。
+1. 次のコマンドを実行して、仮想環境をアクティブにします。
 
    **Windows:**
+
    ```bash
    venv\Scripts\activate
    ```
 
    **macOS/Linux**:
+
    ```bash
    source venv/bin/activate
    ```
 
-5. 必要な Python パッケージをインストールします:
+1. 必要な Python パッケージをインストールします:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-6. `.env` ファイルを構成します:
+1. `.env` ファイルを構成します:
 
    ラボ フォルダーで、`.env` ファイルを開き、それを Foundry プロジェクト エンドポイントで更新します:
 
@@ -167,6 +185,7 @@ lab:
 ### セットアップの確認
 
 次のことを行っておきます。
+
 - Work IQ がインストールされ、アクセス可能である (`workiq --version` が動作する)
 - 管理者の同意が承認されている (または Copilot が付属する個人用 M365 アカウント)
 - `workiq_lab.py` - メインの対話型アプリケーション
@@ -292,7 +311,8 @@ lab:
    - 矛盾はないか?
    - 最新のソースはどれか?
 
-**主要な分析情報:** 
+**主要な分析情報:**
+
 - **Work IQ** は、人々が実際に何をしているか、何を言っているかを伝えます
 - **Foundry IQ** は、公式にドキュメント化されている内容を示します
 - **Together** は意思決定のための完全なコンテキストを提供します
@@ -306,21 +326,25 @@ lab:
 2. さまざまな種類のワークプレースの質問を試します:
 
    **メール検索:**
+
    ```
    Find emails about the budget from my manager
    ```
 
    **会議の要約:**
+
    ```
    What was decided in yesterday's standup?
    ```
 
    **チーム アクティビティ:**
+
    ```
    What did the engineering team discuss this week?
    ```
 
    **ドキュメントの検出:**
+
    ```
    Show me shared documents about security policies
    ```
@@ -361,6 +385,7 @@ lab:
 ### Work IQ の機能を表示する
 
 メイン メニューから **[6 - Work IQ 機能の表示]** を選択して確認します:
+
 - ーキテクチャの概要
 - 使用可能なデータ ソース
 - セキュリティとプライバシー モデル
@@ -376,36 +401,58 @@ lab:
 ### パターン 1:Work IQ MCP クライアントの初期化
 
 ```python
-from azure.ai.projects.mcp import StdioMCPClient
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
 
-# Connect to Work IQ MCP server
-self.workiq_client = StdioMCPClient(
+# Store server parameters for reuse
+self.workiq_server_params = StdioServerParameters(
     command="npx",
     args=["-y", "@microsoft/workiq", "mcp"]
 )
+
+# Fetch available tools from Work IQ MCP server
+async def _fetch():
+    async with stdio_client(self.workiq_server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            tools_result = await session.list_tools()
+            return tools_result.tools
+
+raw_tools = asyncio.run(_fetch())
 ```
 
-これにより、Work IQ が MCP サーバー サブプロセスとして起動し、stdio (標準入出力) 経由で接続されます。
+永続的な接続を維持するのではなく、操作ごとに新しい MCP セッションが開かれます。 `StdioServerParameters` には、Work IQ MCP サーバー サブプロセスを毎回起動するために使用されるコマンドと引数が格納されます。
 
 ### パターン 2:Work IQ ツールを使用したエージェントの作成
 
 ```python
-# Get Work IQ tools
-workiq_tools = [tool.model_dump() for tool in self.workiq_client.tools]
+from azure.ai.projects.models import PromptAgentDefinition, FunctionTool
 
-# Create agent using Responses API
-self.agent = self.openai_client.agents.create_version(
+# Convert MCP tools to FunctionTool objects
+workiq_tools = [
+    FunctionTool(
+        name=tool.name,
+        description=tool.description,
+        parameters=tool.inputSchema,
+    )
+    for tool in raw_tools
+]
+
+# Create agent with Work IQ tools
+self.agent = self.project_client.agents.create_version(
     agent_name="workplace-intelligence-agent",
-    definition={
-        "kind": "prompt",
-        "model": self.model_deployment,
-        "instructions": "You are a workplace intelligence assistant...",
-        "tools": workiq_tools  # Work IQ tools added here
-    }
+    definition=PromptAgentDefinition(
+        model=self.model_deployment,
+        instructions="You are a workplace intelligence assistant...",
+        tools=workiq_tools  # Work IQ tools added here
+    )
 )
+
+# Keep a map of raw tools for lookup during execution
+self.raw_tools_map = {tool.name: tool for tool in raw_tools}
 ```
 
-エージェントには、M365 データのクエリに使用できるすべての Work IQ ツールが用意されています。
+各 MCP ツールは、`FunctionTool` オブジェクトにラップされ、`PromptAgentDefinition` に渡されます。 未加工のツール マップを使用すると、エージェントが名前でツールを呼び出すときに効率的な検索が可能になります。
 
 ### パターン 3:Responses API を使用したクエリの実行
 
@@ -418,17 +465,56 @@ conversation = self.openai_client.conversations.create(
 # Create response with agent
 response = self.openai_client.responses.create(
     conversation=conversation.id,
-    extra_body={
-        "agent": {
-            "type": "agent_reference",
-            "name": self.agent.name,
-            "version": self.agent.version
-        }
-    }
+    extra_body={"agent_reference": {"name": self.agent.name, "type": "agent_reference"}}
 )
 ```
 
 これには Responses API パターン (従来の Run/Thread パターンではない) が使用され、よりクリーンなエージェント実行を実現できます。
+
+### パターン 4: ツール呼び出しループ
+
+最初の応答の後、エージェントにより 1 回以上の Work IQ ツール呼び出しが要求されることがあります。 会話を続けるには、これらを実行してフィードバックする必要があります。
+
+```python
+from openai.types.responses.response_input_param import FunctionCallOutput
+
+while True:
+    if response.status == "failed":
+        break
+
+    input_list = []
+    for item in response.output:
+        if item.type == "function_call":
+            kwargs = json.loads(item.arguments)
+
+            # Call the Work IQ tool via MCP
+            async def _execute():
+                async with stdio_client(self.workiq_server_params) as (read, write):
+                    async with ClientSession(read, write) as session:
+                        await session.initialize()
+                        return await session.call_tool(item.name, kwargs)
+
+            result = asyncio.run(_execute())
+            input_list.append(
+                FunctionCallOutput(
+                    type="function_call_output",
+                    call_id=item.call_id,
+                    output=result.content[0].text,
+                )
+            )
+
+    if input_list:
+        # Send tool results back and continue
+        response = self.openai_client.responses.create(
+            input=input_list,
+            previous_response_id=response.id,
+            extra_body={"agent_reference": {"name": self.agent.name, "type": "agent_reference"}}
+        )
+    else:
+        break  # No more tool calls - final response ready
+```
+
+このループは、エージェントにより保留中の関数呼び出しがない応答を生成するまで続き、その時点で `response.output_text` に最終的な応答が格納されます。
 
 ---
 
@@ -452,13 +538,15 @@ self.openai_client.agents.delete_version(
 ### "Work IQ コマンドが見つかりません"
 
 **解決方法:** Work IQ をインストールします:
+
 ```bash
 npm install -g @microsoft/workiq
 ```
 
 ### "管理者の同意が必要です"
 
-**解決方法:** 
+**解決方法:**
+
 1. `workiq mcp` を実行して同意 URL を取得します
 2. IT 管理者に送信して承認を得ます
 3. または、Copilot で個人用 M365 アカウントを使用します
@@ -466,6 +554,7 @@ npm install -g @microsoft/workiq
 ### "M365 Copilot ライセンスがありません"
 
 **解決方法:** このラボには Copilot が必要です。 次のいずれか:
+
 - M365 Copilot ライセンスを購入します ($30/月)
 - Copilot で組織アカウントを使用します
 - ラボを読んで、実際の操作なしで概念を理解します
@@ -473,11 +562,13 @@ npm install -g @microsoft/workiq
 ### "MCP サーバーが応答していません"
 
 **解決方法:** Work IQ を直接テストします:
+
 ```bash
 workiq ask -q "What meetings do I have?"
 ```
 
 これが失敗した場合は、再インストールします:
+
 ```bash
 npm install -g @microsoft/workiq
 ```
@@ -485,6 +576,7 @@ npm install -g @microsoft/workiq
 ### "データが返されませんでした"
 
 **解決方法:**
+
 - M365 アカウントにメール、会議、Teams アクティビティがあることを確認します
 - より広範なクエリを試します
 - クエリが実際のデータと一致するかどうかを確認します
@@ -495,12 +587,12 @@ npm install -g @microsoft/workiq
 
 ここでは、次の作業を行いました。
 
-* Work IQ MCP サーバーのインストールと構成
-* Microsoft 365 ワークプレース データにアクセスする AI エージェントの作成
-* 5 つのワークプレース インテリジェンス シナリオ (会議の準備、プロジェクトの状態、実施項目、統合インテリジェンス、カスタム クエリ) を確認する
-* Work IQ と Foundry IQ を組み合わせて包括的なコンテキストを取得する
-* MCP アーキテクチャと統合パターンについての学習
-* セキュリティ、プライバシー、認証モデルの理解
+- Work IQ MCP サーバーのインストールと構成
+- Microsoft 365 ワークプレース データにアクセスする AI エージェントの作成
+- 5 つのワークプレース インテリジェンス シナリオ (会議の準備、プロジェクトの状態、実施項目、統合インテリジェンス、カスタム クエリ) を確認する
+- Work IQ と Foundry IQ を組み合わせて包括的なコンテキストを取得する
+- MCP アーキテクチャと統合パターンについての学習
+- セキュリティ、プライバシー、認証モデルの理解
 
 ### 重要なポイント
 
@@ -517,6 +609,7 @@ npm install -g @microsoft/workiq
 ### 次のステップ
 
 独自のワークプレース インテリジェンス ソリューションを作成することを検討してみてください:
+
 - 専門の会議アシスタント
 - 状態の自動レポート ツール
 - タスク追跡エージェント
@@ -527,8 +620,8 @@ npm install -g @microsoft/workiq
 
 ## その他のリソース
 
-* [モデル コンテキスト プロトコルの仕様](https://modelcontextprotocol.io/)
-* [Azure AI Foundry Agents のドキュメント](https://learn.microsoft.com/azure/ai-foundry/agents/)
-* [npm での作業 IQ](https://www.npmjs.com/package/@microsoft/workiq)
-* [Microsoft 365 Copilot](https://www.microsoft.com/microsoft-365/copilot)
-* [Microsoft Graph API](https://learn.microsoft.com/graph/) (代替アプローチ)
+- [モデル コンテキスト プロトコルの仕様](https://modelcontextprotocol.io/)
+- [Microsoft Foundry エージェントのドキュメント](https://learn.microsoft.com/azure/ai-foundry/agents/)
+- [npm での作業 IQ](https://www.npmjs.com/package/@microsoft/workiq)
+- [Microsoft 365 Copilot](https://www.microsoft.com/microsoft-365/copilot)
+- [Microsoft Graph API](https://learn.microsoft.com/graph/) (代替アプローチ)

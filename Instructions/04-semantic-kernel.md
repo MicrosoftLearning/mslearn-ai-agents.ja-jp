@@ -1,10 +1,11 @@
 ---
 lab:
-  title: Microsoft Agent Framework SDK を使用して Azure AI エージェントを開発する
+  title: Microsoft Agent Framework SDK を使用して Azure AI エージェントを開発する (非推奨)
   description: Microsoft Agent Framework SDK を使用して、Azure AI チャット エージェントを作成して使用する方法について学習します。
+  islab: false
 ---
 
-# Microsoft Agent Framework SDK を使用して Azure AI チャット エージェントを開発する
+# Microsoft Agent Framework SDK を使用して Azure AI チャット エージェントを開発する (非推奨)
 
 この演習では、Azure AI Agent サービスと Microsoft Agent Framework を使用して、経費請求を処理する AI エージェントを作成します。
 
@@ -13,7 +14,6 @@ lab:
 > **注**: この演習で使用されるテクノロジの一部は、プレビューの段階または開発中の段階です。 予期しない動作、警告、またはエラーが発生する場合があります。
 
 ## Microsoft Foundry プロジェクトにモデルをデプロイする
-
 
 まず、Foundry プロジェクトを作成しましょう。
 
@@ -206,14 +206,14 @@ lab:
     **<font color="red">Cloud Shell セッションが既に認証されている場合でも、Azure にサインインする必要があります。</font>**
 
     > **注**: ほとんどのシナリオでは、*az ログイン*を使用するだけで十分です。 ただし、複数のテナントにサブスクリプションがある場合は、*[--tenant]* パラメーターを使用してテナントを指定する必要があります。 詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)」を参照してください。
-    
+
 1. メッセージが表示されたら、指示に従って新しいタブでサインイン ページを開き、指定された認証コードと Azure 資格情報を入力します。 次に、コマンド ラインでサインイン プロセスを完了し、プロンプトが表示されたら、Foundry ハブを含むサブスクリプションを選択します。
 1. サインインしたら、次のコマンドを入力してアプリケーションを実行します。
 
     ```
    python agent-framework.py
     ```
-    
+
     アプリケーションは、認証済みの Azure セッションの資格情報を使用して実行され、プロジェクトに接続してエージェントを作成して実行します。
 
 1. 経費データの処理方法を質問されたら、次のプロンプトを入力します。
