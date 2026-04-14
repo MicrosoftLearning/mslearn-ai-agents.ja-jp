@@ -40,7 +40,18 @@ lab:
 
 この演習の所要時間は約 **30** 分です。
 
-> **注**:Microsoft Foundry のワークフロー ビルダーは現在プレビュー段階です。 予期しない動作、警告、またはエラーが発生する場合があります。
+> **注**:Microsoft Foundry のワークフロー ビルダーは現在プレビュー段階です。 予期しない動作、警告、またはエラーが発生する場合があります。 進行を妨げる問題が発生した場合は、新しいプロジェクトとワークフローで最初からやり直さなければならないことがあります。
+
+## 前提条件
+
+この演習を開始するには、以下のものが必要です。
+
+- ローカル コンピューターに [Visual Studio Code](https://code.visualstudio.com/) がインストールされている
+- 有効な [Azure サブスクリプション](https://azure.microsoft.com/free/)
+- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
+- ローカル コンピューターに [Git](https://git-scm.com/downloads) がインストールされている
+
+> \* Python 3.13 を使用できますが、一部の依存関係がそのリリース用にまだコンパイルされていません。 このラボでは Python 3.13.12 でテストが正常に終了しました。
 
 ## Foundry プロジェクトを作成する
 
@@ -50,17 +61,21 @@ lab:
 
 1. **[新しい Foundry]** トグルが *[オン]* に設定されていることを確認します。
 
-    <img src="../Media/ai-foundry-toggle.png" alt="Screenshot of the New Foundry toggle" width="300">
+    ![[新しい Foundry] トグルのスクリーンショット。](../Media/ai-foundry-toggle.png)
 
-1. 新しい Foundry エクスペリエンスに進む前に、新しいプロジェクトを作成するように求められる場合があります。 **[新しいプロジェクトの作成]** を選択します。
+2. 新しい Foundry エクスペリエンスに進む前に、新しいプロジェクトを作成するように求められる場合があります。 **[新しいプロジェクトの作成]** を選択します。
 
-    <img src="../Media/ai-foundry-new-project.png" alt="Screenshot of the Create project pane." width="600">
+    ![新しいプロジェクトを作成するプロンプトのスクリーンショット。](../Media/ai-foundry-new-project.png)
 
     メッセージが表示されない場合は、左上の [プロジェクト] ドロップダウン メニューを選択してから、**[新しいプロジェクトの作成]** を選択します。
 
-1. テキスト ボックスに Foundry プロジェクトの名前を入力し、**[作成]** を選択します。
+3. テキスト ボックスに Foundry プロジェクトの名前を入力し、**[作成]** を選択します。
 
     プロジェクトが作成されるまでしばらく待ちます。 プロジェクトが選択された状態で、新しい Foundry ポータルのホーム ページが表示されます。
+
+4. **[新しい Microsoft Foundry へようこそ]** ダイアログが表示された場合は、閉じてください。
+
+    ダイアログで、現時点では不要なエージェントを作成するように求められる場合があります。 エージェントは後の手順で作成します。
 
 ## カスタマー サポートのトリアージ ワークフローを作成する
 
@@ -68,7 +83,7 @@ lab:
 
 1. Foundry ポータルのホーム ページで、ツール バー メニューから **[ビルド]** を選択します。
 
-1. 左側のメニューで、**[ワークフロー]** を選択します。
+1. 左側のメニューで **[エージェント]** を選択し、**[ワークフロー]** タブを選択します。
 
 1. 右上隅にある **[作成]** > **[空のワークフロー]** を選択して、新しい空のワークフローを作成します。
 
@@ -76,19 +91,19 @@ lab:
 
 1. ビジュアライザーで **[保存]** を選択して、新しいワークフローを保存します。 ダイアログ ボックスで、ワークフローの名前 (*ContosoPay-Customer-Support-Triage* など) を入力し、**[保存]** を選択します。
 
-### チケットの配列の変数を作成する
+## チケットの配列の変数を作成する
 
 1. ワークフロー ビジュアライザーで、**[+]** (プラス) アイコンを選択して、新しいノードを追加します。
 
 1. ワークフローのアクション メニューの **[データ変換]** で、**[変数の設定]** を選択して、サポート チケットの配列を初期化するノードを追加します。
 
-1. **[変数の設定]** ノード エディターで、**[新しい変数の作成]** を選択して新しい変数を作成します。 *SupportTickets* などの名前を入力します。
+2. **[変数の設定]** ノード エディターで、*SupportTickets* のように新しい変数の名前を入力します。
 
-    <img src="../Media/node-new-variable.png" alt="Screenshot of creating a new variable in the Set variable node." width="500">
+    ![[変数の設定] ノードで新しい変数を作成しているスクリーンショット。](../Media/node-new-variable.png)
 
     新しい変数が `Local.SupportTickets` として表示されます。
 
-1. **[対象値]** フィールドに、サンプルのサポート チケットを含む次の配列を入力します。
+3. **[対象値]** フィールドに、サンプルのサポート チケットを含む次の配列を入力します。
 
     ```output
    [ 
@@ -97,9 +112,9 @@ lab:
     "I was charged twice for the same invoice last Friday and my customer is also seeing two receipts. Can someone fix this?"]
     ```
 
-1. **[完了]** を選択して、ノードを保存します。
+4. **[完了]** を選択して、ノードを保存します。
 
-### チケットを処理するための for-each ループを追加する
+## チケットを処理するための for-each ループを追加する
 
 1. **[変数の設定]** の下にある **[+]** (プラス) アイコンを選択し、配列内の各サポート チケットを処理する **[For each]** ノードを作成します。
 
@@ -109,25 +124,25 @@ lab:
 
 1. **[完了]** を選択して、ノードを保存します。
 
-### エージェントを呼び出してチケットを分類する
+## エージェントを呼び出してチケットを分類する
 
 1. **For each**ノード内の **[+]** (プラス) アイコンを選択して、現在のサポート チケットを分類する新しいノードを追加します。
 
-1. ワークフローのアクション メニューの **[呼び出し]** で、**[エージェントの呼び出し]** を選択して、エージェント ノードを追加します。
+2. ワークフローのアクション メニューの **[呼び出し]** で、**[エージェント]** を選択して、エージェント ノードを追加します。
 
-1. **[エージェントの呼び出し]** ノード エディターの **[エージェントの選択]** で、**[新しいエージェントの作成]** を選択します。
+3. **[エージェント]** ノード エディターの **[エージェントの選択]** で、**[新しいエージェントの作成]** を選択します。
 
-1. *Triage-Agent* などのエージェント名を入力し、**[作成]** を選択します。
+4. *Triage-Agent* などのエージェント名を入力し、**[作成]** を選択します。
 
-#### エージェント設定を構成する
+### エージェント設定を構成する
 
 1. エディターの **[詳細]** で、モデル名の近くにある **[パラメーター]** ボタンを選択します。
 
-    <img src="../Media/agent-parameters.png" alt="Screenshot of the Parameters button in the agent editor." width="400">
+    ![エージェント エディターの [パラメーター] ボタンのスクリーンショット。](../Media/agent-parameters.png)
 
-1. **[パラメーター]** ペインで、**[テキスト形式]** の横にある **[JSON スキーマ]** を選択します。
+2. **[パラメーター]** ペインで、**[テキスト形式]** の横にある **[JSON スキーマ]** を選択します。
 
-1. **[応答形式の追加]** ペインで、次の定義を入力し、**[保存]** を選択します。
+3. **[応答形式の追加]** ペインで、次の定義を入力し、**[保存]** を選択します。
 
     ```json
     {
@@ -156,7 +171,7 @@ lab:
     }
     ```
 
-1. [エージェントの呼び出し] の [詳細] ペインで、**[指示]** フィールドを次のプロンプトに設定します。
+4. [エージェントの詳細] ペインで、**[指示]** フィールドを次のプロンプトに設定します。
 
     ```output
     Classify the user's problem description into exactly ONE category from the list below. Provide a confidence score from 0 to 1.
@@ -180,23 +195,23 @@ lab:
     - Billing ONLY applies when money was charged, refunded, or paid incorrectly
     ```
 
-1. **[アクションの設定]** を選択して、エージェントの入力と出力を構成します。
+5. **[ノードの設定]** を選択して、エージェントの入力と出力を構成します。
 
-1. **[入力メッセージ]** フィールドを `Local.CurrentTicket` 変数に設定します。
+6. **[入力メッセージ]** フィールドを `Local.CurrentTicket` 変数に設定します。
 
-1. **[名前を付けてエージェントの出力メッセージを保存]** で、`TriageOutputText` という名前の新しい変数を作成します。
+7. **[名前を付けてエージェントの出力メッセージを保存]** で、`TriageOutputText` という名前の新しい変数を作成します。
 
-1. **[名前を付けて出力 json_object を保存]** で、`TriageOutputJson` という名前の新しい変数を作成します。
+8. **[名前を付けて出力 json_object を保存]** で、`TriageOutputJson` という名前の新しい変数を作成します。
 
-1. **[完了]** を選択して、ノードを保存します。
+9. **[完了]** を選択して、ノードを保存します。
 
-### 信頼度の低い分類を処理する
+## 信頼度の低い分類を処理する
 
 1. **[エージェントの呼び出し]** ノードの下にある **[+]** (プラス) アイコンを選択して、信頼度の低い分類を処理する新しいノードを追加します。
 
 1. ワークフローのアクション メニューの **[フロー]** で、**[If/Else]** を選択して、条件付きロジック ノードを追加します。
 
-1. **[If/Else]** ノード エディターで鉛筆アイコンを選択して、**[If]** 分岐条件を編集します。
+1. **[If/Else]** ノード エディターで、**[パスの追加]** ボタンを選択して if 分岐条件を作成してから、鉛筆アイコンを選択して条件を編集します。
 
 1. **[条件]** フィールドを次の式に設定して、信頼度スコアが 0.6 を上回るかどうかを確認します。
 
@@ -206,11 +221,11 @@ lab:
 
 1. **[完了]** を選択して、ノードを保存します。
 
-### 信頼度の低いチケットの追加情報を推奨する
+## 信頼度の低いチケットの追加情報を推奨する
 
 1. ビジュアライザーで、**[If/Else 条件]** ノードの **[Else]** 分岐の下にある **[+]** (プラス) アイコンを選択して、信頼度の低いチケットの追加情報を推奨する新しいノードを追加します。
 
-1. ワークフローのアクション メニューの **[基本情報]** で、**[メッセージの送信]** を選択して、メッセージの送信アクティビティを追加します。
+1. ワークフローのアクション メニューの **[基本]** で、**[メッセージの送信]** を選択して、メッセージの送信アクティビティを追加します。
 
 1. **[メッセージの送信]** ノード エディターで、**[送信するメッセージ]** フィールドを次の応答に設定します。
 
@@ -218,7 +233,9 @@ lab:
    The support ticket classification has low confidence. Requesting more details about the issue: "{Local.CurrentTicket}"
     ```
 
-### カテゴリに基づいてチケットをルーティングする
+1. **[完了]** を選択して、ノードを保存します。
+
+## カテゴリに基づいてチケットをルーティングする
 
 このセクションでは、信頼度スコアが十分に高い場合に、分類されたカテゴリに基づいてチケットをルーティングする条件付きロジックを追加します。
 
@@ -226,7 +243,9 @@ lab:
 
 1. ワークフローのアクション メニューの **[フロー]** で、**[If/Else]** を選択して、別の条件付きロジック ノードを追加します。
 
-1. **[If/Else]** ノード エディターで、**[If 条件]** を次の式に設定して、チケット カテゴリが "課金" かどうかを確認します。
+1. **[If/Else]** ノード エディターで、**[パスの追加]** ボタンを選択して if 分岐条件を作成してから、鉛筆アイコンを選択して条件を編集します。
+
+1. **[If 条件]** を次の式に設定して、チケット カテゴリが "課金" かどうかを確認します。
 
     ```output
     Local.TriageOutputJson.category = "Billing"
@@ -234,7 +253,7 @@ lab:
 
 1. **[If/Else]** ノードの **[If]** 分岐の下にある **[+]** (プラス) アイコンを選択して、課金以外のチケットに対する応答の下書きを行う新しいノードを追加します。
 
-1. ワークフローのアクション メニューの **[基本情報]** で、**[メッセージの送信]** を選択して、メッセージの送信アクティビティを追加します。
+1. ワークフローのアクション メニューの **[基本]** で、**[メッセージの送信]** を選択して、メッセージの送信アクティビティを追加します。
 
 1. **[メッセージの送信]** ノード エディターで、**[送信するメッセージ]** を次の応答に設定します。
 
@@ -244,17 +263,17 @@ lab:
 
 1. **[完了]** を選択して、ノードを保存します。
 
-### 推奨される応答を生成する
+## 推奨される応答を生成する
 
 1. ビジュアライザーで、2 番目の **[If/Else]** ノードの **[Else]** 分岐の下にある **[+]** (プラス) アイコンを選択して、課金以外のチケットに対する応答を下書きする新しいノードを追加します。
 
-1. ワークフローのアクション メニューの **[エージェント]** で、**[エージェントの呼び出し]** を選択して、エージェント ノードを追加します。
+2. ワークフローのアクション メニューの **[呼び出し]** で、**[エージェント]** を選択して、エージェント ノードを追加します。
 
-1. **[エージェントの呼び出し]** ノード エディターで、**[新しいエージェントの作成]** を選択します。
+3. **[エージェント]** ノード エディターで、**[新しいエージェントの作成]** を選択します。
 
-1. *Resolution-Agent * などのエージェント名を入力し、**[作成]** を選択します。
+4. *Resolution-Agent * などのエージェント名を入力し、**[作成]** を選択します。
 
-1. エージェント エディターで、**[指示]** フィールドを次のプロンプトに設定します。
+5. エージェント エディターで、**[指示]** フィールドを次のプロンプトに設定します。
 
     ```output
     You are a customer support resolution assistant for ContosoPay, a B2B payments and invoicing platform.
@@ -282,13 +301,13 @@ lab:
     Do not include internal reasoning or analysis.
     ```
 
-1. **[アクションの設定]** を選択して、エージェントの入力と出力を構成します。
+6. **[ノードの設定]** を選択して、エージェントの入力と出力を構成します。
 
-1. **[入力メッセージ]** フィールドを `Local.TriageOutputText` 変数に設定します。
+7. **[入力メッセージ]** フィールドを `Local.TriageOutputText` 変数に設定します。
 
-1. **[名前を付けてエージェントの出力メッセージを保存]** で、`ResolutionOutputText` という名前の新しい変数を作成します。
+8. **[名前を付けてエージェントの出力メッセージを保存]** で、`ResolutionOutputText` という名前の新しい変数を作成します。
 
-1. **[完了]** を選択して、ノードを保存します。
+9. **[完了]** を選択して、ノードを保存します。
 
 ## ワークフローをプレビューする
 
@@ -313,106 +332,43 @@ lab:
     If the issue persists, try regenerating your API key and updating it in your integration to see if that resolves the problem.
     ```
 
-## コードでワークフローを使用する
+## クライアント アプリケーションでワークフローを使用する
 
 Foundry ポータルでワークフローをビルドしてテストしたら、それを Azure AI Projects SDK を使用して自分のコードから呼び出すこともできます。 これにより、ワークフローをアプリケーションに統合したり、その実行を自動化したりできます。
-
-### 前提条件
-
-この演習を開始するには、以下のものが必要です。
-
-- ローカル コンピューターにインストールされている [Visual Studio Code](https://code.visualstudio.com/)
-- 有効な [Azure サブスクリプション](https://azure.microsoft.com/free/)
-- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
-- ローカル マシンにインストールされた [Git](https://git-scm.com/downloads)
-
-### Microsoft Foundry VS Code 拡張機能をインストールする
-
-VS Code 拡張機能をインストールして設定することから始めましょう。
-
-1. Visual Studio Code を開きます。
-
-1. 左側のペインから **[拡張機能]** を選択します (または **Ctrl + Shift + X** キーを押します)。
-
-1. 検索バーに「**Microsoft Foundry**」と入力し、Enter キーを押します。
-
-1. Microsoft から **[Microsoft Foundry]** 拡張機能を選択し、**[インストール]** をクリックします。
-
-1. インストールが完了したら、Visual Studio Code の左側のプライマリ ナビゲーション バーに拡張機能が表示されていることを確認します。
-
-### Azure にサインインしてプロジェクトを作成する
-
-次に、Azure リソースに接続し、新しい Microsoft Foundry プロジェクトを作成します。
-
-1. VS Code のサイド バーで、**[Microsoft Foundry]** 拡張機能のアイコンを選択します。
-
-1. [リソース] ビューで、**[Azure にサインイン...]** を選択し、認証プロンプトに従います。
-
-   > **注**:既にサインインしている場合、このオプションは表示されません。
-
-1. Foundry 拡張機能ビューで **[リソース]** の横にある **[+]** (プラス) アイコンを選択して、新しい Foundry プロジェクトを作成します。
-
-1. ドロップダウンから Azure サブスクリプションを選択します。
-
-1. 新しいリソース グループを作成するか、既存のリソース グループを使用するかを選択します。
-
-   **新しいリソース グループを作成する場合:**
-   - **[新しいリソース グループの作成]** を選択し、Enter キーを押します
-   - リソース グループの名前 (例: "rg-ai-agents-lab") を入力し、Enter キーを押します
-   - 使用可能なオプションから場所を選択し、Enter キーを押します
-
-   **既存のリソース グループを使用する場合:**
-   - 使用するリソース グループを一覧から選択し、Enter キーを押します
-
-1. テキストボックスに Foundry プロジェクトの名前 (例: "ai-agents-project") を入力し、Enter キーを押します。
-
-1. プロジェクトのデプロイが完了するまで待ちます。 ポップアップが表示され、"プロジェクトが正常にデプロイされました" というメッセージが表示されます。
-
-### モデルをデプロイする
-
-このタスクでは、エージェントで使用するモデル カタログからモデルをデプロイします。
-
-1. "プロジェクトが正常にデプロイされました" というポップアップが表示されたら、**[モデルのデプロイ]** ボタンを選択します。 これにより、モデル カタログが開きます。
-
-   > **ヒント**: モデル カタログにアクセスするには、[リソース] セクションで **[モデル]** の横にある **[+]** アイコンを選択します。または、**F1** キーを押し、コマンド **Microsoft Foundry: Open Model Catalog**を実行して、モデル カタログにアクセスすることもできます。
-
-1. モデル カタログで、**[gpt-4.1]** モデルを見つけます (検索バーを使用するとすばやく見つけることができます)。
-
-    ![Foundry VS Code 拡張機能の [モデル カタログ] のスクリーンショット。](../Media/vs-code-model.png)
-
-1. gpt-4.1 モデルの横にある **[デプロイ]** を選択します。
-
-1. デプロイ設定を構成します。
-   - **デプロイ名**:"gpt-4.1" のような名前を入力します
-   - **デプロイの種類**:**[グローバル標準]** (グローバル標準を使用できない場合は **[標準]**) を選択します
-   - **モデルのバージョン**: デフォルトのままにする
-   - **1 分あたりのトークン数**:デフォルトのままにする
-
-1. 左下隅にある **[Microsoft Foundry にデプロイ]** を選択します。
-
-1. 確認ダイアログで **[デプロイ]** を選択して、モデルをデプロイします。
-
-1. デプロイが完了するまで待ちます。 デプロイしたモデルが、[リソース] ビューの **[モデル]** セクションに表示されます。
-
-1. プロジェクトのデプロイ名を右クリックし、**[プロジェクト エンドポイントのコピー]** を選択します。 次のステップでエージェントを Foundry プロジェクトに接続するために、この URL が必要になります。
-
-   <img src="../Media/vs-code-endpoint.png" alt="Screenshot of copying the project endpoint in the Foundry VS Code extension." width="550">
 
 ### スタート コード リポジトリをクローンする
 
 この演習では、Foundry プロジェクトに接続してワークフローを呼び出すのに役立つスタート コードを使用します。
 
-1. VS Code の **[ようこそ]** タブに移動します (メニュー バーから **[ヘルプ] > [ようこそ]** を選択すると開きます)。
+1. VS Code で、コマンド パレット (**Ctrl + Shift + P** または **[表示] > [コマンド パレット]**) を開きます。
 
-1. **[Git リポジトリの複製]** を選択し、スタート コード リポジトリの URL `https://github.com/MicrosoftLearning/mslearn-ai-agents.git` を入力します。
+1. 「**Git:Clone**」と入力してこれを一覧から選択します。
 
-1. 新しいフォルダーを作成し、**[リポジトリの宛先として選択]** を選択し、プロンプトが表示されたらクローンされたリポジトリを開きます。
+1. リポジトリの URL を入力します。
 
-1. エクスプローラー ビューで、**[Labfiles/08-build-workflow-ms-foundry/Python]** フォルダーに移動して、この演習のスタート コードを見つけます。
+    ```
+    https://github.com/MicrosoftLearning/mslearn-ai-agents.git
+    ```
 
-1. **requirements.txt** ファイルを右クリックし、**[統合ターミナルで開く]** を選択します。
+1. リポジトリをクローンするローカル コンピューター上の場所を選択します。
 
-1. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
+1. プロンプトが表示されたら **[開く]** を選択して、VS Code でクローンされたリポジトリを開きます。
+
+1. リポジトリが開いたら、**[ファイル] > [フォルダーを開く]** を選択し、`mslearn-ai-agents/Labfiles/08-build-workflow-ms-foundry` に移動して、**[フォルダーの選択]** を選択します。
+
+1. [エクスプローラー] ペインで、**[Python]** フォルダーを展開して、この演習のコード ファイルを表示します。 
+
+### アプリケーションの構成
+
+1. ブラウザーで、Foundry ポータルのワークフロー ビジュアライザーに戻ります。
+
+2. ビジュアライザーの右上隅にある **[コード]** を選択します。 次に、**[.env 変数]** を選択して、コードから Foundry プロジェクトに接続するために必要な環境変数を表示します。
+
+3. Foundry プロジェクトのエンドポイント URL である **AZURE_EXISTING_AIPROJECT_ENDPOINT** 変数の値をコピーします。 この値は、VS Code でプロジェクトに接続するときに必要になります。 
+
+4. VS Code で、**[requirements.txt]** ファイルを右クリックし、**[統合ターミナルで開く]** を選択します。
+
+5. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
 
     ```
     python -m venv labenv
@@ -420,9 +376,9 @@ VS Code 拡張機能をインストールして設定することから始めま
     pip install -r requirements.txt
     ```
 
-1. **.env** ファイルを開き、**[your_project_endpoint]** プレースホルダーをプロジェクトのエンドポイント (Microsoft Foundry 拡張機能のプロジェクト デプロイ リソースからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がモデル デプロイ名に設定されていることを確認します。 これらの変更を行った後、**Ctrl + S** を使用してファイルを保存します。
+6. **.env** ファイルを開き、**[your_project_endpoint]** プレースホルダーをプロジェクトのエンドポイント (ワークフロー ビジュアライザーの [コード] タブからコピーしたもの) に置き換えます。 これらの変更を行った後、**Ctrl + S** を使用してファイルを保存します。
 
-### ワークフローに接続して実行する
+### コードからワークフローを呼び出す
 
 これで、ワークフローを呼び出すプロジェクトを作成する準備ができました。 それでは始めましょう。
 
@@ -436,12 +392,9 @@ VS Code 拡張機能をインストールして設定することから始めま
    # Add references
    from azure.identity import DefaultAzureCredential
    from azure.ai.projects import AIProjectClient
-   from azure.ai.projects.models import ItemType
     ```
 
-1. 環境変数からプロジェクトのエンドポイントとモデル名を読み込むコードが提供されていることに注目してください。
-
-1. コメント **Connect to the agents client (エージェント クライアントに接続する)** を見つけて次のコードを追加し、プロジェクトに接続された AgentsClient を作成します。
+2. コメント **Connect to the agents client (エージェント クライアントに接続する)** を見つけて次のコードを追加し、プロジェクトに接続された AgentsClient を作成します。
 
     ```python
    # Connect to the AI Project client
@@ -456,19 +409,18 @@ VS Code 拡張機能をインストールして設定することから始めま
 
     > **ヒント**: 後続のコードを追加するときは、適切なレベルのインデントを維持してください。
 
-1. コメント **Specify the workflow** と次のコードを見つけます。
+3. コメント **Specify the workflow (ワークフローを指定する)** を見つけ、次のコードを追加します。
 
     ```python
    # Specify the workflow
     workflow = {
-        "name": "ContosoPay-Customer-Support-Triage",
-        "version": "1",
+        "name": "ContosoPay-Customer-Support-Triage"
     }
     ```
 
     Foundry ポータルで作成したワークフローの名前とバージョンを必ず使用してください。
 
-1. コメント **Create a conversation and run the workflow** を見つけ、次のコードを追加して会話を作成し、ワークフローを呼び出します。
+4. コメント **Create a conversation and run the workflow** を見つけ、次のコードを追加して会話を作成し、ワークフローを呼び出します。
 
     ```python
     # Create a conversation and run the workflow
@@ -477,32 +429,26 @@ VS Code 拡張機能をインストールして設定することから始めま
 
     stream = openai_client.responses.create(
         conversation=conversation.id,
-        extra_body={"agent": {"name": workflow["name"], "type": "agent_reference"}},
+        extra_body={"agent_reference" : {"name" : workflow["name"], "type": "agent_reference"}},
         input="Start",
         stream=True,
-        metadata={"x-ms-debug-mode-enabled": "1"},
     )
     ```
 
     このコードは、ワークフロー実行の出力をコンソールにストリーミングして、ワークフローが各チケットを処理するときにメッセージのフローを確認できるようにします。
 
-1. コメント **Process events from the workflow run** を見つけ、次のコードを追加してストリーミングされた出力を処理し、メッセージをコンソールに出力します。
+5. コメント **Process events from the workflow run** を見つけ、次のコードを追加してストリーミングされた出力を処理し、メッセージをコンソールに出力します。
 
     ```python
     # Process events from the workflow run
-    for event in stream:
+   for event in stream:
         if (event.type == "response.completed"):
             print("\nResponse completed:")
-            for message in event.response.output:
-                if message.content:
-                    for content_item in message.content:
-                        if content_item.type == 'output_text':
-                            print(content_item.text)
-        if (event.type == "response.output_item.done") and event.item.type == ItemType.WORKFLOW_ACTION:
-            print(f"item action ID '{event.item.action_id}' is '{event.item.status}' (previous action ID: '{event.item.previous_action_id}')")
+            response = openai_client.responses.retrieve(event.response.id)
+            print(f"{response.output_text}")
     ```
 
-1. コメント **Clean up resources** を見つけ、次のコードを入力して不要になった会話を削除します。
+6. コメント **Clean up resources (リソースをクリーンアップする)** を見つけ、次のコードを入力して不要になった会話を削除します。
 
     ```python
    # Clean up resources
@@ -510,13 +456,16 @@ VS Code 拡張機能をインストールして設定することから始めま
    print("\nConversation deleted")
     ```
 
-1. **CTRL + S** コマンドを使用して、変更をコード ファイルに保存します。
+7. **CTRL + S** コマンドを使用して、変更をコード ファイルに保存します。
 
-### Azure にサインインしてアプリを実行する
+## クライアント アプリケーションをテストする
 
 これで、コードを実行し、AI エージェント間の共同作業を確認する準備ができました。
 
-1 統合ターミナルで、次のコマンドを実行します: 
+1. 統合ターミナルで、次のコマンドを実行します。
+    ```
+    az login
+    ```
 
     ```
    python workflow.py
@@ -527,27 +476,15 @@ VS Code 拡張機能をインストールして設定することから始めま
 1. ワークフローが完了すると、次のような出力が表示されるはずです。
 
     ```output
-    Created conversation (id: {id})
-    item action ID 'action-{id}' is 'completed' (previous action ID: 'trigger_id')
-    item action ID 'action-{id}' is 'completed' (previous action ID: 'action-{id}')
-    item action ID 'action-{id}' is 'completed' (previous action ID: 'action-{id}_Start')
-    ...
-
     Response completed:
-    ...
     Current Ticket:
-    I was charged twice for the same invoice last Friday and my customer is also seeing two receipts. Can someone fix this?
-    {"customer_issue":"I was charged twice for the same invoice last Friday and my customer is also seeing two receipts. Can someone fix this?","category":"Billing","confidence":1}
-    Escalation required
+    The API returns a 403 error when creating invoices, but our API key hasn't changed.{"customer_issue":"API returns a 403 error when creating invoices, API key unchanged.","category":"Technical","confidence":1}Thank you for contacting us about the 403 error when creating invoices with the API. This error typically relates to permission issues. Please ensure your API key has the necessary permissions for invoice creation and that the endpoint URL is correct. If the issue persists, try regenerating the API key and updating it in your application.
+    ...
     ```
 
-    出力では、各チケットの分類や推奨される応答またはエスカレーションを含めて、ワークフローが各ステップをどのように完了するかを確認できます。 上出来
+    出力では、各チケットの分類や推奨される応答またはエスカレーションを含めて、ワークフローが各サポート チケットをどのように完了するかを確認できます。 上出来
 
-1. 完了したら、ターミナルに「`deactivate`」と入力して、Python 仮想環境を終了します。
-
-## まとめ
-
-この演習では、Microsoft Foundry で、カスタマー サポート チケットを処理するシーケンシャル ワークフローを作成しました。 条件付きロジックと構成済みの AI エージェントを使用して、JSON 形式の出力を生成しました。 ワークフローでは、AI エージェントを使用して各チケットを分類し、条件付きロジックを使用して信頼度の低い分類を処理し、課金以外の問題に対して推奨される応答を生成しました。 よくできました。
+2. 完了したら、ターミナルに「`deactivate`」と入力して、Python 仮想環境を終了します。
 
 ## クリーンアップ
 
