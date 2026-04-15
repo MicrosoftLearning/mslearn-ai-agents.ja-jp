@@ -46,10 +46,10 @@ lab:
 
 この演習を開始するには、以下のものが必要です。
 
-- ローカル コンピューターに [Visual Studio Code](https://code.visualstudio.com/) がインストールされている
+- ローカル コンピューターにインストールされている [Visual Studio Code](https://code.visualstudio.com/)
 - 有効な [Azure サブスクリプション](https://azure.microsoft.com/free/)
 - [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
-- ローカル コンピューターに [Git](https://git-scm.com/downloads) がインストールされている
+- ローカル コンピューターにインストールされている [Git](https://git-scm.com/downloads)
 
 > \* Python 3.13 を使用できますが、一部の依存関係がそのリリース用にまだコンパイルされていません。 このラボでは Python 3.13.12 でテストが正常に終了しました。
 
@@ -368,7 +368,7 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 
 4. VS Code で、**[requirements.txt]** ファイルを右クリックし、**[統合ターミナルで開く]** を選択します。
 
-5. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
+5. ターミナルで、次のコマンドを入力して、必要な Python パッケージ仮想環境にインストールします。
 
     ```
     python -m venv labenv
@@ -463,9 +463,6 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 これで、コードを実行し、AI エージェント間の共同作業を確認する準備ができました。
 
 1. 統合ターミナルで、次のコマンドを実行します。
-    ```
-    az login
-    ```
 
     ```
    python workflow.py
