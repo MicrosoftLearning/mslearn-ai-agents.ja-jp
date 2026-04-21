@@ -19,10 +19,10 @@ lab:
 
 この演習を開始するには、以下のものが必要です。
 
-- ローカル コンピューターに [Visual Studio Code](https://code.visualstudio.com/) がインストールされている
+- ローカル コンピューターにインストールされている [Visual Studio Code](https://code.visualstudio.com/)
 - 有効な [Azure サブスクリプション](https://azure.microsoft.com/free/)
 - [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
-- ローカル コンピューターに [Git](https://git-scm.com/downloads) がインストールされている
+- ローカル コンピューターにインストールされている [Git](https://git-scm.com/downloads)
 
 > \* Python 3.13 を使用できますが、一部の依存関係がそのリリース用にまだコンパイルされていません。 このラボでは Python 3.13.12 でテストが正常に終了しました。
 
@@ -98,7 +98,7 @@ lab:
 
 1. **requirements.txt** ファイルを右クリックし、**[統合ターミナルで開く]** を選択します。
 
-1. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
+1. ターミナルで、次のコマンドを入力して、必要な Python パッケージ仮想環境にインストールします。
 
     ```
     python -m venv labenv
@@ -195,9 +195,6 @@ lab:
 ## アプリケーションをテストする
 
 1. 統合ターミナルで、次のコマンドを入力してアプリケーションを実行します。
-    ```
-    az login
-    ```
 
     ```
    python agent-framework.py
