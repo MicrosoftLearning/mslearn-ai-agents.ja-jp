@@ -39,6 +39,8 @@ lab:
 3. 拡張機能マーケットプレースで Microsoft の `Foundry Toolkit for VS Code` 拡張機能を検索し、**[インストール]** を選択します。
 
     Foundry Toolkit 拡張機能をインストールすると、AI Toolkit 拡張機能が VS Code に追加されます。
+    
+    > **注**: 拡張機能は現在、**Foundry Toolkit** として登録されていますが、一部の VS Code のラベル、コマンド、または以前のスクリーンショットでは、引き続き **AI Toolkit** と表示されている場合があります。 このラボでは、これらの名前が同じ拡張機能エクスペリエンスを表しているものとして扱います。
 
 4. 拡張機能をインストールしたら、サイド バーで AI Toolkit アイコンを選択します。 
 
@@ -50,7 +52,7 @@ lab:
 
 6. Azure サブスクリプションとリソース グループを選択し、Foundry プロジェクトの名前を入力して、この演習用の新しいプロジェクトを作成します。
 
-    デプロイが完了すると、プロジェクトが既定のプロジェクトとして [AI Toolkit] ペインに表示されます。
+    デプロイが完了すると、プロジェクトが既定のプロジェクトとして [Foundry Toolkit] ペインに表示されます。
 
 ## モデルをデプロイする
 
@@ -76,7 +78,7 @@ lab:
 
 6. プロジェクトのデプロイ名を右クリックし、**[プロジェクト エンドポイントのコピー]** を選択します。 次のステップでエージェントを Foundry プロジェクトに接続するために、この URL が必要になります。
 
-    ![AI Toolkit VS Code 拡張機能でプロジェクト エンドポイントをコピーしているスクリーンショット。](../Media/vs-code-endpoint.png)
+    ![Foundry Toolkit VS Code 拡張機能でのプロジェクト エンドポイントのコピーを示すスクリーンショット。](../Media/vs-code-endpoint.png)
 
 ## スタート コード リポジトリをクローンする
 
@@ -110,7 +112,7 @@ lab:
     pip install -r requirements.txt
     ```
 
-1. **.env** ファイルを開き、**[your_project_endpoint]** プレースホルダーをプロジェクトのエンドポイント (AI Toolkit VS Code 拡張機能のプロジェクト デプロイ リソースからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がモデル デプロイ名に設定されていることを確認します。 これらの変更を行った後、**Ctrl + S** を使用してファイルを保存します。
+1. **.env** ファイルを開き、**your_project_endpoint** プレースホルダーをご自分のプロジェクトのエンドポイント (Foundry Toolkit VS Code 拡張機能のプロジェクト デプロイ リソースからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がご自分のモデル デプロイ名に設定されていることを確認します。 これらの変更を行った後、**Ctrl + S** を使用してファイルを保存します。
 
 これで、MCP サーバー ツールを使用して外部データ ソースと API にアクセスする AI エージェントを作成する準備ができました。
 
@@ -385,7 +387,7 @@ lab:
 1. **Delete the agent when done (エージェントの終了時に削除する)** というコメントを見つけ、次のコードを追加します。
 
     ```python
-   # Delete the agent when done
+    # Delete the agent when done
     project_client.agents.delete_version(agent_name=agent.name, agent_version=agent.version)
     print("Deleted agent.")
     ```
@@ -405,6 +407,9 @@ lab:
 ## エージェント アプリケーションを実行する
 
 1. 統合ターミナルで、次のコマンドを入力してアプリケーションを実行します。
+    ```
+    az login
+    ```
 
     ```
    python agent.py
