@@ -6,7 +6,7 @@
 
 [このリポジトリの GitHub Pages サイト](https://go.microsoft.com/fwlink/?linkid=2310820)で演習を表示します。
 
-> **注**: これらの演習は単独でも完了できますが、[Microsoft Learn](https://learn.microsoft.com/training/paths/develop-ai-agents-on-azure/) のモジュールを補完するように設計されています。このモジュールでは、これらの演習の基になる概念の一部について詳しく説明しています。
+> **注**: これらの演習は単独でも完了できますが、[Microsoft Learn](https://learn.microsoft.com/training/paths/develop-ai-agents-azure/) のモジュールを補完するように設計されています。このモジュールでは、これらの演習の基になる概念の一部について詳しく説明しています。
 
 このリポジトリ内のアプリケーションからコードをローカルで実行する場合は、Python 3.12 以降が必要です。
 
