@@ -24,7 +24,7 @@ lab:
 - [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
 - ローカル コンピューターに [Git](https://git-scm.com/downloads) がインストールされている
 
-> \* Python 3.13 を使用できますが、一部の依存関係がそのリリース用にまだコンパイルされていません。 このラボでは Python 3.13.12 でテストが正常に終了しました。
+> \* Python 3.13 を使用できますが、一部の依存関係がそのリリース用にまだコンパイルされていません。 このラボでは Python 3.12 でテストが正常に終了しました。
 
 ## Foundry Toolkit for VS Code 拡張機能を使用して Foundry プロジェクトを作成する
 
