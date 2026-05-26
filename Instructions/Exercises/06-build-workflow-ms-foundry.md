@@ -46,10 +46,10 @@ lab:
 
 この演習を開始するには、以下のものが必要です。
 
-- ローカル コンピューターにインストールされている [Visual Studio Code](https://code.visualstudio.com/)
+- ローカル コンピューターに [Visual Studio Code](https://code.visualstudio.com/) がインストールされている
 - 有効な [Azure サブスクリプション](https://azure.microsoft.com/free/)
 - [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
-- ローカル コンピューターにインストールされている [Git](https://git-scm.com/downloads)
+- ローカル コンピューターに [Git](https://git-scm.com/downloads) がインストールされている
 
 > \* Python 3.13 を使用できますが、一部の依存関係がそのリリース用にまだコンパイルされていません。 このラボでは Python 3.13.12 でテストが正常に終了しました。
 
@@ -368,7 +368,7 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 
 4. VS Code で、**[requirements.txt]** ファイルを右クリックし、**[統合ターミナルで開く]** を選択します。
 
-5. ターミナルで、次のコマンドを入力して、必要な Python パッケージ仮想環境にインストールします。
+5. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
 
     ```
     python -m venv labenv
@@ -440,13 +440,15 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 5. コメント **Process events from the workflow run** を見つけ、次のコードを追加してストリーミングされた出力を処理し、メッセージをコンソールに出力します。
 
     ```python
-    # Process events from the workflow run
+   # Process events from the workflow run
    for event in stream:
-        if (event.type == "response.completed"):
-            print("\nResponse completed:")
-            response = openai_client.responses.retrieve(event.response.id)
-            print(f"{response.output_text}")
+       if (event.type == "response.completed"):
+           print("\nResponse completed:")
+           response = openai_client.responses.retrieve(event.response.id)
+           print_workflow_output(response.output_text)
     ```
+
+    このコードは、ワークフロー応答の完了をリッスンし、最終的な出力テキストを取得してコンソールに出力します。 `print_workflow_output` 関数は、ヘルパー関数であり、出力を読みやすく書式設定するコード ファイル内で定義されています。
 
 6. コメント **Clean up resources (リソースをクリーンアップする)** を見つけ、次のコードを入力して不要になった会話を削除します。
 
@@ -463,6 +465,9 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 これで、コードを実行し、AI エージェント間の共同作業を確認する準備ができました。
 
 1. 統合ターミナルで、次のコマンドを実行します。
+    ```
+    az login
+    ```
 
     ```
    python workflow.py
