@@ -186,7 +186,7 @@ lab:
    response = openai_client.responses.create(
        conversation=conversation.id,
        input="Give me the Azure CLI commands to create an Azure Container App with a managed identity.",
-       extra_body={"agent": {"name": agent.name, "type": "agent_reference"}},
+      extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
    )
     ```
 
@@ -220,7 +220,7 @@ lab:
    response = openai_client.responses.create(
        input=input_list,
        previous_response_id=response.id,
-       extra_body={"agent": {"name": agent.name, "type": "agent_reference"}},
+       extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
    )
 
    print(f"\nAgent response: {response.output_text}")
@@ -477,7 +477,7 @@ MCP クライアントは、MCP サーバーに接続してツールの検出と
       response = openai_client.responses.create(
             input=input_list,
             previous_response_id=response.id,
-            extra_body={"agent": {"name": agent.name, "type": "agent_reference"}},
+            extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
       )
    print(f"Agent response: {response.output_text}")
     ```
