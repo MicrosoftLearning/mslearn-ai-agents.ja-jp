@@ -292,7 +292,7 @@ In addition to connecting to remote MCP servers, you can also create your own cu
 
     ```python
    # Add references
-   from mcp.server.fastmcp import FastMCP
+   from fastmcp import FastMCP
     ```
 
 1. コメント **Create an MCP server** の下に、次のコードを追加して新しい MCP サーバー インスタンスを作成します。
@@ -304,7 +304,7 @@ In addition to connecting to remote MCP servers, you can also create your own cu
 
     このコードにより、"Inventory" というラベルで新しい MCP サーバーが初期化されます。
 
-1. コメント **Add an inventory check mcp tool** を見つけ、関数定義の上に次のデコレーターを追加します。
+1. コメント **インベントリ チェック mcp ツールを追加する** を見つけ、関数定義の上に次のデコレーターを追加します。これは次のようになります。
 
     ```python
    # Add an inventory check mcp tool
@@ -315,7 +315,7 @@ In addition to connecting to remote MCP servers, you can also create your own cu
 
     このディクショナリは、サンプル インベントリを表します。 `@mcp.tool()` デコレーターは、MCP サーバー上にツールとして関数を登録し、LLM が関数を検出できるようにします。
 
-1. コメント **Add a weekly sales mcp tool** を見つけ、関数定義の上に次のデコレーターを追加します。
+1. コメント **週単位の営業 mcp ツールを追加する** を見つけ、関数定義の上に次のデコレーターを追加します。これは次のようになります。
 
     ```python
    # Add a weekly sales mcp tool
