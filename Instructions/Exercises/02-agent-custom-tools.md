@@ -5,6 +5,7 @@ lab:
   level: 300
   duration: 50
   islab: true
+  status: released
 ---
 
 # AI エージェントでカスタム関数を使用する

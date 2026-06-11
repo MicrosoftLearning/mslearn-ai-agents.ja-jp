@@ -5,6 +5,7 @@ lab:
   level: 300
   duration: 30
   islab: true
+  status: released
 ---
 
 # Microsoft Agent Framework SDK を使用して Azure AI チャット エージェントを開発する
