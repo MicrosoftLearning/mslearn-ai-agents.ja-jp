@@ -5,6 +5,7 @@ lab:
   level: 300
   duration: 60
   islab: true
+  status: released
 ---
 
 # モデル コンテキスト プロトコル (MCP) ツールを使用してエージェントを拡張する

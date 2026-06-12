@@ -5,6 +5,7 @@ lab:
   level: 300
   duration: 40
   islab: true
+  status: released
 ---
 
 # エージェントを Microsoft Teams と Copilot にデプロイする

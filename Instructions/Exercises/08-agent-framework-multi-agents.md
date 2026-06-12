@@ -5,6 +5,7 @@ lab:
   level: 300
   duration: 30
   islab: true
+  status: released
 ---
 
 # Microsoft Agent Framework を使用してマルチエージェント ソリューションを開発する

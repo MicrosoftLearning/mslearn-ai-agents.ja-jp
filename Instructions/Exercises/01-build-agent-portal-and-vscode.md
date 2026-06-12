@@ -5,6 +5,7 @@ lab:
   level: 300
   duration: 45
   islab: true
+  status: released
 ---
 
 # ポータルと VS Code を使用して AI エージェントを構築する
