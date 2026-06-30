@@ -129,7 +129,7 @@ lab:
     ```python
    # Add references
    from agent_framework import tool, Agent
-   from agent_framework.azure import AzureOpenAIResponsesClient
+   from agent_framework.foundry import FoundryChatClient
    from azure.identity import AzureCliCredential
    from pydantic import Field
    from typing import Annotated
@@ -151,29 +151,39 @@ lab:
 
     > **注**: この関数は、コンソールにメールを出力することで電子メールの送信を*シミュレート*します。 実際のアプリケーションでは、SMTP サービスなどの手法で電子メールを実際に送信します。
 
-1. **send_email** コードの上に戻り、**process_expenses_data** 関数で、コメント **Create a client and initialize an agent with the tool and instructions** を見つけ、次のコードを追加します。
+1. **send_email** コードの上に戻り、**process_expenses_data** 関数で、**Create a foundry chat client** というコメントを見つけ、次のコードを追加します。
 
     (インデント レベルは必ず維持してください)
 
     ```python
-   # Create a client and initialize an agent with the tool and instructions
-   credential = AzureCliCredential()
-   async with (
-        Agent(
-            client=AzureOpenAIResponsesClient(
-                credential=credential,
-                deployment_name=os.getenv("MODEL_DEPLOYMENT_NAME"),
-                project_endpoint=os.getenv("PROJECT_ENDPOINT"),
-            ),
-            instructions="""You are an AI assistant for expense claim submission.
-                        At the user's request, create an expense claim and use the plug-in function to send an email to expenses@contoso.com with the subject 'Expense Claim`and a body that contains itemized expenses with a total.
-                        Then confirm to the user that you've done so. Don't ask for any more information from the user, just use the data provided to create the email.""",
-            tools=[submit_claim],
-        ) as agent,
-    ):
+   # Create a foundry chat client 
+   client = FoundryChatClient(
+       project_endpoint=os.getenv("PROJECT_ENDPOINT"),
+       model=os.getenv("MODEL_DEPLOYMENT_NAME"),
+       credential=AzureCliCredential()
+   )
     ```
 
-    **AzureCliCredential** オブジェクトを使用すると、お使いの Azure アカウントに対してコードが認証できるようになることに注意してください。 **AzureOpenAIResponsesClient** オブジェクトには、.env 構成からの Foundry プロジェクト設定が含まれています。 **Agent** オブジェクトは、クライアント、エージェントへの指示、およびメール送信のために定義したツール関数を使用して初期化されます。
+    **AzureCliCredential** オブジェクトを使用すると、お使いの Azure アカウントに対してコードが認証できるようになることに注意してください。 このクライアントは、Foundry エージェント サービスとのやり取りに使用されます。
+
+2. **Initialize an agent with the tool and instructions** というコメントを見つけ、以下のコードを追加します。
+
+    (インデント レベルは必ず維持してください)
+
+    ```python
+   # Initialize an agent with the tool and instructions
+   async with (
+       Agent(
+           client=client,
+           name="ExpenseClaimAgent",
+           instructions="""You are an AI assistant for expense claim submission.
+                       At the user's request, create an expense claim and use the plug-in function to send an email to expenses@contoso.com with the subject 'Expense Claim`and a body that contains itemized expenses with a total.
+                       Then confirm to the user that you've done so. Don't ask for any more information from the user, just use the data provided to create the email.""",
+           tools=[submit_claim],
+       ) as agent,
+   ):
+    ```
+    このコードでは、**Agent** オブジェクトは、クライアント、エージェントの指示、および電子メールを送信するために定義したツール関数を使用して初期化されます。
 
 1. 「**Use the agent to process the expenses data （エージェントを使用して経費データを処理する)**」というコメントを見つけて、次のコードを追加し、エージェントを実行するスレッドを作成してから、チャット メッセージで呼び出します。
 
@@ -206,6 +216,8 @@ lab:
     ```
    python agent-framework.py
     ```
+
+    `az login` では、AzureCliCredential で Azure アカウントに対する認証を行うことができます。
 
 1. 経費データの処理方法を質問されたら、次のプロンプトを入力します。
 

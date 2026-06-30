@@ -329,10 +329,10 @@ In addition to connecting to remote MCP servers, you can also create your own cu
 
     ```python
    # Run the MCP server
-   mcp.run()
+   mcp.run(show_banner=False)
     ```
 
-    このコードは MCP サーバーを起動し、エージェントがツールを検出して使用できるようにします。
+    このコードは MCP サーバーを起動し、エージェントがツールを検出して使用できるようにします。 `show_banner=False` を設定すると、スタートアップ バナーが stdout に出力されなくなり、MCP stdio プロトコルが破損します。
 
 1. ファイルを保存します (*CTRL+S*)。
 
