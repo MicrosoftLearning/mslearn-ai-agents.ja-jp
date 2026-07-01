@@ -122,7 +122,7 @@ lab:
 
    ```env
    PROJECT_ENDPOINT=https://your-project.services.ai.azure.com/api/projects/your-id
-   MODEL_DEPLOYMENT_NAME=gpt-4.1
+   MODEL_DEPLOYMENT_NAME=gpt-5
    ```
 
    > **ヒント:** エンドポイントを取得するには、VS Code で、**[Foundry Toolkit]** 拡張機能を開き、アクティブなプロジェクトを右クリックし、**[エンドポイントのコピー]** を選択します。 Foundry Toolkit は、Foundry Toolkit for VS Code 拡張機能に含まれています。
