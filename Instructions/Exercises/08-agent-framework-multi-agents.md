@@ -127,15 +127,10 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 
     ```python
    # Add references
-   import asyncio
-   from typing import cast
-   from dotenv import load_dotenv
    from agent_framework import Message
-   from agent_framework.azure import AzureAIAgentClient
+   from agent_framework.foundry import FoundryChatClient
    from agent_framework.orchestrations import SequentialBuilder
    from azure.identity import AzureCliCredential
-
-   load_dotenv()
     ```
 
 1. **main** 関数で、エージェントの指示をレビューします。 これらの手順で、オーケストレーション内の各エージェントの動作を定義します。
@@ -145,12 +140,14 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
     ```python
    # Create the chat client
    credential = AzureCliCredential()
-   async with (
-       AzureAIAgentClient(credential=credential) as chat_client,
-   ):
+   chat_client = FoundryChatClient(
+       credential=credential,
+       project_endpoint=os.getenv("AZURE_AI_PROJECT_ENDPOINT"),
+       model=os.getenv("AZURE_AI_MODEL_DEPLOYMENT_NAME"),
+   )
     ```
 
-    **AzureCliCredential** オブジェクトを使用すると、お使いの Azure アカウントに対してコードが認証できるようになることに注意してください。 **AzureAIAgentClient** オブジェクトには、.env 構成の Foundry プロジェクト設定が自動的に含まれます。
+    **AzureCliCredential** オブジェクトを使用すると、お使いの Azure アカウントに対してコードが認証できるようになることに注意してください。 **FoundryChatClient** オブジェクトは、.env 構成のエンドポイントとモデルのデプロイ名を使用して Foundry プロジェクトに接続します。
 
 1. **Create agents (エージェントを作成する)** というコメントの下に、次のコードを追加します。
 
@@ -158,19 +155,19 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 
     ```python
    # Create agents
-   summarizer = chat_client.as_agent(
-       instructions=summarizer_instructions,
+   summarizer_agent = chat_client.as_agent(
        name="summarizer",
+       instructions=summarizer_instructions,
    )
 
-   classifier = chat_client.as_agent(
-       instructions=classifier_instructions,
+   classifier_agent = chat_client.as_agent(
        name="classifier",
+       instructions=classifier_instructions,
    )
 
-   action = chat_client.as_agent(
-       instructions=action_instructions,
+   action_agent = chat_client.as_agent(
        name="action",
+       instructions=action_instructions,
    )
     ```
 
@@ -193,19 +190,20 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 
     ```python
    # Build sequential orchestration
-   workflow = SequentialBuilder(participants=[summarizer, classifier, action]).build()
+   workflow = SequentialBuilder(
+       participants=[summarizer_agent, classifier_agent, action_agent],
+       output_from="all",
+   ).build()
     ```
 
-    エージェントは、オーケストレーションに追加された順序でフィードバックを処理します。
+    エージェントは、オーケストレーションに追加された順序でフィードバックを処理します。 `output_from="all"` パラメーターを使用すると、すべてのエージェントからの出力が確実に収集されます。
 
 1. **Run and collect outputs (実行して出力を収集する)** というコメントの下に、次のコードを追加します。
 
     ```python
    # Run and collect outputs
-   outputs: list[list[Message]] = []
-   async for event in workflow.run(f"Customer feedback: {feedback}", stream=True):
-       if event.type == "output":
-           outputs.append(cast(list[Message], event.data))
+   result = await workflow.run(f"Customer feedback: {feedback}")
+   outputs = result.get_outputs()
     ```
 
     このコードはオーケストレーションを実行し、参加している各エージェントからの出力を収集します。
@@ -214,10 +212,12 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 
     ```python
    # Display outputs
-   if outputs:
-       for i, msg in enumerate(outputs[-1], start=1):
+   i = 1
+   for response in outputs:
+       for msg in cast(list[Message], response.messages):
            name = msg.author_name or ("assistant" if msg.role == "assistant" else "user")
            print(f"{'-' * 60}\n{i:02d} [{name}]\n{msg.text}")
+           i += 1
     ```
 
     このコードは、オーケストレーションから収集したワークフロー出力からのメッセージを書式設定して表示します。
@@ -241,22 +241,18 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 1. 次のような出力が表示されるはずです。
 
     ```output
+    User requests a dark mode option for more comfortable nighttime use.
+    Feature request
+    Log as enhancement request to add dark mode for improved user comfort during nighttime use.
     ------------------------------------------------------------
-    01 [user]
-    Customer feedback:
-        I use the dashboard every day to monitor metrics, and it works well overall.
-        But when I'm working late at night, the bright screen is really harsh on my eyes.
-        If you added a dark mode option, it would make the experience much more comfortable.
-
+    01 [summarizer]
+    User requests a dark mode option for more comfortable nighttime use.
     ------------------------------------------------------------
-    02 [summarizer]
-    User requests a dark mode for better nighttime usability.
-    ------------------------------------------------------------
-    03 [classifier]
+    02 [classifier]
     Feature request
     ------------------------------------------------------------
-    04 [action]
-    Log as enhancement request for product backlog.
+    03 [action]
+    Log as enhancement request to add dark mode for improved user comfort during nighttime use.
     ```
 
 1. 必要に応じて、次のようなさまざまなフィードバック入力を使用してコードの実行を試すこともできます。
