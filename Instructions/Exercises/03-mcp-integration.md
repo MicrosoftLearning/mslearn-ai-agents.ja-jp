@@ -195,37 +195,38 @@ lab:
 
     ```python
    # Process any MCP approval requests that were generated
-   input_list: ResponseInputParam = []
-   for item in response.output:
-       if item.type == "mcp_approval_request":
-           if item.server_label == "api-specs" and item.id:
-               # Automatically approve the MCP request to allow the agent to proceed
-               input_list.append(
-                   McpApprovalResponse(
-                       type="mcp_approval_response",
-                       approve=True,
-                       approval_request_id=item.id,
+   # The agent may issue several tool calls, each needing its own approval,
+   # so we loop until there are none left.
+   while True:
+       # Collect any MCP approval requests from the latest response
+       input_list: ResponseInputParam = []
+       for item in response.output:
+           if item.type == "mcp_approval_request":
+               if item.server_label == "api-specs" and item.id:
+                   # Automatically approve the MCP request to allow the agent to proceed
+                   input_list.append(
+                       McpApprovalResponse(
+                           type="mcp_approval_response",
+                           approve=True,
+                           approval_request_id=item.id,
+                       )
                    )
-               )
 
-   print("Final input:")
-   print(input_list)
-    ```
+       # No more approvals needed -> the agent has produced its final response
+       if not input_list:
+           break
 
-    このコードは、エージェントの応答で MCP 承認要求をリッスンし、自動的に承認します。
-
-1. コメント **Send the approval response back and retrieve a response** を見つけて、次のコードを追加します。
-
-    ```python
-   # Send the approval response back and retrieve a response
-   response = openai_client.responses.create(
-       input=input_list,
-       previous_response_id=response.id,
-       extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
-   )
+       # Send the approval response back and retrieve the next response
+       response = openai_client.responses.create(
+           input=input_list,
+           previous_response_id=response.id,
+           extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
+       )
 
    print(f"\nAgent response: {response.output_text}")
     ```
+
+    このコードは、エージェントの応答で MCP 承認要求をリッスンし、自動的に承認します。
 
 1. コメント **Clean up resources by deleting the agent version** を見つけて、次のコードを追加します。
 
@@ -256,9 +257,7 @@ lab:
     ```
     Agent created (id: MyAgent:2, name: MyAgent, version: 2)
     Created conversation (id: conv_086911ecabcbc05700BBHIeNRoPSO5tKPHiXRkgHuStYzy27BS)
-    Final input:
-    [{'type': 'mcp_approval_response', 'approve': True, 'approval_request_id': '{approval_request_id}'}]
-
+    
     Agent response: Here are Azure CLI commands to create an Azure Container App with a managed identity:
 
     **1. For a System-assigned Managed Identity**
