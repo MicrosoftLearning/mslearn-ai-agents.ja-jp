@@ -67,7 +67,7 @@ lab:
    - **[デプロイ名]**:"gpt-5" のような名前を入力します
    - **デプロイの種類**:**[グローバル標準]** (グローバル標準を使用できない場合は **[標準]**) を選択します
    - **モデルのバージョン**: デフォルトのままにする
-   - **1 分あたりのトークン数**:デフォルトのままにする
+   - **[1 分あたりのトークン数]**: 1 分あたりのトークン数の上限を 150,000 以上に引き上げてください。
 
 1. 左下隅にある **[Microsoft Foundry にデプロイ]** を選択します。
 
@@ -257,7 +257,7 @@ lab:
     ```
     Agent created (id: MyAgent:2, name: MyAgent, version: 2)
     Created conversation (id: conv_086911ecabcbc05700BBHIeNRoPSO5tKPHiXRkgHuStYzy27BS)
-    
+
     Agent response: Here are Azure CLI commands to create an Azure Container App with a managed identity:
 
     **1. For a System-assigned Managed Identity**
