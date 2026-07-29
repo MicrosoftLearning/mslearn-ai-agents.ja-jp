@@ -64,15 +64,15 @@ Microsoft Foundry では "プロジェクト" を使って、AI ソリューシ�
 1. **[手順]** を次の値に設定します。
 
     ```
-    You are an Enterprise Knowledge Assistant for Contoso Corporation.
-    
-    Your role:
-    - Answer questions about company policies and procedures
-    - Provide accurate information from uploaded documents
-    - Be professional, helpful, and concise
-    - If you don't know the answer, say so and suggest who to contact
-    
-    Always cite your sources when referencing specific policies.
+   You are an Enterprise Knowledge Assistant for Contoso Corporation.
+
+   Your role:
+   - Answer questions about company policies and procedures
+   - Provide accurate information from uploaded documents
+   - Be professional, helpful, and concise
+   - If you don't know the answer, say so and suggest who to contact
+
+   Always cite your sources when referencing specific policies.
     ```
 
 2. **[保存]** を選んで、現在のエージェント構成を保存します。
@@ -82,13 +82,13 @@ Microsoft Foundry では "プロジェクト" を使って、AI ソリューシ�
     **IT セキュリティ ポリシー:**
 
     ```
-    https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ai-agents/main/Labfiles/05a-m365-teams-integration/Python/sample_documents/it_security_policy.txt
+   https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ai-agents/main/Labfiles/05a-m365-teams-integration/Python/sample_documents/it_security_policy.txt
     ```
 
     **リモート ワーク ポリシー:**
 
     ```
-    https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ai-agents/main/Labfiles/05a-m365-teams-integration/Python/sample_documents/remote_work_policy.txt
+   https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ai-agents/main/Labfiles/05a-m365-teams-integration/Python/sample_documents/remote_work_policy.txt
     ```
 
 4. エージェントの構成に戻り、**[ツール]** セクションまでスクロールします。
@@ -104,7 +104,7 @@ Microsoft Foundry では "プロジェクト" を使って、AI ソリューシ�
 1. プレイグラウンドで、次のように IT セキュリティについて質問します。
 
     ```
-    What are the password requirements for my laptop?
+   What are the password requirements for my laptop?
     ```
 
 2. エージェントが IT セキュリティ ポリシーからの具体的な情報を返すはずです (12 文字以上、大文字、小文字、数字、特殊文字など)。
@@ -112,7 +112,7 @@ Microsoft Foundry では "プロジェクト" を使って、AI ソリューシ�
 3. リモート ワークについての質問を試します。
 
     ```
-    What are the core hours for remote employees?
+   What are the core hours for remote employees?
     ```
 
 4. エージェントが応答としてリモート ワーク ポリシーからの情報を提示するはずです (午前 9 時から午後 3 時まで)
@@ -120,7 +120,7 @@ Microsoft Foundry では "プロジェクト" を使って、AI ソリューシ�
 5. 別のクエリを試します。
 
     ```
-    What encryption is required on company laptops?
+   What encryption is required on company laptops?
     ```
 
 6. エージェントがどのように正しいドキュメントを見つけて BitLocker の要件に関する正確な回答を返すかに注目してください
@@ -233,19 +233,19 @@ Teams アプリには次の 2 つのアイコンが必要です。
 2. あいさつを送ります。
 
     ```
-    Hello! What can you help me with?
+   Hello! What can you help me with?
     ```
 
 3. ナレッジ クエリをテストします。
 
     ```
-    What are the laptop password requirements?
+   What are the laptop password requirements?
     ```
 
 4. 別の質問を試します。
 
     ```
-    What MFA methods are supported?
+   What MFA methods are supported?
     ```
 
 5. エージェントの応答として、IT セキュリティ ポリシー ドキュメントからの情報が返されるはずです。
@@ -345,13 +345,13 @@ Teams アプリには次の 2 つのアイコンが必要です。
 4. 会話を開始します。
 
     ```
-    @Enterprise Knowledge Agent What are the laptop security requirements?
+   @Enterprise Knowledge Agent What are the laptop security requirements?
     ```
 
 5. または、エージェントを選択して直接質問します。
 
     ```
-    What MFA methods are supported for company systems?
+   What MFA methods are supported for company systems?
     ```
 
 6. クエリが Copilot からエージェントに転送されて、IT セキュリティ ポリシーからの情報が返されます

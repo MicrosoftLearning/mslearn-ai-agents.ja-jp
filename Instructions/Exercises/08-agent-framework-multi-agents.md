@@ -94,7 +94,7 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 1. リポジトリの URL を入力します。
 
     ```
-    https://github.com/MicrosoftLearning/mslearn-ai-agents.git
+   https://github.com/MicrosoftLearning/mslearn-ai-agents.git
     ```
 
 1. リポジトリをクローンするローカル コンピューター上の場所を選択します。
@@ -110,9 +110,9 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 1. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
 
     ```
-    python -m venv labenv
-    .\labenv\Scripts\Activate.ps1
-    pip install -r requirements.txt
+   python -m venv labenv
+   .\labenv\Scripts\Activate.ps1
+   pip install -r requirements.txt
     ```
 
 1. **.env** ファイルを開き、**your_project_endpoint** プレースホルダーをプロジェクトのエンドポイント (Foundry Toolkit 拡張機能のプロジェクト デプロイ リソースからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がモデル デプロイ名に設定されていることを確認します。 これらの変更を行った後、**Ctrl + S** を使用してファイルを保存します。
@@ -231,7 +231,7 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 1. 統合ターミナルで、次のコマンドを入力してアプリケーションを実行します。
 
     ```
-    az login
+   az login
     ```
 
     ```
@@ -241,24 +241,24 @@ Microsoft Agent Framework SDK を使用して問題を切り分け、適切な�
 1. 次のような出力が表示されるはずです。
 
     ```output
-    User requests a dark mode option for more comfortable nighttime use.
-    Feature request
-    Log as enhancement request to add dark mode for improved user comfort during nighttime use.
-    ------------------------------------------------------------
-    01 [summarizer]
-    User requests a dark mode option for more comfortable nighttime use.
-    ------------------------------------------------------------
-    02 [classifier]
-    Feature request
-    ------------------------------------------------------------
-    03 [action]
-    Log as enhancement request to add dark mode for improved user comfort during nighttime use.
+   User requests a dark mode option for more comfortable nighttime use.
+   Feature request
+   Log as enhancement request to add dark mode for improved user comfort during nighttime use.
+   ------------------------------------------------------------
+   01 [summarizer]
+   User requests a dark mode option for more comfortable nighttime use.
+   ------------------------------------------------------------
+   02 [classifier]
+   Feature request
+   ------------------------------------------------------------
+   03 [action]
+   Log as enhancement request to add dark mode for improved user comfort during nighttime use.
     ```
 
 1. 必要に応じて、次のようなさまざまなフィードバック入力を使用してコードの実行を試すこともできます。
 
     ```output
-    I reached out to your customer support yesterday because I couldn't access my account. The representative responded almost immediately, was polite and professional, and fixed the issue within minutes. Honestly, it was one of the best support experiences I've ever had.
+   I reached out to your customer support yesterday because I couldn't access my account. The representative responded almost immediately, was polite and professional, and fixed the issue within minutes. Honestly, it was one of the best support experiences I've ever had.
     ```
 
 1. 完了したら、ターミナルに「`deactivate`」と入力して、Python 仮想環境を終了します。

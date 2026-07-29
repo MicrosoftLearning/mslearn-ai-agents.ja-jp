@@ -90,7 +90,7 @@ lab:
 1. リポジトリの URL を入力します。
 
     ```
-    https://github.com/MicrosoftLearning/mslearn-ai-agents.git
+   https://github.com/MicrosoftLearning/mslearn-ai-agents.git
     ```
 
 1. リポジトリをクローンするローカル コンピューター上の場所を選択します。
@@ -106,20 +106,20 @@ lab:
     提供されるファイルは次のとおりです。
 
     ```output
-    python
-    ├── outline_agent/
-    │   ├── agent.py
-    │   ├── agent_executor.py
-    │   └── server.py
-    ├── routing_agent/
-    │   ├── agent.py
-    │   └── server.py
-    ├── title_agent/
-    │   ├── agent.py
-    |   ├── agent_executor.py
-    │   └── server.py
-    ├── client.py
-    └── run_all.py
+   python
+   ├── outline_agent/
+   │   ├── agent.py
+   │   ├── agent_executor.py
+   │   └── server.py
+   ├── routing_agent/
+   │   ├── agent.py
+   │   └── server.py
+   ├── title_agent/
+   │   ├── agent.py
+   |   ├── agent_executor.py
+   │   └── server.py
+   ├── client.py
+   └── run_all.py
     ```
 
     各エージェント フォルダーには、Azure AI エージェント コードと、エージェントをホストするサーバーが格納されています。 **ルーティング エージェント**は、**タイトル** エージェントと**アウトライン** エージェントの検出と通信を担当します。 ユーザーは**クライアント**を使用して、ルーティング エージェントにプロンプトを送信できます。 `run_all.py` を使用すると、すべてのサーバーを起動し、クライアントを実行することができます。
@@ -129,9 +129,9 @@ lab:
 1. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
 
     ```
-    python -m venv labenv
-    .\labenv\Scripts\Activate.ps1
-    pip install -r requirements.txt
+   python -m venv labenv
+   .\labenv\Scripts\Activate.ps1
+   pip install -r requirements.txt
     ```
 
 1. **.env** ファイルを開き、**your_project_endpoint** プレースホルダーをプロジェクトのエンドポイント (Foundry Toolkit 拡張機能のプロジェクト デプロイ リソースからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がモデル デプロイ名に設定されていることを確認します。 これらの変更を行った後、**Ctrl + S** を使用してファイルを保存します。
@@ -382,11 +382,11 @@ lab:
 1. 統合ターミナルで、次のコマンドを入力してアプリケーションを実行します。
 
     ```
-    az login
+   az login
     ```
 
     ```
-    python run_all.py
+   python run_all.py
     ```
 
     アプリケーションは、認証済みの Azure セッションの資格情報を使用して実行され、プロジェクトに接続してエージェントを作成して実行します。 各サーバーが起動すると、その出力が表示されます。

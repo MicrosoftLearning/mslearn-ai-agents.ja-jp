@@ -88,7 +88,7 @@ lab:
 1. リポジトリの URL を入力します。
 
     ```
-    https://github.com/MicrosoftLearning/mslearn-ai-agents.git
+   https://github.com/MicrosoftLearning/mslearn-ai-agents.git
     ```
 
 1. リポジトリをクローンするローカル コンピューター上の場所を選択します。
@@ -104,9 +104,9 @@ lab:
 1. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
 
     ```
-    python -m venv labenv
-    .\labenv\Scripts\Activate.ps1
-    pip install -r requirements.txt
+   python -m venv labenv
+   .\labenv\Scripts\Activate.ps1
+   pip install -r requirements.txt
     ```
 
 1. **.env** ファイルを開き、**your_project_endpoint** プレースホルダーをプロジェクトのエンドポイント (Foundry Toolkit 拡張機能のプロジェクト デプロイ リソースからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がモデル デプロイ名に設定されていることを確認します。 これらの変更を行った後、**Ctrl + S** を使用してファイルを保存します。
@@ -210,7 +210,7 @@ lab:
 1. 統合ターミナルで、次のコマンドを入力してアプリケーションを実行します。
 
     ```
-    az login
+   az login
     ```
 
     ```

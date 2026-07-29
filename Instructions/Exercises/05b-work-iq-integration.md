@@ -36,21 +36,21 @@ lab:
 
 2. npm 経由で Work IQ をグローバルにインストールします:
 
-   ```bash
+    ```bash
    npm install -g @microsoft/workiq
-   ```
+    ```
 
 3. 使用許諾契約書に同意します:
 
-   ```bash
+    ```bash
    workiq accept-eula
-   ```
+    ```
 
 4. Work IQ のインストールをテストします:
 
-   ```bash
+    ```bash
    workiq ask -q "What meetings do I have today?"
-   ```
+    ```
 
 5. **テストが成功した場合** - M365 予定表の会議情報が表示されます。 次のタスクに進みます。
 
@@ -74,9 +74,9 @@ lab:
 
 2. コマンドを入力して、リポジトリをローカル フォルダーにクローンします (どのフォルダーでも問題ありません)。
 
-   ```bash
+    ```bash
    git clone https://github.com/MicrosoftLearning/mslearn-ai-agents.git
-   ```
+    ```
 
 3. リポジトリを複製したら、Visual Studio Code でフォルダーを開きます。
 
@@ -92,38 +92,38 @@ lab:
 
 6. ターミナルに次のコマンドを入力して Python 仮想環境を作成します。
 
-   ```bash
+    ```bash
    python -m venv venv
-   ```
+    ```
 
 7. 次のコマンドを実行して、仮想環境をアクティブにします。
 
    **Windows:**
 
-   ```bash
+    ```bash
    venv\Scripts\activate
-   ```
+    ```
 
    **macOS/Linux**:
 
-   ```bash
+    ```bash
    source venv/bin/activate
-   ```
+    ```
 
 8. 必要な Python パッケージをインストールします:
 
-   ```bash
+    ```bash
    pip install -r requirements.txt
-   ```
+    ```
 
 9. `.env` ファイルを構成します:
 
    ラボ フォルダーで、`.env` ファイルを開き、それを Foundry プロジェクト エンドポイントで更新します:
 
-   ```env
+    ```env
    PROJECT_ENDPOINT=https://your-project.services.ai.azure.com/api/projects/your-id
    MODEL_DEPLOYMENT_NAME=gpt-5
-   ```
+    ```
 
    > **ヒント:** エンドポイントを取得するには、VS Code で、**[Foundry Toolkit]** 拡張機能を開き、アクティブなプロジェクトを右クリックし、**[エンドポイントのコピー]** を選択します。 Foundry Toolkit は、Foundry Toolkit for VS Code 拡張機能に含まれています。
 
@@ -147,9 +147,9 @@ lab:
 
 2. ラボ アプリケーションを実行します:
 
-   ```bash
+    ```bash
    python workiq_lab.py
-   ```
+    ```
 
 3. アプリケーションによって次の操作が行われます:
    - Work IQ のセットアップを検証する
@@ -270,27 +270,27 @@ lab:
 
    **メール検索:**
 
-   ```
+    ```
    Find emails about the budget from my manager
-   ```
+    ```
 
    **会議の要約:**
 
-   ```
+    ```
    What was decided in yesterday's standup?
-   ```
+    ```
 
    **チーム アクティビティ:**
 
-   ```
+    ```
    What did the engineering team discuss this week?
-   ```
+    ```
 
    **ドキュメントの検出:**
 
-   ```
+    ```
    Show me shared documents about security policies
-   ```
+    ```
 
 3. 次の内容を試します:
    - 異なる時間範囲

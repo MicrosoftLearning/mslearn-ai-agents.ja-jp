@@ -88,7 +88,7 @@ lab:
 1. リポジトリの URL を入力します。
 
     ```
-    https://github.com/MicrosoftLearning/mslearn-ai-agents.git
+   https://github.com/MicrosoftLearning/mslearn-ai-agents.git
     ```
 
 1. リポジトリをクローンするローカル コンピューター上の場所を選択します。
@@ -104,9 +104,9 @@ lab:
 1. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
 
     ```
-    python -m venv labenv
-    .\labenv\Scripts\Activate.ps1
-    pip install -r requirements.txt
+   python -m venv labenv
+   .\labenv\Scripts\Activate.ps1
+   pip install -r requirements.txt
     ```
 
 1. **.env** ファイルを開き、**your_project_endpoint** プレースホルダーをプロジェクトのエンドポイント (Foundry Toolkit 拡張機能のプロジェクト デプロイ リソースからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がモデル デプロイ名に設定されていることを確認します。 これらの変更を行った後、**Ctrl + S** を使用してファイルを保存します。
@@ -245,7 +245,7 @@ lab:
 1. 統合ターミナルで、次のコマンドを入力してアプリケーションを実行します。
 
     ```
-    az login
+   az login
     ```
 
     ```
@@ -255,12 +255,12 @@ lab:
 1. エージェントがプロンプトを処理するまで待ち、MCP サーバーを使用して、要求された情報を取得するための適切なツールを見つけます。 次のような出力が表示されるはずです。
 
     ```
-    Agent created (id: MyAgent:2, name: MyAgent, version: 2)
-    Created conversation (id: conv_086911ecabcbc05700BBHIeNRoPSO5tKPHiXRkgHuStYzy27BS)
+   Agent created (id: MyAgent:2, name: MyAgent, version: 2)
+   Created conversation (id: conv_086911ecabcbc05700BBHIeNRoPSO5tKPHiXRkgHuStYzy27BS)
 
-    Agent response: Here are Azure CLI commands to create an Azure Container App with a managed identity:
+   Agent response: Here are Azure CLI commands to create an Azure Container App with a managed identity:
 
-    **1. For a System-assigned Managed Identity**
+   **1. For a System-assigned Managed Identity**
     ```sh
     az containerapp create \
     --name <CONTAINERAPP_NAME> \
@@ -270,9 +270,9 @@ lab:
     --identity 'system'
     ```
 
-    [続き...]
+   [続き...]
 
-    エージェントが削除されました
+   エージェントが削除されました
 
     ```
 
@@ -389,17 +389,17 @@ MCP クライアントは、MCP サーバーに接続してツールの検出と
 1. **chat_loop** メソッドで、コメント **Build a function for each tool** を見つけ、次のコードを追加します。
 
     ```python
-    # Build a function for each tool
-    def make_tool_func(tool_name):
-        async def tool_func(**kwargs):
-            result = await session.call_tool(tool_name, kwargs)
-            return result
-        
-        tool_func.__name__ = tool_name
-        return tool_func
+   # Build a function for each tool
+   def make_tool_func(tool_name):
+       async def tool_func(**kwargs):
+           result = await session.call_tool(tool_name, kwargs)
+           return result
 
-    # Store the functions in a dictionary for easy access when processing function calls
-    functions_dict = {tool.name: make_tool_func(tool.name) for tool in tools}
+       tool_func.__name__ = tool_name
+       return tool_func
+
+   # Store the functions in a dictionary for easy access when processing function calls
+   functions_dict = {tool.name: make_tool_func(tool.name) for tool in tools}
     ```
 
     このコードは、AI エージェントから呼び出すことができるように、MCP サーバーで使用可能なツールを動的にラップします。 各ツールは、エージェントで呼び出しができる非同期関数に変換されます。

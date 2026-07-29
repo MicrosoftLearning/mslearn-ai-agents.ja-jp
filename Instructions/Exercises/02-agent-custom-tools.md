@@ -92,7 +92,7 @@ lab:
 1. リポジトリの URL を入力します。
 
     ```
-    https://github.com/MicrosoftLearning/mslearn-ai-agents.git
+   https://github.com/MicrosoftLearning/mslearn-ai-agents.git
     ```
 
 1. リポジトリをクローンするローカル コンピューター上の場所を選択します。
@@ -108,9 +108,9 @@ lab:
 1. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
 
     ```
-    python -m venv labenv
-    .\labenv\Scripts\Activate.ps1
-    pip install -r requirements.txt
+   python -m venv labenv
+   .\labenv\Scripts\Activate.ps1
+   pip install -r requirements.txt
     ```
 
 1. **.env** ファイルを開き、**your_project_endpoint** プレースホルダーをご自分のプロジェクトのエンドポイント (Foundry Toolkit VS Code 拡張機能のプロジェクト デプロイ リソースからコピーしたもの) に置き換え、MODEL_DEPLOYMENT_NAME 変数がご自分のモデル デプロイ名に設定されていることを確認します。 これらの変更を行った後、**Ctrl + S** を使用してファイルを保存します。
@@ -165,12 +165,12 @@ lab:
 1. **Connect to the project client** というコメントを見つけて、次に示すコードを追加します。
 
     ```python
-    # Connect to the project client
-    with (
-        DefaultAzureCredential() as credential,
-        AIProjectClient(endpoint=project_endpoint, credential=credential) as project_client,
-        project_client.get_openai_client() as openai_client,
-    ):
+   # Connect to the project client
+   with (
+       DefaultAzureCredential() as credential,
+       AIProjectClient(endpoint=project_endpoint, credential=credential) as project_client,
+       project_client.get_openai_client() as openai_client,
+   ):
     ```
 
 ## 関数ツールを定義する
@@ -310,7 +310,7 @@ lab:
     ```python
    # Create a list to hold function call outputs that will be sent back as input to the agent
    input_list: ResponseInputParam = []
-   ```
+    ```
 
 1. **Send a prompt to the agent** というコメントを見つけて、次に示すコードを追加します。
 
@@ -356,7 +356,7 @@ lab:
                result = calculate_observation_cost(**json.loads(item.arguments))
            elif item.name == "generate_observation_report":
                result = generate_observation_report(**json.loads(item.arguments))
-                
+
            # Append the output text
            input_list.append(
                FunctionCallOutput(
@@ -388,9 +388,9 @@ lab:
 1. **Delete the agent when done (エージェントの終了時に削除する)** というコメントを見つけ、次のコードを追加します。
 
     ```python
-    # Delete the agent when done
-    project_client.agents.delete_version(agent_name=agent.name, agent_version=agent.version)
-    print("Deleted agent.")
+   # Delete the agent when done
+   project_client.agents.delete_version(agent_name=agent.name, agent_version=agent.version)
+   print("Deleted agent.")
     ```
 
 1. ファイルに追加した完全なコードを確認します。 次のセクションが含まれるはずです。
@@ -410,7 +410,7 @@ lab:
 1. 統合ターミナルで、次のコマンドを入力してアプリケーションを実行します。
 
     ```
-    az login
+   az login
     ```
 
     ```
@@ -430,31 +430,31 @@ lab:
     次のような出力が表示されるはずです。
 
     ```output
-    AGENT: The next astronomical event you can observe from South America is the Jupiter-Venus Conjunction, taking place on May 1st.
-    The cost for 5 hours of premium telescope time at normal priority for this observation will be $1,875. 
+   AGENT: The next astronomical event you can observe from South America is the Jupiter-Venus Conjunction, taking place on May 1st.
+   The cost for 5 hours of premium telescope time at normal priority for this observation will be $1,875. 
     ```
 
 1. 観察レポートを生成するためのフォローアップ プロンプトを、たとえば次のように入力します。
 
     ```
-    Generate that information in a report for Bellows College.
+   Generate that information in a report for Bellows College.
     ```
 
     次のような応答が表示されます。
 
     ```output
-    AGENT: Here is your report for Bellows College:
+   AGENT: Here is your report for Bellows College:
 
-    - Next visible astronomical event: Jupiter-Venus Conjunction
-    - Date: May 1st
-    - Visible from: South America
-    - Observation details:
-        - Telescope tier: Premium
-        - Duration: 5 hours
-        - Priority: Normal
-    - Observation cost: $1,875
+   - Next visible astronomical event: Jupiter-Venus Conjunction
+   - Date: May 1st
+   - Visible from: South America
+   - Observation details:
+       - Telescope tier: Premium
+       - Duration: 5 hours
+       - Priority: Normal
+   - Observation cost: $1,875
 
-    A formal report has been generated for Bellows College.
+   A formal report has been generated for Bellows College.
     ```
 
     エクスプローラーを見ると、`report-<event-type>.txt` という名前の新しいファイルが作成されており、この中に生成されたレポートがあります。 このファイルを開くと、レポートの内容を見ることができます。

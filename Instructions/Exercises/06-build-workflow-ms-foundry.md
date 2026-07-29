@@ -146,54 +146,54 @@ lab:
 3. **[応答形式の追加]** ペインで、次の定義を入力し、**[保存]** を選択します。
 
     ```json
-    {
-    "name": "category_response",
-    "schema": {
-        "type": "object",
-        "properties": {
-            "customer_issue": {
-                "type": "string"
-            },
-            "category": {
-                "type": "string"
-            },
-            "confidence": {
-                "type": "number"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "customer_issue",
-            "category",
-            "confidence"
-        ]
-    },
-    "strict": true
-    }
+   {
+   "name": "category_response",
+   "schema": {
+       "type": "object",
+       "properties": {
+           "customer_issue": {
+               "type": "string"
+           },
+           "category": {
+               "type": "string"
+           },
+           "confidence": {
+               "type": "number"
+           }
+       },
+       "additionalProperties": false,
+       "required": [
+           "customer_issue",
+           "category",
+           "confidence"
+       ]
+   },
+   "strict": true
+   }
     ```
 
 4. [エージェントの詳細] ペインで、**[指示]** フィールドを次のプロンプトに設定します。
 
     ```output
-    Classify the user's problem description into exactly ONE category from the list below. Provide a confidence score from 0 to 1.
+   Classify the user's problem description into exactly ONE category from the list below. Provide a confidence score from 0 to 1.
 
-    Billing
-    - Charges, refunds, duplicate payments
-    - Missing or incorrect payouts
-    - Subscription pricing or invoices being charged
+   Billing
+   - Charges, refunds, duplicate payments
+   - Missing or incorrect payouts
+   - Subscription pricing or invoices being charged
 
-    Technical
-    - API errors, integrations, webhooks
-    - Platform bugs or unexpected behavior
+   Technical
+   - API errors, integrations, webhooks
+   - Platform bugs or unexpected behavior
 
-    General
-    - How-to questions
-    - Feature availability
-    - Data exports, reports, or UI navigation
+   General
+   - How-to questions
+   - Feature availability
+   - Data exports, reports, or UI navigation
 
-    Important rules
-    - Questions about exporting, viewing, or downloading invoices are General, not Billing
-    - Billing ONLY applies when money was charged, refunded, or paid incorrectly
+   Important rules
+   - Questions about exporting, viewing, or downloading invoices are General, not Billing
+   - Billing ONLY applies when money was charged, refunded, or paid incorrectly
     ```
 
 5. **[ノードの設定]** を選択して、エージェントの入力と出力を構成します。
@@ -249,7 +249,7 @@ lab:
 1. **[If 条件]** を次の式に設定して、チケット カテゴリが "課金" かどうかを確認します。
 
     ```output
-    Local.TriageOutputJson.category = "Billing"
+   Local.TriageOutputJson.category = "Billing"
     ```
 
 1. **[If/Else]** ノードの **[If]** 分岐の下にある **[+]** (プラス) アイコンを選択して、課金以外のチケットに対する応答の下書きを行う新しいノードを追加します。
@@ -277,29 +277,29 @@ lab:
 5. エージェント エディターで、**[指示]** フィールドを次のプロンプトに設定します。
 
     ```output
-    You are a customer support resolution assistant for ContosoPay, a B2B payments and invoicing platform.
+   You are a customer support resolution assistant for ContosoPay, a B2B payments and invoicing platform.
 
-    Your task is to draft a clear, professional, and friendly support response based on the issue category and customer message.
+   Your task is to draft a clear, professional, and friendly support response based on the issue category and customer message.
 
-    Guidelines:
-    If the issue category is Technical:
-    Suggest 1–2 common troubleshooting steps at a high level.
+   Guidelines:
+   If the issue category is Technical:
+   Suggest 1–2 common troubleshooting steps at a high level.
 
-    Avoid asking for logs, credentials, or sensitive data.
+   Avoid asking for logs, credentials, or sensitive data.
 
-    Do not imply fault by the customer.
-    If the issue category is General:
-    Provide a concise, helpful explanation or guidance.
-    Keep the response under 5 sentences.
+   Do not imply fault by the customer.
+   If the issue category is General:
+   Provide a concise, helpful explanation or guidance.
+   Keep the response under 5 sentences.
 
-    Tone:
-    Professional, calm, and supportive
-    Clear and concise
-    No emojis
+   Tone:
+   Professional, calm, and supportive
+   Clear and concise
+   No emojis
 
-    Output:
-    Return only the drafted response text.
-    Do not include internal reasoning or analysis.
+   Output:
+   Return only the drafted response text.
+   Do not include internal reasoning or analysis.
     ```
 
 6. **[ノードの設定]** を選択して、エージェントの入力と出力を構成します。
@@ -323,14 +323,14 @@ lab:
     課金の問題については、エスカレートされていることを示す出力がいくつか表示され、技術的な問題と一般的な問題については、下書きされた応答が返されます。 次に例を示します。
 
     ```output
-    Current Ticket:
-    The API returns a 403 error when creating invoices, but our API key hasn't changed.
+   Current Ticket:
+   The API returns a 403 error when creating invoices, but our API key hasn't changed.
 
 
-    Copilot said:
-    Thank you for reaching out about the 403 error when creating invoices. This error typically indicates a permissions or access issue. 
-    Please ensure that your API key has the necessary permissions for invoice creation and that your request is being sent to the correct endpoint. 
-    If the issue persists, try regenerating your API key and updating it in your integration to see if that resolves the problem.
+   Copilot said:
+   Thank you for reaching out about the 403 error when creating invoices. This error typically indicates a permissions or access issue. 
+   Please ensure that your API key has the necessary permissions for invoice creation and that your request is being sent to the correct endpoint. 
+   If the issue persists, try regenerating your API key and updating it in your integration to see if that resolves the problem.
     ```
 
 ## クライアント アプリケーションでワークフローを使用する
@@ -348,7 +348,7 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 1. リポジトリの URL を入力します。
 
     ```
-    https://github.com/MicrosoftLearning/mslearn-ai-agents.git
+   https://github.com/MicrosoftLearning/mslearn-ai-agents.git
     ```
 
 1. リポジトリをクローンするローカル コンピューター上の場所を選択します。
@@ -372,9 +372,9 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 5. ターミナルで、次のコマンドを入力して、仮想環境に必要な Python パッケージをインストールします。
 
     ```
-    python -m venv labenv
-    .\labenv\Scripts\Activate.ps1
-    pip install -r requirements.txt
+   python -m venv labenv
+   .\labenv\Scripts\Activate.ps1
+   pip install -r requirements.txt
     ```
 
 6. **.env** ファイルを開き、**[your_project_endpoint]** プレースホルダーをプロジェクトのエンドポイント (ワークフロー ビジュアライザーの [コード] タブからコピーしたもの) に置き換えます。 これらの変更を行った後、**Ctrl + S** を使用してファイルを保存します。
@@ -424,16 +424,16 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 4. コメント **Create a conversation and run the workflow** を見つけ、次のコードを追加して会話を作成し、ワークフローを呼び出します。
 
     ```python
-    # Create a conversation and run the workflow
-    conversation = openai_client.conversations.create()
-    print(f"Created conversation (id: {conversation.id})")
+   # Create a conversation and run the workflow
+   conversation = openai_client.conversations.create()
+   print(f"Created conversation (id: {conversation.id})")
 
-    stream = openai_client.responses.create(
-        conversation=conversation.id,
-        extra_body={"agent_reference" : {"name" : workflow["name"], "type": "agent_reference"}},
-        input="Start",
-        stream=True,
-    )
+   stream = openai_client.responses.create(
+       conversation=conversation.id,
+       extra_body={"agent_reference" : {"name" : workflow["name"], "type": "agent_reference"}},
+       input="Start",
+       stream=True,
+   )
     ```
 
     このコードは、ワークフロー実行の出力をコンソールにストリーミングして、ワークフローが各チケットを処理するときにメッセージのフローを確認できるようにします。
@@ -467,7 +467,7 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 
 1. 統合ターミナルで、次のコマンドを実行します。
     ```
-    az login
+   az login
     ```
 
     ```
@@ -479,10 +479,10 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 1. ワークフローが完了すると、次のような出力が表示されるはずです。
 
     ```output
-    Response completed:
-    Current Ticket:
-    The API returns a 403 error when creating invoices, but our API key hasn't changed.{"customer_issue":"API returns a 403 error when creating invoices, API key unchanged.","category":"Technical","confidence":1}Thank you for contacting us about the 403 error when creating invoices with the API. This error typically relates to permission issues. Please ensure your API key has the necessary permissions for invoice creation and that the endpoint URL is correct. If the issue persists, try regenerating the API key and updating it in your application.
-    ...
+   Response completed:
+   Current Ticket:
+   The API returns a 403 error when creating invoices, but our API key hasn't changed.{"customer_issue":"API returns a 403 error when creating invoices, API key unchanged.","category":"Technical","confidence":1}Thank you for contacting us about the 403 error when creating invoices with the API. This error typically relates to permission issues. Please ensure your API key has the necessary permissions for invoice creation and that the endpoint URL is correct. If the issue persists, try regenerating the API key and updating it in your application.
+   ...
     ```
 
     出力では、各チケットの分類や推奨される応答またはエスカレーションを含めて、ワークフローが各サポート チケットをどのように完了するかを確認できます。 上出来

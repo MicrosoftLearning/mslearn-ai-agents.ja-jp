@@ -63,10 +63,10 @@ lab:
 1. まず、エージェントに次のように指示します。
 
     ```
-    You are a helpful AI assistant for Contoso, specializing in outdoor camping and hiking products. 
-    You must ALWAYS search the knowledge base to answer questions about our products or product 
-    catalog. Provide detailed, accurate information and always cite your sources.
-    If you don't find relevant information in the knowledge base, say so clearly.
+   You are a helpful AI assistant for Contoso, specializing in outdoor camping and hiking products. 
+   You must ALWAYS search the knowledge base to answer questions about our products or product 
+   catalog. Provide detailed, accurate information and always cite your sources.
+   If you don't find relevant information in the knowledge base, say so clearly.
     ```
 
 1. **[保存]** を選んで、現在のエージェント構成を保存します。
@@ -206,106 +206,106 @@ Foundry IQ の設定はこれで完了するはずです。
     > **ヒント**: インデント レベルを正しく維持するように注意してください。
 
     ```python
-    # Connect to the project and agent
-    credential = DefaultAzureCredential(
-        exclude_environment_credential=True,
-        exclude_managed_identity_credential=True
-    )
-    project_client = AIProjectClient(
-        credential=credential,
-        endpoint=project_endpoint
-    )
+   # Connect to the project and agent
+   credential = DefaultAzureCredential(
+       exclude_environment_credential=True,
+       exclude_managed_identity_credential=True
+   )
+   project_client = AIProjectClient(
+       credential=credential,
+       endpoint=project_endpoint
+   )
 
-    # Get the OpenAI client
-    openai_client = project_client.get_openai_client()
+   # Get the OpenAI client
+   openai_client = project_client.get_openai_client()
 
-    # Get the agent
-    agent = project_client.agents.get(agent_name=agent_name)
-    print(f"Connected to agent: {agent.name} (id: {agent.id})\n")
+   # Get the agent
+   agent = project_client.agents.get(agent_name=agent_name)
+   print(f"Connected to agent: {agent.name} (id: {agent.id})\n")
 
-    # Create a new conversation
-    conversation = openai_client.conversations.create(items=[])
-    print(f"Created conversation (id: {conversation.id})\n")
+   # Create a new conversation
+   conversation = openai_client.conversations.create(items=[])
+   print(f"Created conversation (id: {conversation.id})\n")
     ```
 
 1. `send_message_to_agent()` 関数内で 2 番目の **TODO** コメントを見つけ、MCP 承認要求などのメッセージを送信して応答を処理する次のコードを追加します。
 
     ```python
-    # Add user message to the conversation
-    openai_client.conversations.items.create(
-        conversation_id=conversation.id,
-        items=[{"type": "message", "role": "user", "content": user_message}],
-    )
-    
-    # Store in conversation history (client-side)
-    conversation_history.append({
-        "role": "user",
-        "content": user_message
-    })
-    
-    # Create a response using the agent
-    response = openai_client.responses.create(
-        conversation=conversation.id,
-        extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
-        input=""
-    )
+   # Add user message to the conversation
+   openai_client.conversations.items.create(
+       conversation_id=conversation.id,
+       items=[{"type": "message", "role": "user", "content": user_message}],
+   )
 
-    # Check if the response output contains an MCP approval request
-    approval_request = None
-    if hasattr(response, 'output') and response.output:
-        for item in response.output:
-            if hasattr(item, 'type') and item.type == 'mcp_approval_request':
-                approval_request = item
-                break
-    
-    # Handle approval request if present
-    if approval_request:
-        print(f"[Approval required for: {approval_request.name}]\n")
-        print(f"Server: {approval_request.server_label}")
-        
-        # Parse and display the arguments (optional, for transparency)
-        import json
-        try:
-            args = json.loads(approval_request.arguments)
-            print(f"Arguments: {json.dumps(args, indent=2)}\n")
-        except:
-            print(f"Arguments: {approval_request.arguments}\n")
-        
-        # Prompt user for approval
-        approval_input = input("Approve this action? (yes/no): ").strip().lower()
-        
-        if approval_input in ['yes', 'y']:
-            print("Approving action...\n")
-            
-            # Create approval response item
-            approval_response = {
-                "type": "mcp_approval_response",
-                "approval_request_id": approval_request.id,
-                "approve": True
-            }
-        else:
-            print("Action denied.\n")
-            
-            # Create denial response item
-            approval_response = {
-                "type": "mcp_approval_response",
-                "approval_request_id": approval_request.id,
-                "approve": False
-            }
-        
-        # Add the approval response to the conversation
-        openai_client.conversations.items.create(
-            conversation_id=conversation.id,
-            items=[approval_response]
-        )
-        
-        # Get the actual response after approval/denial
-        response = openai_client.responses.create(
-            conversation=conversation.id,
-            extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
-            input=""
-        )
-    
+   # Store in conversation history (client-side)
+   conversation_history.append({
+       "role": "user",
+       "content": user_message
+   })
+
+   # Create a response using the agent
+   response = openai_client.responses.create(
+       conversation=conversation.id,
+       extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
+       input=""
+   )
+
+   # Check if the response output contains an MCP approval request
+   approval_request = None
+   if hasattr(response, 'output') and response.output:
+       for item in response.output:
+           if hasattr(item, 'type') and item.type == 'mcp_approval_request':
+               approval_request = item
+               break
+
+   # Handle approval request if present
+   if approval_request:
+       print(f"[Approval required for: {approval_request.name}]\n")
+       print(f"Server: {approval_request.server_label}")
+
+       # Parse and display the arguments (optional, for transparency)
+       import json
+       try:
+           args = json.loads(approval_request.arguments)
+           print(f"Arguments: {json.dumps(args, indent=2)}\n")
+       except:
+           print(f"Arguments: {approval_request.arguments}\n")
+
+       # Prompt user for approval
+       approval_input = input("Approve this action? (yes/no): ").strip().lower()
+
+       if approval_input in ['yes', 'y']:
+           print("Approving action...\n")
+
+           # Create approval response item
+           approval_response = {
+               "type": "mcp_approval_response",
+               "approval_request_id": approval_request.id,
+               "approve": True
+           }
+       else:
+           print("Action denied.\n")
+
+           # Create denial response item
+           approval_response = {
+               "type": "mcp_approval_response",
+               "approval_request_id": approval_request.id,
+               "approve": False
+           }
+
+       # Add the approval response to the conversation
+       openai_client.conversations.items.create(
+           conversation_id=conversation.id,
+           items=[approval_response]
+       )
+
+       # Get the actual response after approval/denial
+       response = openai_client.responses.create(
+           conversation=conversation.id,
+           extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
+           input=""
+       )
+
     ```
 
 1. コードを追加したら、ファイルを保存します。
@@ -335,7 +335,7 @@ Foundry IQ の設定はこれで完了するはずです。
 1. ターミナル ペインで次のコマンドを入力して Azure にサインインします。
 
     ```
-    az login
+   az login
     ```
 
     > **注**: ほとんどのシナリオでは、*az ログイン*を使用するだけで十分です。 ただし、複数のテナントにサブスクリプションがある場合は、*[--tenant]* パラメーターを使用してテナントを指定する必要があります。 詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)」を参照してください。
@@ -353,7 +353,7 @@ Foundry IQ の設定はこれで完了するはずです。
     **クエリ 1 - 製品カテゴリ:**
 
     ```
-    What types of outdoor products does Contoso offer?
+   What types of outdoor products does Contoso offer?
     ```
 
     承認を求められたら、「**yes**」と入力して、エージェントがナレッジ ベースを検索するのを許可します。 エージェントがナレッジ ベース内の複数のドキュメントから情報をどのように取得するかを観察します。
@@ -361,7 +361,7 @@ Foundry IQ の設定はこれで完了するはずです。
     **クエリ 2 - 特定の製品の詳細:**
 
     ```
-    Tell me about the weatherproof features of your tents.
+   Tell me about the weatherproof features of your tents.
     ```
 
     要求を承認し、エージェントがテント カタログから特定の詳細をどのように提供するかを注視します。
@@ -369,7 +369,7 @@ Foundry IQ の設定はこれで完了するはずです。
     **クエリ 3 - 製品の比較:**
 
     ```
-    What's the difference between your daypacks and expedition backpacks?
+   What's the difference between your daypacks and expedition backpacks?
     ```
 
     要求を承認し、エージェントがバックパック ガイドからの情報をどのように合成するかを確認します。
@@ -377,7 +377,7 @@ Foundry IQ の設定はこれで完了するはずです。
     **クエリ 4 - アクセサリとアドオン:**
 
     ```
-    What camping accessories would you recommend for a weekend hiking trip?
+   What camping accessories would you recommend for a weekend hiking trip?
     ```
 
     要求を承認し、ナレッジ ベースに基づいて推奨事項を提供するエージェントの機能を観察します。
@@ -385,7 +385,7 @@ Foundry IQ の設定はこれで完了するはずです。
     **クエリ 5 - フォローアップの質問:**
 
     ```
-    How much do those items typically cost?
+   How much do those items typically cost?
     ```
 
     エージェントが前のクエリから会話コンテキストをどのように維持するかに注目します。
