@@ -24,9 +24,11 @@ lab:
 - **Copilot ライセンスが付属する Microsoft 365**
 - Work IQ の IT 管理者の承認 (組織アカウントのみ)
 - [Node.js 18](https://nodejs.org/en/download/) 以降がインストールされている
-- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
+- [Python 3.13](https://www.python.org/downloads/) がインストールされていること
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) がインストールされている (`az login`で認証されている)
 - クエリを実行するためのアクティブな M365 データ (メール、会議、Teams チャット)
+
+> \* Python 3.14 はまだサポートされていません。一部の依存関係には 3.14 ビルドが含まれていません。 このラボは Python 3.13.12 でテストされました。
 
 > **重要:** Work IQ は、Microsoft 365 Copilot が有効になっているアカウントで**のみ**動作します。 Copilot を使わずにこのラボを完了することはできません。
 

@@ -49,10 +49,10 @@ lab:
 
 - ローカル コンピューターに [Visual Studio Code](https://code.visualstudio.com/) がインストールされている
 - 有効な [Azure サブスクリプション](https://azure.microsoft.com/free/)
-- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
+- [Python 3.13](https://www.python.org/downloads/) がインストールされていること
 - ローカル コンピューターに [Git](https://git-scm.com/downloads) がインストールされている
 
-> \* Python 3.13 を使用できますが、一部の依存関係がそのリリース用にまだコンパイルされていません。 このラボでは Python 3.13.12 でテストが正常に終了しました。
+> \* Python 3.14 はまだサポートされていません。一部の依存関係には 3.14 ビルドが含まれていません。 このラボは Python 3.13.12 でテストされました。
 
 ## Foundry プロジェクトを作成する
 
@@ -413,7 +413,7 @@ Foundry ポータルでワークフローをビルドしてテストしたら、
 3. コメント **Specify the workflow (ワークフローを指定する)** を見つけ、次のコードを追加します。
 
     ```python
-   # Specify the workflow
+    # Specify the workflow
     workflow = {
         "name": "ContosoPay-Customer-Support-Triage"
     }

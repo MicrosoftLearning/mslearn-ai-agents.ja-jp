@@ -22,11 +22,11 @@ lab:
 
 - Azure AI リソースをプロビジョニングするための十分なアクセス許可とクォータを持つ [Azure サブスクリプション](https://azure.microsoft.com/free/)
 - ローカル コンピューターにインストールされている [Visual Studio Code](https://code.visualstudio.com/)
-- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
+- [Python 3.13](https://www.python.org/downloads/) がインストールされていること
 - ローカル コンピューターにインストールされている [Git](https://git-scm.com/downloads)
 - Azure AI サービスと Python プログラミングに関する基本的な知識
 
-> \* Python 3.13 を使用できますが、一部の依存関係がそのリリース用にまだコンパイルされていません。 このラボでは Python 3.13.12 でテストが正常に終了しました。
+> \* Python 3.14 はまだサポートされていません。一部の依存関係には 3.14 ビルドが含まれていません。 このラボは Python 3.13.12 でテストされました。
 
 ## Microsoft Foundry プロジェクトを作成する
 

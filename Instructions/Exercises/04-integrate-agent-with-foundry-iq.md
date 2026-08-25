@@ -24,9 +24,11 @@ lab:
 
 - [Azure サブスクリプション](https://azure.microsoft.com/free/): AI リソース作成のためのアクセス許可が付与されていること
 - ローカル コンピューターにインストールされている [Visual Studio Code](https://code.visualstudio.com/)
-- [Python 3.13](https://www.python.org/downloads/) 以降がインストールされている
+- [Python 3.13](https://www.python.org/downloads/) がインストールされていること
 - ローカル コンピューターにインストールされている [Git](https://git-scm.com/downloads)
 - Microsoft Foundry ポータルと Python プログラミングに関する基本的な知識
+
+> \* Python 3.14 はまだサポートされていません。一部の依存関係には 3.14 ビルドが含まれていません。 このラボは Python 3.13.12 でテストされました。
 
 ## Foundry プロジェクトを作成する
 
@@ -79,6 +81,8 @@ lab:
     - **[リージョン]**: プロジェクトと同じ場所**
     - **価格レベル**: [Free] *(利用できる場合)、そうでない場合は [Basic] を選択します*
     - **Foundry IQ ナレッジベースの機能**: 来月まで一時停止
+
+    > **注**: ここでリソースを作成する際に問題が発生した場合は、フォーム下部のリンクを選択して Azure portal から作成してください。
 
 次に、Foundry IQ を使って接続するサンプルの製品情報ドキュメントをアップロードします。
 
@@ -156,10 +160,11 @@ Foundry IQ の設定はこれで完了するはずです。
 
 1. **[Microsoft Foundry リソース]** で、**[既定のプロジェクトの設定]** を選び、前に作成したプロジェクトを選択します。
 1. [プロジェクト] セクションを展開します。 **[プロンプト エージェント]** で、`product-expert-agent` エージェントを選択して **[エージェント ビルダー]** ウィンドウを開きます。
-1. **[ツール]** セクションで、**[Azure AI 検索]** ツールを追加し、先ほど作成した接続とナレッジ ベースを選択します。
+1. **[ツール]** セクションには、`kb-knowledgebase` プレフィックスの後に一意の ID が付いたツール名 (例: `kb-knowledgebase677-7w5fj`) が既に表示されているはずです。 これは Foundry IQ のナレッジ ベース ツールで、ポータルで Foundry IQ を接続したときに自動的に追加されたものです。
 
-    > **注**: エージェントにより複数のツールが一覧表示される場合があります。 Foundry ポータルでは、既定で新しいエージェントに **Web 検索**ツールが追加されるため、他のツールではなく、**Azure AI 検索** ツールでナレッジ ベースの 3 つのドットを選択してください。
-1. **[ツール使用前に承認が必要]** ドロップダウンで、**[すべてのツールの承認を求める]** を選択し、メッセージが表示されたら変更を保存します。
+    > **注**: エージェントには複数のツールが一覧表示される場合があります。 既定では、Foundry ポータルが新しいエージェントに **Web 検索**ツールを追加し、スタンドアロンの **Azure AI 検索** ツールも表示される場合があります。 エージェントはナレッジ ベース検索時に実際に `kb-knowledgebase...` ツールを呼び出すので、他のツールで承認を設定しても影響はありません。
+
+1. `kb-knowledgebase...` ツールの省略記号 (**[...]**) アイコンを選択してから **[すべてのツールで承認を求める]** を選択し、プロンプトが表示されたら変更を保存してください。
 
 これで、エージェントは Foundry IQ を使用してナレッジ ベースを検索するたびに承認を求めるようになり、次に完了するクライアント アプリによって処理されます。
 
@@ -250,56 +255,45 @@ Foundry IQ の設定はこれで完了するはずです。
        input=""
    )
 
-   # Check if the response output contains an MCP approval request
-   approval_request = None
-   if hasattr(response, 'output') and response.output:
-       for item in response.output:
-           if hasattr(item, 'type') and item.type == 'mcp_approval_request':
-               approval_request = item
-               break
+   # Loop until a response has no pending approval requests (zero, one, or many)
+   while True:
+       approval_requests = [
+           item for item in (getattr(response, "output", None) or [])
+           if getattr(item, "type", None) == "mcp_approval_request"
+       ]
 
-   # Handle approval request if present
-   if approval_request:
-       print(f"[Approval required for: {approval_request.name}]\n")
-       print(f"Server: {approval_request.server_label}")
+       if not approval_requests:
+           break
 
-       # Parse and display the arguments (optional, for transparency)
-       import json
-       try:
-           args = json.loads(approval_request.arguments)
-           print(f"Arguments: {json.dumps(args, indent=2)}\n")
-       except:
-           print(f"Arguments: {approval_request.arguments}\n")
+       approval_items = []
+       for approval_request in approval_requests:
+           print(f"[Approval required for: {approval_request.name}]\n")
+           print(f"Server: {approval_request.server_label}")
 
-       # Prompt user for approval
-       approval_input = input("Approve this action? (yes/no): ").strip().lower()
+           # Show the tool call arguments for transparency
+           import json
+           try:
+               args = json.loads(approval_request.arguments)
+               print(f"Arguments: {json.dumps(args, indent=2)}\n")
+           except Exception:
+               print(f"Arguments: {approval_request.arguments}\n")
 
-       if approval_input in ['yes', 'y']:
-           print("Approving action...\n")
+           approval_input = input("Approve this action? (yes/no): ").strip().lower()
+           approved = approval_input in ['yes', 'y']
+           print("Approving action...\n" if approved else "Action denied.\n")
 
-           # Create approval response item
-           approval_response = {
+           approval_items.append({
                "type": "mcp_approval_response",
                "approval_request_id": approval_request.id,
-               "approve": True
-           }
-       else:
-           print("Action denied.\n")
+               "approve": approved
+           })
 
-           # Create denial response item
-           approval_response = {
-               "type": "mcp_approval_response",
-               "approval_request_id": approval_request.id,
-               "approve": False
-           }
-
-       # Add the approval response to the conversation
+       # Send the approval decisions and fetch the next response
        openai_client.conversations.items.create(
            conversation_id=conversation.id,
-           items=[approval_response]
+           items=approval_items
        )
 
-       # Get the actual response after approval/denial
        response = openai_client.responses.create(
            conversation=conversation.id,
            extra_body={"agent_reference": {"name": agent.name, "type": "agent_reference"}},
@@ -308,15 +302,17 @@ Foundry IQ の設定はこれで完了するはずです。
 
     ```
 
+    > **注**: エージェントが必ずしも承認を要求するわけではなく、同じターンで複数のツール呼び出しの承認を求めることもあります。 どちらのケースも、`approval_requests` が空になるまでループすることで正しく処理できます。
+
 1. コードを追加したら、ファイルを保存します。
 
 1. コードが会話 API を使ってエージェントとの対話を管理するようになっていることを確認します。次のようなものです。
     - 会話が作成され、その ID によって追跡されます
     - `conversations.items.create()` を使ってユーザー メッセージが会話に追加されます
     - `responses.create()` とエージェントの参照を使って応答が生成されます
-    - **MCP 承認処理**: エージェントは、Foundry IQ にアクセスする必要がある場合、応答出力で `mcp_approval_request` を返して承認を要求します
-    - このコードは、続ける前にアクションを承認または拒否するようユーザーに求めます
-    - 承認または拒否の後、`mcp_approval_response` が会話に追加されて、新しい応答が生成されます
+    - **MCP 承認処理**: エージェントが Foundry IQ にアクセスする必要がある場合、応答出力で 1 つまたは複数の `mcp_approval_request` 項目を返すことで承認を要求します
+    - コードはループし、エージェントが未解決の承認要求 (そもそも承認が必要なかったケースも含む) がなくなったという応答を返すまで、保留中の要求をそれぞれ承認または拒否するように促します
+    - 承認または拒否の後、`mcp_approval_response` が会話に追加され、新しい応答が生成されます
     - エージェントは、ユーザーの承認の決定に基づいて Foundry IQ から情報を取得します
 
 ## 統合をテストします
